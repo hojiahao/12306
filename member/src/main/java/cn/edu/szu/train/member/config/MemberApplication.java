@@ -12,10 +12,10 @@ import org.springframework.core.env.Environment;
 public class MemberApplication {
 	private static final Logger LOG = LoggerFactory.getLogger(MemberApplication.class);
 	public static void main(String[] args) {
-		SpringApplication application = new SpringApplication(MemberApplication.class);
-		Environment environment = application.run(args).getEnvironment();
+		SpringApplication app = new SpringApplication(MemberApplication.class);
+		Environment env = app.run(args).getEnvironment();
 		LOG.info("Start Successfully!");
-		LOG.info("address: \thttp://127.0.0.1:{}", environment.getProperty("server.port"));
+		LOG.info("address: \thttp://127.0.0.1:{}{}/hello", env.getProperty("server.port"), env.getProperty("server.servlet.context-path"));
 	}
 
 }
