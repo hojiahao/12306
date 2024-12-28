@@ -1,10 +1,10 @@
-package cn.edu.szu.train;
+package cn.edu.szu.train.member.config;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TrainTicketingSystemApplicationTests {
+class MemberApplicationTests {
 
 	@Test
 	void contextLoads() {
