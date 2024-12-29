@@ -3,6 +3,7 @@ package cn.edu.szu.train.member.service;
 import cn.edu.szu.train.member.domain.Member;
 import cn.edu.szu.train.member.domain.MemberExample;
 import cn.edu.szu.train.member.mapper.MemberMapper;
+import cn.edu.szu.train.member.req.MemberRegisterReq;
 import cn.hutool.core.collection.CollUtil;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
@@ -18,7 +19,8 @@ public class MemberService {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
 
-    public long register(String mobile) {
+    public long register(MemberRegisterReq req) {
+        String mobile = req.getMobile();
         MemberExample memberExample = new MemberExample();
         memberExample.createCriteria().andMobileEqualTo(mobile);
         List<Member> memberList = memberMapper.selectByExample(memberExample);
