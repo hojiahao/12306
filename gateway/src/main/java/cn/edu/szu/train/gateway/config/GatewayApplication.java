@@ -1,4 +1,4 @@
-package cn.edu.szu.train.member.config;
+package cn.edu.szu.train.gateway.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,13 +9,13 @@ import org.springframework.core.env.Environment;
 
 @SpringBootApplication
 @ComponentScan("cn.edu.szu")
-public class MemberApplication {
-	private static final Logger LOG = LoggerFactory.getLogger(MemberApplication.class);
+public class GatewayApplication {
+	private static final Logger LOG = LoggerFactory.getLogger(GatewayApplication.class);
 	public static void main(String[] args) {
-		SpringApplication app = new SpringApplication(MemberApplication.class);
+		SpringApplication app = new SpringApplication(GatewayApplication.class);
 		Environment env = app.run(args).getEnvironment();
 		LOG.info("Start Successfully!");
-		LOG.info("Test IP Address: \thttp://127.0.0.1:{}{}/hello", env.getProperty("server.port"), env.getProperty("server.servlet.context-path"));
+		LOG.info("Gateway IP Address: \thttp://127.0.0.1:{}", env.getProperty("server.port"));
 	}
 
 }
