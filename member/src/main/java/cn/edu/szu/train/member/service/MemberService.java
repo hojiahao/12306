@@ -26,7 +26,7 @@ public class MemberService {
         List<Member> memberList = memberMapper.selectByExample(memberExample);
 
         if (CollUtil.isNotEmpty(memberList)) {
-            throw new RuntimeException("Current mobile phone number is registered.");
+            throw new RuntimeException("Mobile Phone Number Registered.");
         }
 
         Member member = new Member();
