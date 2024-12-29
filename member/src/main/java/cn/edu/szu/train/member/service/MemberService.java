@@ -1,5 +1,7 @@
 package cn.edu.szu.train.member.service;
 
+import cn.edu.szu.train.common.exception.BusinessException;
+import cn.edu.szu.train.common.exception.BusinessExceptionEnum;
 import cn.edu.szu.train.member.domain.Member;
 import cn.edu.szu.train.member.domain.MemberExample;
 import cn.edu.szu.train.member.mapper.MemberMapper;
@@ -26,7 +28,7 @@ public class MemberService {
         List<Member> memberList = memberMapper.selectByExample(memberExample);
 
         if (CollUtil.isNotEmpty(memberList)) {
-            throw new RuntimeException("Mobile Phone Number Registered.");
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
 
         Member member = new Member();

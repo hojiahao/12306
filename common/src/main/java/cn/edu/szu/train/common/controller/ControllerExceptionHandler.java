@@ -26,10 +26,9 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp exceptionHandler(Exception e) {
         CommonResp commonResp = new CommonResp();
-        LOG.error("系统异常：", e);
+        LOG.error("System Exception：", e);
         commonResp.setSuccess(false);
-//        commonResp.setMessage("系统出现异常，请联系管理员");
-        commonResp.setMessage(e.getMessage());
+        commonResp.setMessage("The system is abnormal, please contact the administrator");
         return commonResp;
     }
 
@@ -42,7 +41,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp exceptionHandler(BusinessException e) {
         CommonResp commonResp = new CommonResp();
-        LOG.error("业务异常：{}", e.getE().getDesc());
+        LOG.error("Business Exception：{}", e.getE().getDesc());
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getE().getDesc());
         return commonResp;
@@ -57,7 +56,7 @@ public class ControllerExceptionHandler {
     @ResponseBody
     public CommonResp exceptionHandler(BindException e) {
         CommonResp commonResp = new CommonResp();
-        LOG.error("校验异常：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        LOG.error("Verification Exception：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return commonResp;
