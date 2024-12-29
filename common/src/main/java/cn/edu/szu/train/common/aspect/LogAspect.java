@@ -1,4 +1,4 @@
-package cn.edu.szu.train.member.aspect;
+package cn.edu.szu.train.common.aspect;
 
 import cn.hutool.core.util.RandomUtil;
 import com.alibaba.fastjson.JSONObject;
