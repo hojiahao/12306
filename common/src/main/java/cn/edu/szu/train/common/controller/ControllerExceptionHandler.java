@@ -19,13 +19,13 @@ public class ControllerExceptionHandler {
 
     /**
      * 所有异常统一处理
-     * @param e
-     * @return
+     * @param e: Exception
+     * @return commonResp
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public CommonResp exceptionHandler(Exception e) {
-        CommonResp commonResp = new CommonResp();
+    public CommonResp<Object> exceptionHandler(Exception e) {
+        CommonResp<Object> commonResp = new CommonResp<>();
         LOG.error("System Exception：", e);
         commonResp.setSuccess(false);
         commonResp.setMessage("The system is abnormal, please contact the administrator");
@@ -34,13 +34,13 @@ public class ControllerExceptionHandler {
 
     /**
      * 业务异常统一处理
-     * @param e
-     * @return
+     * @param e: BusinessException
+     * @return commonResp
      */
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
-    public CommonResp exceptionHandler(BusinessException e) {
-        CommonResp commonResp = new CommonResp();
+    public CommonResp<Object> exceptionHandler(BusinessException e) {
+        CommonResp<Object> commonResp = new CommonResp<>();
         LOG.error("Business Exception：{}", e.getE().getDesc());
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getE().getDesc());
@@ -49,14 +49,14 @@ public class ControllerExceptionHandler {
 
     /**
      * 校验异常统一处理
-     * @param e
-     * @return
+     * @param e: BindException
+     * @return commonResp
      */
     @ExceptionHandler(value = BindException.class)
     @ResponseBody
-    public CommonResp exceptionHandler(BindException e) {
-        CommonResp commonResp = new CommonResp();
-        LOG.error("Verification Exception：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+    public CommonResp<Object> exceptionHandler(BindException e) {
+        CommonResp<Object> commonResp = new CommonResp<>();
+        LOG.error("Validation Exception：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         commonResp.setSuccess(false);
         commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return commonResp;
