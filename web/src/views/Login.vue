@@ -1,6 +1,6 @@
 <template>
   <a-row class="login">
-    <a-col :span="8" :offset="8" class="login">
+    <a-col :span="6" :offset="9" class="login">
       <h1 style="text-align: center"><rocket-two-tone />欢迎登录12306</h1>
       <!-- 登录方式切换 -->
       <div style="text-align: center; margin-bottom: 20px; font-size: 14px; font-weight: bold;">
@@ -28,7 +28,7 @@
             <a-select
                 v-model:value="smsFormState.areaCode"
                 placeholder="选择国家区号"
-                style="width: 40%"
+                style="width: 30%"
             >
               <a-select-option value="+86">中国 +86</a-select-option>
               <a-select-option value="+1">美国 +1</a-select-option>
@@ -37,7 +37,7 @@
               <a-select-option value="+81">日本 +81</a-select-option>
               <a-select-option value="+49">德国 +49</a-select-option>
             </a-select>
-            <a-input v-model:value="smsFormState.phone" placeholder="请输入手机号" style="width: 60%; text-align: left; padding-left: 8px;" />
+            <a-input v-model:value="smsFormState.phone" placeholder="请输入手机号" style="width: 70%; text-align: left; padding-left: 8px;" />
           </a-input-group>
         </a-form-item>
 
