@@ -1,209 +1,97 @@
 <template>
   <a-row class="login">
-    <a-col :span="6" :offset="9" class="login">
-      <h1 style="text-align: center"><rocket-two-tone />欢迎登录12306</h1>
-      <!-- 登录方式切换 -->
-      <div style="text-align: center; margin-bottom: 20px; font-size: 14px; font-weight: bold;">
-        <a :class="currentTab === 'password' ? 'active-tab' : ''" @click="currentTab = 'password'" style="margin-left: 20px">密码登录</a>
-        <a :class="currentTab === 'sms' ? 'active-tab' : ''" @click="currentTab = 'sms'" style="margin-left: 20px">短信登录</a>
-      </div>
-
-      <!-- 短信登录内容 -->
+    <a-col :span="6" :offset="9" class="login-main">
+      <h1 style="text-align: center"><rocket-two-tone />12306售票系统</h1>
       <a-form
-          v-if="currentTab === 'sms'"
-          :model="smsFormState"
-          name="sms_login"
-          class="login-form"
-          @finish="onSmsFinish"
-          @finishFailed="onFinishFailed"
-      >
-        <a-form-item
-            name="phone"
-            :rules="[
-            { required: true, message: '请输入手机号' },
-            { pattern: /^1\d{10}$/, message: '手机号格式不正确' },
-          ]"
-        >
-          <a-input-group compact>
-            <a-select
-                v-model:value="smsFormState.areaCode"
-                placeholder="选择国家区号"
-                style="width: 30%"
-            >
-              <a-select-option value="+86">中国 +86</a-select-option>
-              <a-select-option value="+1">美国 +1</a-select-option>
-              <a-select-option value="+44">英国 +44</a-select-option>
-              <a-select-option value="+91">印度 +91</a-select-option>
-              <a-select-option value="+81">日本 +81</a-select-option>
-              <a-select-option value="+49">德国 +49</a-select-option>
-            </a-select>
-            <a-input v-model:value="smsFormState.phone" placeholder="请输入手机号" style="width: 70%; text-align: left; padding-left: 8px;" />
-          </a-input-group>
-        </a-form-item>
-
-        <a-form-item
-            name="smsCode"
-            :rules="[{ required: true, message: '请输入验证码' }]"
-        >
-          <a-input v-model:value="smsFormState.smsCode" placeholder="请输入验证码">
-            <template #suffix>
-              <a
-                  :disabled="isCounting"
-                  style="color: #1890ff; cursor: pointer"
-                  @click="getSmsCode"
-              >
-                {{ isCounting ? `${countdown}s后重试` : '获取验证码' }}
-              </a>
-            </template>
-          </a-input>
-        </a-form-item>
-
-        <a-form-item>
-          <a-button
-              :disabled="disabledSms"
-              type="primary"
-              html-type="submit"
-              class="login-form-button">Log in
-          </a-button>
-          Or
-          <a href="">register now!</a>
-        </a-form-item>
-      </a-form>
-
-      <!-- 密码登录内容 -->
-      <a-form
-          v-if="currentTab === 'password'"
-          :model="passwordformState"
-          name="password_login"
-          class="login-form"
-          @finish="onFinish"
-          @finishFailed="onFinishFailed"
+          :model="loginForm"
+          name="basic"
+          autocomplete="off"
       >
         <a-form-item
             label=""
-            name="username"
-            :rules="[{ required: true, message: 'Please input your username/email/phone'}]"
+            name="mobile"
+            :rules="[{ required: true, message: '请输入手机号!' }]"
         >
-          <a-input v-model:value="passwordformState.username" placeholder="Enter username/email/phone" >
-            <template #prefix>
-              <UserOutlined class="site-form-item-icon" />
-            </template>
-          </a-input>
+          <a-input v-model:value="loginForm.mobile" placeholder="手机号"/>
         </a-form-item>
 
         <a-form-item
             label=""
-            name="password"
-            :rules="[{ required: true, message: 'Please input your password!' }]"
+            name="code"
+            :rules="[{ required: true, message: '请输入验证码!' }]"
         >
-          <a-input-password v-model:value="passwordformState.password" placeholder="Enter password" >
-            <template #prefix>
-              <LockOutlined class="site-form-item-icon" />
+          <a-input v-model:value="loginForm.code">
+            <template #addonAfter>
+              <a @click="sendCode">获取验证码</a>
             </template>
-          </a-input-password>
+          </a-input>
+          <!--<a-input v-model:value="loginForm.code" placeholder="验证码"/>-->
         </a-form-item>
 
         <a-form-item>
-          <a-form-item name="remember" no-style>
-            <a-checkbox v-model:checked="passwordformState.remember">Remember me</a-checkbox>
-          </a-form-item>
-          <a class="login-form-forgot" href="">Forgot password</a>
+          <a-button type="primary" block @click="login">登录</a-button>
         </a-form-item>
 
-        <a-form-item>
-          <a-button :disabled="disabledPassword" type="primary" html-type="submit" class="login-form-button">
-            Log in
-          </a-button>
-          Or
-          <a href="">register now!</a>
-        </a-form-item>
       </a-form>
     </a-col>
   </a-row>
 </template>
+
 <script>
-import { reactive, ref, computed } from 'vue'
-import axios from 'axios'
-export default {
-  name: 'LoginView',
-  components: {},
+import { defineComponent, reactive } from 'vue';
+import axios from 'axios';
+import { notification } from 'ant-design-vue';
+import { useRouter } from 'vue-router'
+import store from "@/store";
+
+export default defineComponent({
+  name: "login-view",
   setup() {
-    const currentTab = ref('password');
-    const smsFormState = reactive({
-      areaCode: "+86",
-      phone: "",
-      smsCode: ""
-    });
-    const passwordformState = reactive({
-      username: '',
-      password: '',
-      remember: true,
-    });
-    const countdown =  ref(60);
-    const isCounting = computed(() => {
-      return countdown.value < 60
+    const router = useRouter();
+
+    const loginForm = reactive({
+      mobile: '13000000000',
+      code: '',
     });
 
-    let interval = null;
-    const getSmsCode = async () => {
-      if (isCounting.value || smsFormState.phone) {
-        return;
-      }
-      try {
-        await axios.post('http://localhost:8000/member/member/send-code', {
-          areaCode: smsFormState.areaCode,
-          phone: smsFormState.phone
-        }).then(response => {
-          if (response.data.code === 200) {
-            console.log('SMS sent successfully');
-            countdown.value = 60;
-            interval = setInterval(() => {
-              if (countdown.value < 0) {
-                countdown.value -= 1;
-              } else {
-                clearInterval(interval);
-              }
-            }, 1000);
-          } else {
-            console.error('Failed to send SMS:', response.data.message);
-          }
-        });
-      } catch (error) {
-        console.error('Failed to send SMS:', error);
-      }
+    const sendCode = () => {
+      axios.post("http://localhost:8000/member/member/send-code", {
+        mobile: loginForm.mobile
+      }).then(response => {
+        let data = response.data;
+        if (data.success) {
+          notification.success({ description: '发送验证码成功！' });
+          loginForm.code = "8888";
+        } else {
+          notification.error({ description: data.message });
+        }
+      });
     };
-    const disabledSms = computed(() => {
-      return (!smsFormState.phone || !smsFormState.smsCode);
-    })
-    const onSmsFinish = values => {
-      console.log('SMS login successful:', values);
+
+    const login = () => {
+      axios.post("/member/member/login", loginForm).then((response) => {
+        let data = response.data;
+        if (data.success) {
+          notification.success({ description: '登录成功！' });
+          // 登录成功，跳到控台主页
+          router.push("/welcome");
+          store.commit("setMember", data.content);
+        } else {
+          notification.error({ description: data.message });
+        }
+      })
     };
-    const onFinish = values => {
-      console.log('Password login successful:', values);
-    };
-    const onFinishFailed = errorInfo => {
-      console.log('Login failed:', errorInfo);
-    };
-    const disabledPassword = computed(() => {
-      return !(passwordformState.username && passwordformState.password);
-    });
+
     return {
-      currentTab,
-      smsFormState,
-      passwordformState,
-      countdown,
-      isCounting,
-      getSmsCode,
-      disabledSms,
-      onSmsFinish,
-      onFinish,
-      onFinishFailed,
-      disabledPassword
+      loginForm,
+      sendCode,
+      login
     };
-  }
-};
+  },
+});
 </script>
-<style scoped>
+
+<style>
 .login-main h1 {
   font-size: 25px;
   font-weight: bold;

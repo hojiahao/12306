@@ -8,10 +8,7 @@ import cn.edu.szu.train.member.response.MemberLoginResponse;
 import cn.edu.szu.train.member.service.MemberService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/member")
@@ -36,7 +33,7 @@ public class MemberController {
     }
 
     @PostMapping("/send-code")
-    public CommonResp<Long> sendCode(@Valid MemberSendCodeReq req) throws Exception {
+    public CommonResp<Long> sendCode(@Valid @RequestBody MemberSendCodeReq req) throws Exception {
         memberService.sendCode(req);
         return new CommonResp<>();
     }

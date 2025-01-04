@@ -68,7 +68,7 @@ public class MemberService {
             Integer code = ValidateCodeUtil.generateValidateCode(6);
             LOG.info("您的短信验证码为：{}", code);
             // 将手机号、短信验证码、有效期、是否已使用、业务类型、发送时间和使用时间保存至短信记录表
-            SMSUtil.sendMessage("train12306", "SMS_477685011", mobile, code.toString());
+            SMSUtil.sendMessage("量子科技", "SMS_477685011", mobile, code.toString());
         }
 
         // 生成验证码
