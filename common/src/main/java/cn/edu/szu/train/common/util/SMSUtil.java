@@ -30,7 +30,7 @@ public class SMSUtil {
          * AccessKey ID：访问阿里云 API 的Id
          * AccessKey Secret：Id对应的密钥，具有该账户相应的权限
          */
-        DefaultProfile profile = DefaultProfile.getProfile("cn-shenzhen", "AccessKey ID", "AccessKey Secret");
+        DefaultProfile profile = DefaultProfile.getProfile("cn-shenzhen", "LTAI5tJ5WZHrQP99EU7tNyT3", "uvkYSvBRBIfB0W0ZEKrn085SjfRwfj");
         IAcsClient client = new DefaultAcsClient(profile);
 
         SendSmsRequest sendSmsRequest = new SendSmsRequest();

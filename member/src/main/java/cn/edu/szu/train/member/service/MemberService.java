@@ -8,13 +8,18 @@ import cn.edu.szu.train.common.util.ValidateCodeUtil;
 import cn.edu.szu.train.member.domain.Member;
 import cn.edu.szu.train.member.domain.MemberExample;
 import cn.edu.szu.train.member.mapper.MemberMapper;
+import cn.edu.szu.train.member.req.MemberLoginReq;
 import cn.edu.szu.train.member.req.MemberRegisterReq;
 import cn.edu.szu.train.member.req.MemberSendCodeReq;
+import cn.edu.szu.train.member.response.MemberLoginResponse;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,11 +38,9 @@ public class MemberService {
 
     public long register(MemberRegisterReq req) {
         String phoneNumber = req.getPhoneNumber();
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(phoneNumber);
-        List<Member> memberList = memberMapper.selectByExample(memberExample);
+        Member memberDB = selectByMobilePhone(phoneNumber);
 
-        if (CollUtil.isNotEmpty(memberList)) {
+        if (ObjectUtil.isNull(memberDB)) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
         }
 
@@ -50,12 +53,10 @@ public class MemberService {
 
     public void sendCode(MemberSendCodeReq req) {
         String phoneNumber = req.getPhoneNumber();
-        MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(phoneNumber);
-        List<Member> memberList = memberMapper.selectByExample(memberExample);
+        Member memberDB = selectByMobilePhone(phoneNumber);
 
         // 如果手机号不存在，则插入一条记录
-        if (CollUtil.isEmpty(memberList)) {
+        if (ObjectUtil.isNull(memberDB)) {
             LOG.info("手机号不存在，插入一条记录");
             Member member = new Member();
             member.setId(SnowUtil.getSnowflakeNextId());
@@ -67,11 +68,41 @@ public class MemberService {
         }
 
         // 生成验证码
+//        int code = RandomUtil.randomInt(6);
+//        LOG.info("您的短信验证码为：{}", code);
         Integer code = ValidateCodeUtil.generateValidateCode(6);
         LOG.info("您的短信验证码为：{}", code);
         // 将手机号、短信验证码、有效期、是否已使用、业务类型、发送时间和使用时间保存至短信记录表
-        SMSUtil.sendMessage("12306铁路购票服务", "您的验证码为：${code}，请勿泄露于他人", phoneNumber, code.toString());
+        SMSUtil.sendMessage("12306铁路购票服务", "SMS_309990134", phoneNumber, code.toString());
         // 对接短信通道，发送短信
+    }
 
+    public MemberLoginResponse login(MemberLoginReq req) {
+        String phoneNumber = req.getPhoneNumber();
+        String code = req.getCode();
+        Member memberDB = selectByMobilePhone(phoneNumber);
+
+        // 如果手机号不存在，则插入一条记录
+        if (ObjectUtil.isNull(memberDB)) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_NOT_EXIST);
+        }
+        // 校验短信验证码
+        if (!"123456".equals(code)) {
+            throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_CODE_ERROR);
+        }
+
+        return BeanUtil.copyProperties(memberDB, MemberLoginResponse.class);
+    }
+
+    private Member selectByMobilePhone(String phoneNumber) {
+        MemberExample memberExample = new MemberExample();
+        memberExample.createCriteria().andMobileEqualTo(phoneNumber);
+        List<Member> memberList = memberMapper.selectByExample(memberExample);
+        if (CollUtil.isNotEmpty(memberList)) {
+            return memberList.get(0);
+        }
+        else {
+            return null;
+        }
     }
 }
