@@ -21,7 +21,7 @@
             name="phone"
             :rules="[
             { required: true, message: '请输入手机号' },
-            { pattern: /^\\d{11}$/, message: '手机号格式不正确' },
+            { pattern: /^1\d{10}$/, message: '手机号格式不正确' },
           ]"
         >
           <a-input-group compact>
@@ -121,56 +121,87 @@
     </a-col>
   </a-row>
 </template>
-<script setup>
+<script>
 import { reactive, ref, computed } from 'vue'
-const currentTab = ref('password');
-const smsFormState = reactive({
-  areaCode: "+86",
-  phone: "",
-  smsCode: ""
-});
-const passwordformState = reactive({
-  username: '',
-  password: '',
-  remember: true,
-});
+import axios from 'axios'
+export default {
+  name: 'LoginView',
+  components: {},
+  setup() {
+    const currentTab = ref('password');
+    const smsFormState = reactive({
+      areaCode: "+86",
+      phone: "",
+      smsCode: ""
+    });
+    const passwordformState = reactive({
+      username: '',
+      password: '',
+      remember: true,
+    });
+    const countdown =  ref(60);
+    const isCounting = computed(() => {
+      return countdown.value < 60
+    });
 
-const countdown =  ref(60);
-
-const isCounting = computed(() => {
-  return countdown.value < 60
-});
-
-let interval = null;
-const getSmsCode = () => {
-  if (isCounting.value || smsFormState.phone) {
-    return;
+    let interval = null;
+    const getSmsCode = async () => {
+      if (isCounting.value || smsFormState.phone) {
+        return;
+      }
+      try {
+        await axios.post('http://localhost:8000/member/member/send-code', {
+          areaCode: smsFormState.areaCode,
+          phone: smsFormState.phone
+        }).then(response => {
+          if (response.data.code === 200) {
+            console.log('SMS sent successfully');
+            countdown.value = 60;
+            interval = setInterval(() => {
+              if (countdown.value < 0) {
+                countdown.value -= 1;
+              } else {
+                clearInterval(interval);
+              }
+            }, 1000);
+          } else {
+            console.error('Failed to send SMS:', response.data.message);
+          }
+        });
+      } catch (error) {
+        console.error('Failed to send SMS:', error);
+      }
+    };
+    const disabledSms = computed(() => {
+      return (!smsFormState.phone || !smsFormState.smsCode);
+    })
+    const onSmsFinish = values => {
+      console.log('SMS login successful:', values);
+    };
+    const onFinish = values => {
+      console.log('Password login successful:', values);
+    };
+    const onFinishFailed = errorInfo => {
+      console.log('Login failed:', errorInfo);
+    };
+    const disabledPassword = computed(() => {
+      return !(passwordformState.username && passwordformState.password);
+    });
+    return {
+      currentTab,
+      smsFormState,
+      passwordformState,
+      countdown,
+      isCounting,
+      getSmsCode,
+      disabledSms,
+      onSmsFinish,
+      onFinish,
+      onFinishFailed,
+      disabledPassword
+    };
   }
-  countdown.value = 60;
-  interval = setInterval(() => {
-    if (countdown.value < 0) {
-      countdown.value -= 1;
-    }
-    else {
-      clearInterval(interval);
-    }
-  }, 1000);
 };
-const disabledSms = computed(() => {
-  return (!smsFormState.phone || !smsFormState.smsCode);
-})
-const onSmsFinish = values => {
-  console.log('SMS login successful:', values);
-};
-const onFinish = values => {
-  console.log('Password login successful:', values);
-};
-const onFinishFailed = errorInfo => {
-  console.log('Login failed:', errorInfo);
-};
-const disabledPassword = computed(() => {
-  return !(passwordformState.username && passwordformState.password);
-})
 </script>
 <style scoped>
 .login-main h1 {

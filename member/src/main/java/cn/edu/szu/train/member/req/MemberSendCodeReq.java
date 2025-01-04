@@ -6,20 +6,20 @@ import jakarta.validation.constraints.Pattern;
 public class MemberSendCodeReq {
     @NotBlank(message = "Mobile phone number cannot be empty!")
     @Pattern(regexp = "^1\\d{10}$", message = "The mobile number format is incorrect!")
-    private String phoneNumber;
+    private String mobile;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     @Override
     public String toString() {
         return "MemberSendCodeReq{" +
-                "mobile='" + phoneNumber + '\'' +
+                "mobile='" + mobile + '\'' +
                 '}';
     }
 }

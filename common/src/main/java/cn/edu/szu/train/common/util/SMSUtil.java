@@ -1,12 +1,15 @@
 package cn.edu.szu.train.common.util;
 
-import com.aliyuncs.DefaultAcsClient;
-import com.aliyuncs.IAcsClient;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsRequest;
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-import com.aliyuncs.exceptions.ClientException;
-import com.aliyuncs.exceptions.ServerException;
-import com.aliyuncs.profile.DefaultProfile;
+
+import com.aliyun.dysmsapi20170525.models.SendSmsRequest;
+import com.aliyun.dysmsapi20170525.Client;
+import com.aliyun.dysmsapi20170525.models.SendSmsResponse;
+import com.aliyun.tea.TeaException;
+import com.aliyun.teaopenapi.models.Config;
+import com.aliyun.teautil.models.RuntimeOptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import static com.aliyun.teautil.Common.assertAsString;
 
 /**
  * @author Mr.He
@@ -15,35 +18,49 @@ import com.aliyuncs.profile.DefaultProfile;
  */
 
 public class SMSUtil {
-    /**
-     * 发送短信
-     *
-     * @param signName 签名
-     * @param templateCode 模板
-     * @param phoneNumber 手机号
-     * @param param 内容
-     */
-    public static void sendMessage(String signName, String templateCode, String phoneNumber, String param) {
-        /*
-         * 这三个需要自己填写
-         * cn-shenzhen：服务地区，选择距离自己近的，我选择的是cn-hangzhou
-         * AccessKey ID：访问阿里云 API 的Id
-         * AccessKey Secret：Id对应的密钥，具有该账户相应的权限
-         */
-        DefaultProfile profile = DefaultProfile.getProfile("cn-shenzhen", "LTAI5tJ5WZHrQP99EU7tNyT3", "uvkYSvBRBIfB0W0ZEKrn085SjfRwfj");
-        IAcsClient client = new DefaultAcsClient(profile);
 
-        SendSmsRequest sendSmsRequest = new SendSmsRequest();
-        sendSmsRequest.setSysRegionId("cn-shenzhen");
-        sendSmsRequest.setPhoneNumbers(phoneNumber);
-        sendSmsRequest.setSignName(signName);
-        sendSmsRequest.setTemplateCode(templateCode);
-        sendSmsRequest.setTemplateParam("{\"code\":\"" + param + "\"}");
+    private static final Logger LOG = LoggerFactory.getLogger(SMSUtil.class);
+
+    /**
+     * <b>发送短信</b> :
+     * <p>使用AK&amp;SK初始化账号Client</p>
+     * @return Client
+     *
+     * @throws Exception
+     */
+    public static Client createClient() throws Exception {
+        Config config = new Config();
+        config.setAccessKeyId("LTAI5tJ5WZHrQP99EU7tNyT3");
+        config.setAccessKeySecret("uvkYSvBRBIfB0W0ZEKrn085SjfRwfj");
+        config.setRegionId("cn-shenzhen");
+        return new Client(config);
+    }
+
+    public static void sendMessage(String signName, String templateCode, String phoneNumber, String param) throws Exception {
+        Client client = SMSUtil.createClient();
+        SendSmsRequest request = new SendSmsRequest()
+                .setPhoneNumbers(phoneNumber)
+                .setSignName(signName)
+                .setTemplateCode(templateCode).setTemplateParam("{\"code\":\"" + param + "\"}");
 
         try {
-            SendSmsResponse sendSmsResponse = client.getAcsResponse(sendSmsRequest);
-        } catch (ClientException e) {
-            throw new RuntimeException(e);
+            // 发送短信
+            SendSmsResponse response = client.sendSmsWithOptions(request, new RuntimeOptions());
+
+            // 打印返回结果
+            LOG.info("Send SMS Response: {}", response.getBody().getCode());
+            LOG.info("Send SMS Response Message: {}", response.getBody().getMessage());
+        } catch (TeaException error) {
+            // 处理 TeaException 错误
+            LOG.info("Error Message: {}", error.getMessage());
+            LOG.info("Error Recommend: {}", error.getData().get("Recommend"));
+            assertAsString(error.message);
+        } catch (Exception e) {
+            // 处理其他异常
+            TeaException error = new TeaException(e.getMessage(), e);
+            LOG.info("Error Message: {}", error.getMessage());
+            LOG.info("Error Recommend: {}", error.getData().get("Recommend"));
+            assertAsString(error.message);
         }
     }
 }

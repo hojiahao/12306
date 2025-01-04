@@ -28,7 +28,7 @@ public class Member {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", mobile=").append(mobile);
+        sb.append(", phoneNumber=").append(mobile);
         sb.append("]");
         return sb.toString();
     }

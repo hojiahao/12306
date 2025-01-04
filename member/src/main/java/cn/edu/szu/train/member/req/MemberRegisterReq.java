@@ -4,20 +4,20 @@ import jakarta.validation.constraints.NotBlank;
 
 public class MemberRegisterReq {
     @NotBlank(message = "Mobile phone number cannot be empty!")
-    private String phoneNumber;
+    private String mobile;
 
-    public String getPhoneNumber() {
-        return phoneNumber;
+    public String getMobile() {
+        return mobile;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     @Override
     public String toString() {
         return "MemberRegisterReq{" +
-                "mobile='" + phoneNumber + '\'' +
+                "mobile='" + mobile + '\'' +
                 '}';
     }
 }

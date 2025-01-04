@@ -37,8 +37,8 @@ public class MemberService {
     }
 
     public long register(MemberRegisterReq req) {
-        String phoneNumber = req.getPhoneNumber();
-        Member memberDB = selectByMobilePhone(phoneNumber);
+        String mobile = req.getMobile();
+        Member memberDB = selectByMobile(mobile);
 
         if (ObjectUtil.isNull(memberDB)) {
             throw new BusinessException(BusinessExceptionEnum.MEMBER_MOBILE_EXIST);
@@ -46,41 +46,41 @@ public class MemberService {
 
         Member member = new Member();
         member.setId(SnowUtil.getSnowflakeNextId());
-        member.setMobile(phoneNumber);
+        member.setMobile(mobile);
         memberMapper.insert(member);
         return member.getId();
     }
 
-    public void sendCode(MemberSendCodeReq req) {
-        String phoneNumber = req.getPhoneNumber();
-        Member memberDB = selectByMobilePhone(phoneNumber);
+    public void sendCode(MemberSendCodeReq req) throws Exception {
+        String mobile = req.getMobile();
+        Member memberDB = selectByMobile(mobile);
 
         // 如果手机号不存在，则插入一条记录
         if (ObjectUtil.isNull(memberDB)) {
             LOG.info("手机号不存在，插入一条记录");
             Member member = new Member();
             member.setId(SnowUtil.getSnowflakeNextId());
-            member.setMobile(phoneNumber);
+            member.setMobile(mobile);
             memberMapper.insert(member);
         }
         else {
-            LOG.info("手机号存在，不插入记录");
+            LOG.info("手机号存在，不插入记录,");
+            Integer code = ValidateCodeUtil.generateValidateCode(6);
+            LOG.info("您的短信验证码为：{}", code);
+            // 将手机号、短信验证码、有效期、是否已使用、业务类型、发送时间和使用时间保存至短信记录表
+            SMSUtil.sendMessage("train12306", "SMS_477685011", mobile, code.toString());
         }
 
         // 生成验证码
 //        int code = RandomUtil.randomInt(6);
 //        LOG.info("您的短信验证码为：{}", code);
-        Integer code = ValidateCodeUtil.generateValidateCode(6);
-        LOG.info("您的短信验证码为：{}", code);
-        // 将手机号、短信验证码、有效期、是否已使用、业务类型、发送时间和使用时间保存至短信记录表
-        SMSUtil.sendMessage("12306铁路购票服务", "SMS_309990134", phoneNumber, code.toString());
         // 对接短信通道，发送短信
     }
 
     public MemberLoginResponse login(MemberLoginReq req) {
-        String phoneNumber = req.getPhoneNumber();
+        String mobile = req.getMobile();
         String code = req.getCode();
-        Member memberDB = selectByMobilePhone(phoneNumber);
+        Member memberDB = selectByMobile(mobile);
 
         // 如果手机号不存在，则插入一条记录
         if (ObjectUtil.isNull(memberDB)) {
@@ -94,9 +94,9 @@ public class MemberService {
         return BeanUtil.copyProperties(memberDB, MemberLoginResponse.class);
     }
 
-    private Member selectByMobilePhone(String phoneNumber) {
+    private Member selectByMobile(String mobile) {
         MemberExample memberExample = new MemberExample();
-        memberExample.createCriteria().andMobileEqualTo(phoneNumber);
+        memberExample.createCriteria().andMobileEqualTo(mobile);
         List<Member> memberList = memberMapper.selectByExample(memberExample);
         if (CollUtil.isNotEmpty(memberList)) {
             return memberList.get(0);
