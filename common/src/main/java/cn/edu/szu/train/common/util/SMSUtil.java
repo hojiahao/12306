@@ -30,8 +30,8 @@ public class SMSUtil {
      */
     public static Client createClient() throws Exception {
         Config config = new Config();
-        config.setAccessKeyId("LTAI5tJ5WZHrQP99EU7tNyT3");
-        config.setAccessKeySecret("uvkYSvBRBIfB0W0ZEKrn085SjfRwfj");
+        config.setAccessKeyId(System.getenv("ACCESS_KEY_ID"));
+        config.setAccessKeySecret(System.getenv("ACCESS_KEY_SECRET"));
         config.setRegionId("cn-shenzhen");
         return new Client(config);
     }
