@@ -32,3 +32,6 @@ axios.interceptors.response.use((response) => {
     console.log('返回错误：', error);
     return Promise.reject(error);
 })
+axios.defaults.baseURL = process.env.VUE_APP_SERVER;
+console.log('environment:', process.env.NODE_ENV);
+console.log('server:', process.env.VUE_APP_SERVER);
