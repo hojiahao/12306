@@ -2,6 +2,7 @@ package cn.edu.szu.train.member.service;
 
 import cn.edu.szu.train.common.exception.BusinessException;
 import cn.edu.szu.train.common.exception.BusinessExceptionEnum;
+import cn.edu.szu.train.common.util.JwtUtil;
 import cn.edu.szu.train.common.util.SMSUtil;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.common.util.ValidateCodeUtil;
@@ -94,9 +95,7 @@ public class MemberService {
         }
 
         MemberLoginResponse memberLoginResponse = BeanUtil.copyProperties(memberDB, MemberLoginResponse.class);
-        Map<String, Object> map = BeanUtil.beanToMap(memberLoginResponse);
-        String key = "HeJiaHao12306";
-        String token = JWTUtil.createToken(map, key.getBytes());
+        String token = JwtUtil.createToken(memberLoginResponse.getId(), memberLoginResponse.getMobile());
         memberLoginResponse.setToken(token);
         return memberLoginResponse;
     }
