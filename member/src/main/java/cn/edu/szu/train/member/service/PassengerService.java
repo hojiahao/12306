@@ -1,5 +1,6 @@
 package cn.edu.szu.train.member.service;
 
+import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.member.domain.Passenger;
 import cn.edu.szu.train.member.mapper.PassengerMapper;
@@ -18,6 +19,7 @@ public class PassengerService {
     public void save(PassengerSaveReq req) {
         DateTime now = DateTime.now();
         Passenger passenger = BeanUtil.copyProperties(req, Passenger.class);
+        passenger.setMemberId(LoginMemberContext.getId());
         passenger.setId(SnowUtil.getSnowflakeNextId());
         passenger.setCreateTime(now);
         passenger.setUpdateTime(now);

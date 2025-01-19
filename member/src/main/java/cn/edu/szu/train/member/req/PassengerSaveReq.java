@@ -8,7 +8,6 @@ import java.util.Date;
 public class PassengerSaveReq {
     private Long id;
 
-    @NotNull(message = "Member ID cannot be empty!")
     private Long memberId;
 
     @NotBlank(message = "Name cannot be empty!")
