@@ -39,7 +39,7 @@
                              targetPackage="cn.edu.szu.train.member.mapper"
                              type="XMLMAPPER"/>
 
-        <table tableName="member" domainObjectName="Member"/>
+<!--        <table tableName="member" domainObjectName="Member"/>-->
         <table tableName="passenger" domainObjectName="Passenger"/>
     </context>
 </generatorConfiguration>
