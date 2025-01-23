@@ -25,6 +25,7 @@ import axios from "axios";
 
 export default defineComponent({
   setup() {
+    const token = localStorage.getItem("token")
     const visible = ref(false);
     const passenger = reactive({
       id: undefined,
@@ -39,7 +40,14 @@ export default defineComponent({
       visible.value = true;
     };
     const handleOk = () => {
-      axios.post("/member/passenger/save", passenger).then((response) => {
+      axios.post("/member/passenger/save", passenger,
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "token": token  // 这里带上
+            }
+          }
+      ).then((response) => {
         let data = response.data;
         if (data.success) {
           notification.success({ description: "保存成功！" });

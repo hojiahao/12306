@@ -33,7 +33,7 @@ public class LoginMemberFilter implements Ordered, GlobalFilter {
         // 获取header的token参数
         String token = exchange.getRequest().getHeaders().getFirst("token");
         LOG.info("Member login verification starts, token：{}", token);
-        if (token.isEmpty()) {
+        if (token == null || token.isEmpty()) {
             LOG.info( "The token is empty and the request is blocked." );
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
