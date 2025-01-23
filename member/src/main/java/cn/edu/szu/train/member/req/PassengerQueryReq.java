@@ -1,10 +1,11 @@
 package cn.edu.szu.train.member.req;
 
+import cn.edu.szu.train.common.request.PageRequest;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
 
-public class PassengerQueryReq {
+public class PassengerQueryReq extends PageRequest {
     private Long memberId;
 
     public Long getMemberId() {

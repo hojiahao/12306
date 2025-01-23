@@ -2,6 +2,7 @@ package cn.edu.szu.train.member.controller;
 
 import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.member.req.PassengerQueryReq;
 import cn.edu.szu.train.member.req.PassengerSaveReq;
 import cn.edu.szu.train.member.response.PassengerQueryResponse;
@@ -26,8 +27,8 @@ public class PassengerController {
     }
 
     @GetMapping("query-list")
-    public CommonResp<List<PassengerQueryResponse>> queryList(@Valid PassengerQueryReq req) {
-        List<PassengerQueryResponse> queryList = passengerService.queryList(req);
+    public CommonResp<PageResp<PassengerQueryResponse>> queryList(@Valid PassengerQueryReq req) {
+        PageResp<PassengerQueryResponse> queryList = passengerService.queryList(req);
         return new CommonResp<>(queryList);
     }
 }
