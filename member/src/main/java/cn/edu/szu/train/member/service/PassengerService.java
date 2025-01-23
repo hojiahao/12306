@@ -11,6 +11,7 @@ import cn.edu.szu.train.member.response.PassengerQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.util.ObjectUtil;
+import com.github.pagehelper.PageHelper;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +40,7 @@ public class PassengerService {
         if (ObjectUtil.isNotNull(req.getMemberId())){
             criteria.andMemberIdEqualTo(req.getMemberId());
         }
+        PageHelper.startPage(1, 3);
         List<Passenger> passengers = passengerMapper.selectByExample(passengerExample);
         return BeanUtil.copyToList(passengers, PassengerQueryResponse.class);
     }
