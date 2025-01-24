@@ -11,8 +11,8 @@
            @change="handleTableChange"
            :loading="loading"
   >
-    <template #headerCell="{column, record}">
-      <template v-if="column.dataIndex === 'operation'">
+    <template #bodyCell="{column, record}">
+      <template v-if="column.dataIndex === 'action'">
         <a-space>
           <a-popconfirm
               title="删除后不可恢复，确认删除?"
@@ -51,7 +51,7 @@
   </a-modal>
 </template>
 <script>
-import {defineComponent, ref, reactive, onMounted} from "vue";
+import {defineComponent, ref, onMounted} from "vue";
 import {notification} from "ant-design-vue";
 import axios from "axios";
 
@@ -61,7 +61,7 @@ export default defineComponent({
     const token = localStorage.getItem("token");
     const PASSENGER_TYPE_ARRAY = window.PASSENGER_TYPE_ARRAY;
     const visible = ref(false);
-    const passenger = reactive({
+    const passenger = ref({
       id: undefined,
       memberId: undefined,
       name: undefined,
@@ -126,7 +126,7 @@ export default defineComponent({
       });
     };
     const handleOk = () => {
-      axios.post("/member/passenger/save", passenger,
+      axios.post("/member/passenger/save", passenger.value,
           {
             headers: {
               "Content-Type": "application/json",
@@ -138,11 +138,15 @@ export default defineComponent({
         if (data.success) {
           notification.success({ description: "保存成功！" });
           visible.value = false;
+          handleQuery({
+            page: pagination.value.current,
+            pageSize: pagination.value.pageSize,
+          })
         }
         else {
           notification.error({ description: data.message });
         }
-      })
+      });
     };
     const handleQuery = (param) => {
       if (!param) {
