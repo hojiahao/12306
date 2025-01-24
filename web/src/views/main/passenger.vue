@@ -112,13 +112,18 @@ export default defineComponent({
       visible.value = true;
     };
     const onDelete = (record) => {
-      axios.delete("/member/passenger/delete/" + record.id).then((response) => {
+      axios.delete("/member/passenger/delete/" + record.id, {
+        headers: {
+          "Content-Type": "application/json",
+          "token": token  // 这里带上
+        },
+      }).then((response) => {
         const data = response.data;
         if (data.success) {
           notification.success({description: "删除成功！"});
           handleQuery({
             page: pagination.value.current,
-            size: pagination.value.pageSize,
+            pageSize: pagination.value.pageSize,
           });
         } else {
           notification.error({description: data.message});
