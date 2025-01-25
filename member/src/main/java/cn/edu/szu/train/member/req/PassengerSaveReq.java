@@ -1,29 +1,50 @@
 package cn.edu.szu.train.member.req;
 
+import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.Date;
-
 public class PassengerSaveReq {
+    /**
+     * id
+     */
     private Long id;
 
+    /**
+     * member id
+     */
+    @NotNull(message = "【member id】不能为空")
     private Long memberId;
 
-    @NotBlank(message = "Name cannot be empty!")
+    /**
+     * name
+     */
+    @NotBlank(message = "【name】不能为空")
     private String name;
 
-    @NotBlank(message = "Identity Card cannot be empty!")
+    /**
+     * identity card
+     */
+    @NotBlank(message = "【identity card】不能为空")
     private String idCard;
 
-    @NotBlank(message = "Passenger's type cannot be empty!")
+    /**
+     * passenger type | [PassengerTypeEnum]
+     */
+    @NotBlank(message = "【passenger type 】不能为空")
     private String type;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    /**
+     * create time
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date createTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    /**
+     * modified time
+     */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
     private Date updateTime;
 
     public Long getId() {
