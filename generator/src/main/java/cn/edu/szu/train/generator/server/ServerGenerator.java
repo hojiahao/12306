@@ -1,5 +1,7 @@
 package cn.edu.szu.train.generator.server;
 
+import cn.edu.szu.train.generator.util.DbUtil;
+import cn.edu.szu.train.generator.util.Field;
 import cn.edu.szu.train.generator.util.FreeMarkerUtil;
 import freemarker.template.TemplateException;
 import org.dom4j.Document;
@@ -11,6 +13,7 @@ import javax.swing.text.html.HTML;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 public class ServerGenerator {
     static String serverPath = "[module]/src/main/java/cn/edu/szu/train/[module]/";
@@ -19,7 +22,7 @@ public class ServerGenerator {
         new File(serverPath).mkdirs();
     }
 
-    public static void main(String[] args) throws IOException, TemplateException, DocumentException {
+    public static void main(String[] args) throws Exception {
         // 获取mybatis-generator
         String generatorPath = getGeneratorPath();
         // 如generator-config-member.xml，得到module = member
@@ -36,6 +39,17 @@ public class ServerGenerator {
         Node domainObjectName = table.selectSingleNode("@domainObjectName");
         System.out.println(tableName.getText() + "/" + domainObjectName.getText());
 
+        // 为DbUtil设置数据源
+        Node connectionURL = document.selectSingleNode("//@connectionURL");
+        Node username = document.selectSingleNode("//@userId");
+        Node password = document.selectSingleNode("//@password");
+        System.out.println("url:" + connectionURL.getText());
+        System.out.println("user:" + username.getText());
+        System.out.println("password:" + password.getText());
+        DbUtil.url = connectionURL.getText();
+        DbUtil.username = username.getText();
+        DbUtil.password = password.getText();
+
         // 示例：表明jiawa_test
         // Domain = JiawaTest
         String Domain = domainObjectName.getText();
@@ -43,10 +57,17 @@ public class ServerGenerator {
         String domain = Domain.substring(0, 1).toLowerCase() + Domain.substring(1);
         // do_main
         String do_main = tableName.getText().replaceAll("_", "-");
+        // 表中文名
+        String tableComment = DbUtil.getTableComment(tableName.getText());
+        List<Field> fieldList = DbUtil.getColumnByTableName(tableName.getText());
+        // 组装参数
         HashMap<String, Object> param = new HashMap<>();
+        param.put("module", module);
         param.put("Domain", Domain);
         param.put("domain", domain);
         param.put("do_main", do_main);
+        param.put("tableNameCn", tableComment);
+        param.put("fieldList", fieldList);
         System.out.println(param);
 
         generate(Domain, param, "service");
