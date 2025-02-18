@@ -77,6 +77,8 @@ public class ServerGenerator {
         generate(Domain, param, "service", "service");
         generate(domain, param, "controller", "controller");
         generate(Domain, param, "req", "saveReq");
+        generate(Domain, param, "req", "queryReq");
+        generate(Domain, param, "resp", "queryResponse");
     }
 
     private static void generate(String Domain, HashMap<String, Object> param, String packageName, String target) throws IOException, TemplateException {
