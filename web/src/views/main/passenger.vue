@@ -51,7 +51,6 @@
     export default defineComponent({
         name: "passenger-view",
         setup() {
-            const token = localStorage.getItem("token");
             const visible = ref(false);
             let passenger = ref({
                 id: undefined,
@@ -108,12 +107,7 @@
             };
 
             const onDelete = (record) => {
-                axios.delete("/member/passenger/delete/" + record.id, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "token": token  // 这里带上
-                    },
-                }).then((response) => {
+                axios.delete("/member/passenger/delete/" + record.id).then((response) => {
                     const data = response.data;
                     if (data.success) {
                         notification.success({description: "删除成功！"});
@@ -128,14 +122,7 @@
             };
 
             const handleOk = () => {
-                axios.post("/member/passenger/save", passenger.value,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            "token": token  // 这里带上
-                        }
-                    }
-                ).then((response) => {
+                axios.post("/member/passenger/save", passenger.value).then((response) => {
                     let data = response.data;
                     if (data.success) {
                         notification.success({description: "保存成功！"});
@@ -159,10 +146,6 @@
                 }
                 loading.value = true;
                 axios.get("/member/passenger/query-list", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "token": token  // 这里带上
-                    },
                     params: {
                         page: param.page,
                         pageSize: param.pageSize

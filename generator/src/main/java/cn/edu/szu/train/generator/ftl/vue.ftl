@@ -82,7 +82,6 @@
             const ${field.enumsConst}_ARRAY = window.${field.enumsConst}_ARRAY;
             </#if>
             </#list>
-            const token = localStorage.getItem("token");
             const visible = ref(false);
             let ${domain} = ref({
                 <#list fieldList as field>
@@ -127,12 +126,7 @@
             };
 
             const onDelete = (record) => {
-                axios.delete("/${module}/${do_main}/delete/" + record.id, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "token": token  // 这里带上
-                    },
-                }).then((response) => {
+                axios.delete("/${module}/${do_main}/delete/" + record.id).then((response) => {
                     const data = response.data;
                     if (data.success) {
                         notification.success({description: "删除成功！"});
@@ -147,14 +141,7 @@
             };
 
             const handleOk = () => {
-                axios.post("/${module}/${do_main}/save", ${domain}.value,
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            "token": token  // 这里带上
-                        }
-                    }
-                ).then((response) => {
+                axios.post("/${module}/${do_main}/save", ${domain}.value).then((response) => {
                     let data = response.data;
                     if (data.success) {
                         notification.success({description: "保存成功！"});
@@ -179,10 +166,6 @@
                 }
                 loading.value = true;
                 axios.get("/${module}/${do_main}/query-list", {
-                    headers: {
-                        "Content-Type": "application/json",
-                        "token": token  // 这里带上
-                    },
                     params: {
                         page: param.page,
                         pageSize: param.pageSize
