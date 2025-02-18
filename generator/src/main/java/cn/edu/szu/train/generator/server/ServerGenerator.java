@@ -9,15 +9,13 @@ import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
-import javax.swing.text.html.HTML;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ServerGenerator {
+    static boolean readOnly = false;
+    static String vuePath = "web/src/views/main/";
     static String serverPath = "[module]/src/main/java/cn/edu/szu/train/[module]/";
     static String pomPath = "generator\\pom.xml";
     static {
@@ -72,13 +70,15 @@ public class ServerGenerator {
         param.put("tableNameCn", tableComment);
         param.put("fieldList", fieldList);
         param.put("typeSet", typeSet);
+        param.put("readOnly", readOnly);
         System.out.println("组装参数：" + param);
 
-        generate(Domain, param, "service", "service");
-        generate(domain, param, "controller", "controller");
-        generate(Domain, param, "req", "saveReq");
-        generate(Domain, param, "req", "queryReq");
-        generate(Domain, param, "resp", "queryResponse");
+//        generate(Domain, param, "service", "service");
+//        generate(domain, param, "controller", "controller");
+//        generate(Domain, param, "req", "saveReq");
+//        generate(Domain, param, "req", "queryReq");
+//        generate(Domain, param, "resp", "queryResponse");
+        generateVue(do_main, param);
     }
 
     private static void generate(String Domain, HashMap<String, Object> param, String packageName, String target) throws IOException, TemplateException {
@@ -87,6 +87,14 @@ public class ServerGenerator {
         new File(toPath).mkdirs();
         String Target = target.substring(0, 1).toUpperCase() + target.substring(1);
         String fileName = toPath + Domain + Target + ".java";
+        System.out.println("开始生成：" + fileName);
+        FreeMarkerUtil.generator(fileName, param);
+    }
+
+    private static void generateVue(String do_main, Map<String, Object> param) throws IOException, TemplateException {
+        FreeMarkerUtil.initConfig("vue.ftl");
+        new File(vuePath).mkdirs();
+        String fileName = vuePath + do_main + ".vue";
         System.out.println("开始生成：" + fileName);
         FreeMarkerUtil.generator(fileName, param);
     }
