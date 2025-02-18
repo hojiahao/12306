@@ -1,4 +1,4 @@
-package cn.edu.szu.train.generator.server;
+package cn.edu.szu.train.generator.generator;
 
 import cn.edu.szu.train.generator.util.DbUtil;
 import cn.edu.szu.train.generator.util.Field;
