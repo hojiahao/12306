@@ -1,12 +1,12 @@
-package cn.edu.szu.train.member.controller;
+package cn.edu.szu.train.${module}.controller;
 
 import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.response.CommonResp;
 import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.member.req.${Domain}QueryReq;
-import cn.edu.szu.train.member.req.${Domain}SaveReq;
-import cn.edu.szu.train.member.response.${Domain}QueryResponse;
-import cn.edu.szu.train.member.service.${Domain}Service;
+import cn.edu.szu.train.${module}.req.${Domain}QueryReq;
+import cn.edu.szu.train.${module}.req.${Domain}SaveReq;
+import cn.edu.szu.train.${module}.response.${Domain}QueryResponse;
+import cn.edu.szu.train.${module}.service.${Domain}Service;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
