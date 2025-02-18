@@ -1,6 +1,8 @@
 <template>
   <a-layout-header class="header">
-    <div class="logo" />
+    <div class="logo">
+      <router-link to="/welcome" style="color: white; font-size: 18px">甲蛙12306</router-link>
+    </div>
     <div style="float: right; color: white;">
       欢迎使用admin管理控制台！
     </div>
@@ -47,18 +49,11 @@ export default defineComponent({
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.logo {
+  float: left;
+  height: 31px;
+  width: 150px;
+  color: white;
+  font-size: 20px;
 }
 </style>
