@@ -27,30 +27,34 @@
         <a-modal v-model:open="visible" title="火车车站列表" @ok="handleOk"
                  ok-text="确认" cancel-text="取消">
             <a-form :model="trainStation" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
-                        <a-form-item label="车次编号">
-                                <a-input v-model:value="trainStation.trainCode" />
-                        </a-form-item>
-                        <a-form-item label="站序">
-                                <a-input v-model:value="trainStation.index" />
-                        </a-form-item>
-                        <a-form-item label="车站名">
-                                <a-input v-model:value="trainStation.name" />
-                        </a-form-item>
-                        <a-form-item label="车站名拼音">
-                                <a-input v-model:value="trainStation.namePinyin" disabled/>
-                        </a-form-item>
-                        <a-form-item label="进站时间">
-                                    <a-time-picker v-model:value="trainStation.entryTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
-                        </a-form-item>
-                        <a-form-item label="出站时间">
-                                    <a-time-picker v-model:value="trainStation.exitTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
-                        </a-form-item>
-                        <a-form-item label="停留时间">
-                                    <a-time-picker v-model:value="trainStation.stopTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
-                        </a-form-item>
-                        <a-form-item label="里程（公里）">
-                                <a-input v-model:value="trainStation.kilometers" />
-                        </a-form-item>
+              <a-form-item label="车次编号">
+                <a-select v-model:value="trainStation.trainCode" show-search :filter-option="filterTrainCodeOption">
+                  <a-select-option v-for="item in trains" :key="item.code" :value="item.code" :label="item.code + item.departure + item.destination">
+                    {{item.code}} | {{item.departure}} ~ {{item.destination}}
+                  </a-select-option>
+                </a-select>
+              </a-form-item>
+              <a-form-item label="站序">
+                <a-input v-model:value="trainStation.index" />
+              </a-form-item>
+              <a-form-item label="车站名">
+                <a-input v-model:value="trainStation.name" />
+              </a-form-item>
+              <a-form-item label="车站名拼音">
+                <a-input v-model:value="trainStation.namePinyin" disabled/>
+              </a-form-item>
+              <a-form-item label="进站时间">
+                <a-time-picker v-model:value="trainStation.entryTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+              </a-form-item>
+              <a-form-item label="出站时间">
+                <a-time-picker v-model:value="trainStation.exitTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+              </a-form-item>
+              <a-form-item label="停留时间">
+                <a-time-picker v-model:value="trainStation.stopTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+              </a-form-item>
+              <a-form-item label="里程（公里）">
+                <a-input v-model:value="trainStation.kilometers" />
+              </a-form-item>
             </a-form>
         </a-modal>
 </template>
@@ -132,15 +136,14 @@
                     dataIndex: 'action'
                 }
             ];
-
-          watch(() => trainStation.value.name, () => {
-            if (Tool.isNotEmpty(trainStation.value.name)) {
-              trainStation.value.namePinyin = pinyin(trainStation.value.name, {toneType: 'none'}).replace(" ", "");
-            }
-            else {
-              trainStation.value.namePinyin = "";
-            }
-          }, {immediate: true});
+            watch(() => trainStation.value.name, () => {
+              if (Tool.isNotEmpty(trainStation.value.name)) {
+                trainStation.value.namePinyin = pinyin(trainStation.value.name, {toneType: 'none'}).replace(" ", "");
+              }
+              else {
+                trainStation.value.namePinyin = "";
+              }
+            }, {immediate: true});
 
             const onAdd = () => {
                 trainStation.value = {};
@@ -219,11 +222,17 @@
                 });
             };
 
-            const queryTrainCode = () => {
+            // 车次下拉框
+            const trains = ref([]);
+
+          /**
+           * 查询所有车次，用于车次下拉框
+           */
+          const queryTrainCode = () => {
               axios.get("/business/admin/train/query-all").then((response) => {
                 let data = response.data;
                 if (data.success) {
-                  console.log(data.content);
+                  trains.value = data.content;
                 }
                 else {
                   notification.error({description: data.message});
@@ -231,7 +240,15 @@
               })
             }
 
-            onMounted(() => {
+          /**
+           * 车次下拉框筛选
+           */
+          const filterTrainCodeOption = (input, option) => {
+            console.log(input, option);
+            return option.label.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+          }
+
+          onMounted(() => {
                 handleQuery({
                     page: 1,
                     pageSize: pagination.value.pageSize
@@ -240,18 +257,21 @@
             });
 
             return {
-                trainStation,
-                visible,
-                trainStations,
-                pagination,
-                columns,
-                handleTableChange,
-                handleQuery,
-                loading,
-                onAdd,
-                handleOk,
-                onEdit,
-                onDelete
+              trainStation,
+              visible,
+              trainStations,
+              pagination,
+              columns,
+              trains,
+              handleTableChange,
+              handleQuery,
+              loading,
+              onAdd,
+              handleOk,
+              onEdit,
+              onDelete,
+              queryTrainCode,
+              filterTrainCodeOption
             };
         },
     });
