@@ -26,3 +26,21 @@ CREATE TABLE `train` (
     primary key (`id`),
     unique key `code_unique` (`code`)
 ) engine =innodb default  charset=utf8mb4 comment='车次';
+
+DROP TABLE  if exists `train_station`;
+CREATE TABLE `train_station` (
+    `id` bigint not null comment 'id',
+    `train_code` varchar(20) not null comment '车次编号',
+    `index` int not null comment '站序',
+    `name` varchar(20) not null comment '车站名',
+    `name_pinyin` varchar(50) not null comment '车站名拼音',
+    `entry_time` time comment '进站时间',
+    `exit_time` time comment '出站时间',
+    `stop_time` time comment '停留时间',
+    `kilometers` decimal(8, 2) not null comment '里程（公里）|上一站到本站的距离',
+    `create_time` datetime(3) comment '创建时间',
+    `update_time` datetime(3) comment '更新时间',
+    primary key (`id`),
+    unique key `train_code_index_unique` (`train_code`, `index`),
+    unique key `train_code_name_unique` (`train_code`, `name`)
+) engine =innodb default  charset=utf8mb4 comment='火车经过的车站列表';

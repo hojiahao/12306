@@ -24,7 +24,7 @@
             </template>
         </template>
     </a-table>
-        <a-modal v-model:visible="visible" title="车站" @ok="handleOk"
+        <a-modal v-model:open="visible" title="车站" @ok="handleOk"
                  ok-text="确认" cancel-text="取消">
             <a-form :model="station" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
                         <a-form-item label="车站名">

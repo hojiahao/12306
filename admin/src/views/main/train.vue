@@ -31,36 +31,36 @@
                     </template>
         </template>
     </a-table>
-        <a-modal v-model:visible="visible" title="车次" @ok="handleOk"
+        <a-modal v-model:open="visible" title="车次" @ok="handleOk"
                  ok-text="确认" cancel-text="取消">
             <a-form :model="train" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
                         <a-form-item label="车次编号">
-                                <a-input v-model:value="train.code" />
+                          <a-input v-model:value="train.code" />
                         </a-form-item>
                         <a-form-item label="车次类型">
-                                <a-select v-model:value="train.type">
-                                    <a-select-option v-for="item in TRAIN_TYPE_ARRAY" :key="item.code" :value="item.code">
-                                        {{item.desc}}
-                                    </a-select-option>
-                                </a-select>
+                          <a-select v-model:value="train.type">
+                            <a-select-option v-for="item in TRAIN_TYPE_ARRAY" :key="item.code" :value="item.code">
+                              {{item.desc}}
+                            </a-select-option>
+                          </a-select>
                         </a-form-item>
                         <a-form-item label="始发站">
-                                <a-input v-model:value="train.departure" />
+                          <a-input v-model:value="train.departure" />
                         </a-form-item>
                         <a-form-item label="始发站拼音">
-                                <a-input v-model:value="train.departurePinyin" />
+                          <a-input v-model:value="train.departurePinyin" />
                         </a-form-item>
                         <a-form-item label="出发时间">
-                                    <a-time-picker v-model:value="train.departureTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+                          <a-time-picker v-model:value="train.departureTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
                         </a-form-item>
                         <a-form-item label="终点站">
-                                <a-input v-model:value="train.destination" />
+                          <a-input v-model:value="train.destination" />
                         </a-form-item>
                         <a-form-item label="终点站拼音">
-                                <a-input v-model:value="train.destinationPinyin" />
+                          <a-input v-model:value="train.destinationPinyin" />
                         </a-form-item>
                         <a-form-item label="到站时间">
-                                    <a-time-picker v-model:value="train.arrivalTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
+                          <a-time-picker v-model:value="train.arrivalTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
                         </a-form-item>
             </a-form>
         </a-modal>
@@ -145,13 +145,13 @@
             ];
 
             const onAdd = () => {
-                train.value = {};
-                visible.value = true;
+                train.value = {}; // 清空数据，表示新增
+                visible.value = true; // 显示弹窗
             };
 
             const onEdit = (record) => {
-                train.value = window.Tool.copy(record);
-                visible.value = true;
+                train.value = window.Tool.copy(record); // 复制已有数据，表示编辑
+                visible.value = true; // 显示弹窗
             };
 
             const onDelete = (record) => {
