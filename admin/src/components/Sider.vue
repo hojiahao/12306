@@ -28,12 +28,17 @@
       </a-menu-item>
       <a-menu-item key="/train-station">
         <router-link to="/train-station">
-          <user-outlined></user-outlined>&nbsp; 列车途经车站
+          <user-outlined></user-outlined>&nbsp; 列车车站
         </router-link>
       </a-menu-item>
       <a-menu-item key="/train-carriage">
         <router-link to="/train-carriage">
           <user-outlined></user-outlined>&nbsp; 火车车厢
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="/train-seat">
+        <router-link to="/train-seat">
+          <user-outlined></user-outlined>&nbsp; 列车座位
         </router-link>
       </a-menu-item>
     </a-menu>

@@ -1,51 +1,47 @@
-package cn.edu.szu.train.business.req;
+package cn.edu.szu.train.business.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 
-public class TrainCarriageSaveReq {
+public class TrainSeatQueryResponse {
+
     /**
      * id
      */
+    @JsonSerialize(using= ToStringSerializer.class)
     private Long id;
 
     /**
      * 车次编号
      */
-    @NotBlank(message = "【车次编号】不能为空")
     private String trainCode;
 
     /**
      * 车厢号
      */
-    @NotNull(message = "【车厢号】不能为空")
-    private Integer index;
+    private Integer carriageIndex;
+
+    /**
+     * 行号|01, 02
+     */
+    private String row;
+
+    /**
+     * 列号|枚举[SeatColEnum]
+     */
+    private String col;
 
     /**
      * 座位类型|枚举[SeatTypeEnum]
      */
-    @NotBlank(message = "【座位类型】不能为空")
     private String seatType;
 
     /**
-     * 座位数
+     * 同车厢座位号
      */
-    @NotNull(message = "【座位数】不能为空")
-    private Integer seatCount;
-
-    /**
-     * 排数
-     */
-    @NotNull(message = "【排数】不能为空")
-    private Integer rowCount;
-
-    /**
-     * 列数
-     */
-    @NotNull(message = "【列数】不能为空")
-    private Integer colCount;
+    private Integer carriageSeatIndex;
 
     /**
      * 创建时间
@@ -75,12 +71,28 @@ public class TrainCarriageSaveReq {
         this.trainCode = trainCode;
     }
 
-    public Integer getIndex() {
-        return index;
+    public Integer getCarriageIndex() {
+        return carriageIndex;
     }
 
-    public void setIndex(Integer index) {
-        this.index = index;
+    public void setCarriageIndex(Integer carriageIndex) {
+        this.carriageIndex = carriageIndex;
+    }
+
+    public String getRow() {
+        return row;
+    }
+
+    public void setRow(String row) {
+        this.row = row;
+    }
+
+    public String getCol() {
+        return col;
+    }
+
+    public void setCol(String col) {
+        this.col = col;
     }
 
     public String getSeatType() {
@@ -91,28 +103,12 @@ public class TrainCarriageSaveReq {
         this.seatType = seatType;
     }
 
-    public Integer getSeatCount() {
-        return seatCount;
+    public Integer getCarriageSeatIndex() {
+        return carriageSeatIndex;
     }
 
-    public void setSeatCount(Integer seatCount) {
-        this.seatCount = seatCount;
-    }
-
-    public Integer getRowCount() {
-        return rowCount;
-    }
-
-    public void setRowCount(Integer rowCount) {
-        this.rowCount = rowCount;
-    }
-
-    public Integer getColCount() {
-        return colCount;
-    }
-
-    public void setColCount(Integer colCount) {
-        this.colCount = colCount;
+    public void setCarriageSeatIndex(Integer carriageSeatIndex) {
+        this.carriageSeatIndex = carriageSeatIndex;
     }
 
     public Date getCreateTime() {
@@ -139,11 +135,11 @@ public class TrainCarriageSaveReq {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", trainCode=").append(trainCode);
-        sb.append(", index=").append(index);
+        sb.append(", carriageIndex=").append(carriageIndex);
+        sb.append(", row=").append(row);
+        sb.append(", col=").append(col);
         sb.append(", seatType=").append(seatType);
-        sb.append(", seatCount=").append(seatCount);
-        sb.append(", rowCount=").append(rowCount);
-        sb.append(", colCount=").append(colCount);
+        sb.append(", carriageSeatIndex=").append(carriageSeatIndex);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append("]");
