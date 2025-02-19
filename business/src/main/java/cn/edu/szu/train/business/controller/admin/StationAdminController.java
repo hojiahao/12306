@@ -1,6 +1,5 @@
-package cn.edu.szu.train.business.controller;
+package cn.edu.szu.train.business.controller.admin;
 
-import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.response.CommonResp;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.business.req.StationQueryReq;
@@ -11,11 +10,9 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/station")
-public class StationController {
+@RequestMapping("/admin/station")
+public class StationAdminController {
 
     @Resource
     private StationService stationService;

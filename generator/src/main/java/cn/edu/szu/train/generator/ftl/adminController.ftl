@@ -1,6 +1,5 @@
-package cn.edu.szu.train.${module}.controller;
+package cn.edu.szu.train.${module}.controller.admin;
 
-import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.response.CommonResp;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.${module}.req.${Domain}QueryReq;
@@ -11,11 +10,9 @@ import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
-@RequestMapping("/${do_main}")
-public class ${Domain}Controller {
+@RequestMapping("/admin/${do_main}")
+public class ${Domain}AdminController {
 
     @Resource
     private ${Domain}Service ${domain}Service;
