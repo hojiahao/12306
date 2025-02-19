@@ -94,6 +94,10 @@
               station.value.namePinyin = pinyin(station.value.name, {toneType: 'none'}).replace(" ", "");
               station.value.nameInitials = pinyin(station.value.name, {pattern: 'first', toneType: 'none'}).replace(" ", "");
             }
+            else {
+              station.value.namePinyin = "";
+              station.value.nameInitials = "";
+            }
           }, {immediate: true});
 
             const onAdd = () => {

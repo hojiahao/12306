@@ -48,7 +48,7 @@
                           <a-input v-model:value="train.departure" />
                         </a-form-item>
                         <a-form-item label="始发站拼音">
-                          <a-input v-model:value="train.departurePinyin" />
+                          <a-input v-model:value="train.departurePinyin" disabled/>
                         </a-form-item>
                         <a-form-item label="出发时间">
                           <a-time-picker v-model:value="train.departureTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
@@ -57,7 +57,7 @@
                           <a-input v-model:value="train.destination" />
                         </a-form-item>
                         <a-form-item label="终点站拼音">
-                          <a-input v-model:value="train.destinationPinyin" />
+                          <a-input v-model:value="train.destinationPinyin" disabled/>
                         </a-form-item>
                         <a-form-item label="到站时间">
                           <a-time-picker v-model:value="train.arrivalTime" valueFormat="HH:mm:ss" placeholder="请选择时间" />
@@ -67,9 +67,10 @@
 </template>
 
 <script>
-    import { defineComponent, ref, onMounted } from 'vue';
+    import { defineComponent, ref, onMounted, watch } from 'vue';
     import {notification} from "ant-design-vue";
     import axios from "axios";
+    import {pinyin} from "pinyin-pro";
 
     export default defineComponent({
         name: "train-view",
@@ -143,6 +144,24 @@
                     dataIndex: 'action'
                 }
             ];
+
+            watch(() => train.value.departure, () => {
+              if (Tool.isNotEmpty(train.value.departure)) {
+                train.value.departurePinyin = pinyin(train.value.departure, {toneType: 'none'}).replace(" ", "");
+              }
+              else {
+                train.value.departurePinyin = "";
+              }
+            },{immediate: true})
+
+          watch(() => train.value.destination, () => {
+            if (Tool.isNotEmpty(train.value.destination)) {
+              train.value.destinationPinyin = pinyin(train.value.destination, {toneType: 'none'}).replace(" ", "");
+            }
+            else {
+              train.value.destinationPinyin = "";
+            }
+          },{immediate: true})
 
             const onAdd = () => {
                 train.value = {}; // 清空数据，表示新增
