@@ -1,7 +1,11 @@
-DROP TABLE if exists `member`;
-CREATE TABLE `member` (
+DROP TABLE if exists `station`;
+CREATE TABLE `station` (
     `id` bigint not null comment 'id',
-    `mobile` varchar(11) comment 'mobile phone number',
+    `name` varchar(20) not null comment '车站名',
+    `name_pinyin` varchar(50) not null comment '车站名拼音',
+    `name_initials` varchar(50) not null comment '车站名拼音首字母',
+    `create_time` datetime(3) comment '创建时间',
+    `update_time` datetime(3) comment '更新时间',
     primary key (`id`),
-    unique key `mobile_unique` (`mobile`)
-) engine=innodb default charset=utf8mb4 comment='membership';
+    unique key `name_unique` (`name`)
+) engine=innodb default charset=utf8mb4 comment='车站';

@@ -1,6 +1,5 @@
 package cn.edu.szu.train.member.controller;
 
-import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.response.CommonResp;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.member.req.PassengerQueryReq;
@@ -10,8 +9,6 @@ import cn.edu.szu.train.member.service.PassengerService;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/passenger")
