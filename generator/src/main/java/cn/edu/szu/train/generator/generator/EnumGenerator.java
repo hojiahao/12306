@@ -69,11 +69,9 @@ public class EnumGenerator {
         // 生成数组
         bufferArray.append(enumConst).append("_ARRAY=[");
         for (int i = 0; i < objects.length; i++) {
-            Object obj = objects[i];
-
+            Object object = objects[i];
             // 将一个枚举值转成JSON对象字符串
-            formatJsonObj(bufferArray, targetFields, clazz, obj);
-
+            formatJsonObj(bufferArray, targetFields, clazz, object);
             if (i < objects.length - 1) {
                 bufferArray.append(",");
             }
@@ -86,13 +84,13 @@ public class EnumGenerator {
      * 比如：SeatColEnum.YDZ_A("A", "A", "1")
      * 转成：{code:"A",desc:"A",type:"1"}
      */
-    private static void formatJsonObj(StringBuffer bufferObject, List<Field> targetFields, Class<?> clazz, Object obj) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    private static void formatJsonObj(StringBuffer bufferObject, List<Field> targetFields, Class<?> clazz, Object object) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         bufferObject.append("{");
         for (int j = 0; j < targetFields.size(); j++) {
             Field field = targetFields.get(j);
             String fieldName = field.getName();
             String getMethod = "get" + fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
-            bufferObject.append(fieldName).append(":\"").append(clazz.getMethod(getMethod).invoke(obj)).append("\"");
+            bufferObject.append(fieldName).append(":\"").append(clazz.getMethod(getMethod).invoke(object)).append("\"");
             if (j < targetFields.size() - 1) {
                 bufferObject.append(",");
             }
