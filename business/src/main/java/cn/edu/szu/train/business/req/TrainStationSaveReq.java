@@ -1,8 +1,11 @@
 package cn.edu.szu.train.business.req;
 
 import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
-        import java.math.BigDecimal;
+
+import java.math.BigDecimal;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -39,19 +42,19 @@ public class TrainStationSaveReq {
     /**
      * 进站时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date entryTime;
 
     /**
      * 出站时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date exitTime;
 
     /**
      * 停留时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date stopTime;
 
     /**
@@ -63,13 +66,13 @@ public class TrainStationSaveReq {
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     public Long getId() {

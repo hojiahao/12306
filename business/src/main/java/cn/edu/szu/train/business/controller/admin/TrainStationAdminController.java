@@ -30,7 +30,7 @@ public class TrainStationAdminController {
     }
 
     @DeleteMapping("/delete/{id}")
-public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResp<Object> delete(@PathVariable Long id) {
         trainStationService.delete(id);
         return new CommonResp<>();
     }

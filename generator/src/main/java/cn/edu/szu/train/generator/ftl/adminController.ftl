@@ -30,7 +30,7 @@ public class ${Domain}AdminController {
     }
 
     @DeleteMapping("/delete/{id}")
-public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResp<Object> delete(@PathVariable Long id) {
         ${domain}Service.delete(id);
         return new CommonResp<>();
     }

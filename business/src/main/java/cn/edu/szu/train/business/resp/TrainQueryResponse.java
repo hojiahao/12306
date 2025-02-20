@@ -2,7 +2,9 @@ package cn.edu.szu.train.business.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
 import java.util.Date;
+
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 public class TrainQueryResponse {
@@ -10,7 +12,7 @@ public class TrainQueryResponse {
     /**
      * id
      */
-    @JsonSerialize(using= ToStringSerializer.class)
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -36,7 +38,7 @@ public class TrainQueryResponse {
     /**
      * 出发时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date departureTime;
 
     /**
@@ -52,19 +54,19 @@ public class TrainQueryResponse {
     /**
      * 到站时间
      */
-    @JsonFormat(pattern = "HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     private Date arrivalTime;
 
     /**
      * 创建时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date updateTime;
 
     public Long getId() {
