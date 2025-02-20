@@ -196,7 +196,8 @@ export default defineComponent({
       axios.get("/business/admin/train-seat/query-list", {
         params: {
           page: param.page,
-          pageSize: param.pageSize
+          pageSize: param.pageSize,
+          trainCode: params.value.trainCode
         }
       }).then((response) => {
         loading.value = false;
