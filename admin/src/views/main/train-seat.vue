@@ -1,7 +1,8 @@
 <template>
   <p>
     <a-space>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <train-select-view v-model:value="params.trainCode" width="200px"></train-select-view>
+      <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
@@ -103,6 +104,9 @@ export default defineComponent({
       pageSize: 10,
     });
     let loading = ref(false);
+    let params = ref({
+      trainCode: null
+    })
     const columns = [
       {
         title: '车次编号',
@@ -231,10 +235,11 @@ export default defineComponent({
       visible,
       trainSeats,
       pagination,
+      loading,
+      params,
       columns,
       handleTableChange,
       handleQuery,
-      loading,
       onAdd,
       handleOk,
       onEdit,
