@@ -1,7 +1,8 @@
 <template>
   <p>
     <a-space>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <train-select-view v-model:value="params.trainCode" width="200px"></train-select-view>
+      <a-button type="primary" @click="handleQuery()">查找</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
     </a-space>
   </p>
@@ -61,11 +62,10 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import {pinyin} from "pinyin-pro";
 import TrainSelectView from "@/components/train-select";
-import StationSelectView from "@/components/station-select.vue";
 
 export default defineComponent({
   name: "train-station-view",
-  components: {StationSelectView, TrainSelectView},
+  components: {TrainSelectView},
   setup() {
     const visible = ref(false);
     let trainStation = ref({
@@ -89,6 +89,9 @@ export default defineComponent({
       pageSize: 10,
     });
     let loading = ref(false);
+    let params = ref({
+      trainCode: "",
+    });
     const columns = [
       {
         title: '车次编号',
@@ -188,14 +191,15 @@ export default defineComponent({
       if (!param) {
         param = {
           page: 1,
-          pageSize: pagination.value.pageSize
+          pageSize: pagination.value.pageSize,
         };
       }
       loading.value = true;
       axios.get("/business/admin/train-station/query-list", {
         params: {
           page: param.page,
-          pageSize: param.pageSize
+          pageSize: param.pageSize,
+          trainCode: params.value.trainCode
         }
       }).then((response) => {
         loading.value = false;
@@ -234,6 +238,7 @@ export default defineComponent({
       pagination,
       columns,
       loading,
+      params,
       handleTableChange,
       handleQuery,
       onAdd,
