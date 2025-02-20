@@ -1,5 +1,6 @@
 package cn.edu.szu.train.business.controller.admin;
 
+import cn.edu.szu.train.business.service.TrainSeatService;
 import cn.edu.szu.train.common.response.CommonResp;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.business.req.TrainQueryReq;
@@ -18,6 +19,9 @@ public class TrainAdminController {
 
     @Resource
     private TrainService trainService;
+
+    @Resource
+    private TrainSeatService trainSeatService;
 
     @PostMapping("/save")
     public CommonResp<Object> save(@Valid @RequestBody TrainSaveReq req) {
@@ -41,5 +45,11 @@ public class TrainAdminController {
     public CommonResp<List<TrainQueryResponse>> queryList() {
         List<TrainQueryResponse> list = trainService.queryAll();
         return new CommonResp<>(list);
+    }
+
+    @GetMapping("/generate-seat/{trainCode}")
+    public CommonResp<Object> generateSeat(@PathVariable String trainCode) {
+        trainSeatService.generateTrainSeat(trainCode);
+        return new CommonResp<>();
     }
 }

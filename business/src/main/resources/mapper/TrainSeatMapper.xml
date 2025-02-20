@@ -73,12 +73,9 @@
         </where>
     </sql>
     <sql id="Base_Column_List">
-        id
-        , train_code, carriage_index, `row`, col, seat_type, carriage_seat_index, create_time,
-    update_time
+        id, train_code, carriage_index, `row`, col, seat_type, carriage_seat_index, create_time,update_time
     </sql>
-    <select id="selectByExample" parameterType="cn.edu.szu.train.business.domain.TrainSeatExample"
-            resultMap="BaseResultMap">
+    <select id="selectByExample" parameterType="cn.edu.szu.train.business.domain.TrainSeatExample" resultMap="BaseResultMap">
         select
         <if test="distinct">
             distinct
@@ -110,9 +107,7 @@
         </if>
     </delete>
     <insert id="insert" parameterType="cn.edu.szu.train.business.domain.TrainSeat">
-        insert into train_seat (id, train_code, carriage_index,
-                                `row`, col, seat_type, carriage_seat_index,
-                                create_time, update_time)
+        insert into train_seat (id, train_code, carriage_index, `row`, col, seat_type, carriage_seat_index,create_time, update_time)
         values (#{id,jdbcType=BIGINT}, #{trainCode,jdbcType=VARCHAR}, #{carriageIndex,jdbcType=INTEGER},
                 #{row,jdbcType=CHAR}, #{col,jdbcType=CHAR}, #{seatType,jdbcType=CHAR},
                 #{carriageSeatIndex,jdbcType=INTEGER},

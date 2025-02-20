@@ -1,6 +1,5 @@
 package cn.edu.szu.train.member.service;
 
-import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.member.domain.Passenger;

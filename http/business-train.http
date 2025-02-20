@@ -1,0 +1,4 @@
+GET http://localhost:8002/business/admin/train/generate-seat/G6080
+Accept: application/json
+
+###
