@@ -28,7 +28,7 @@ public class ControllerExceptionHandler {
         CommonResp<Object> commonResp = new CommonResp<>();
         LOG.error("System Exception：", e);
         commonResp.setSuccess(false);
-        commonResp.setMessage("The system is abnormal, please contact the administrator");
+        commonResp.setMessage("The system is abnormal, please contact the administrator.");
         return commonResp;
     }
 
