@@ -8,6 +8,7 @@
     </div>
     <a-menu
         v-model:selectedKeys="selectedKeys"
+        :open-keys="['batch', 'base']"
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"
@@ -22,36 +23,50 @@
           <user-outlined></user-outlined>&nbsp; 关于
         </router-link>
       </a-menu-item>
-      <a-menu-item key="/batch/job">
-        <router-link to="/batch/job">
-          <user-outlined></user-outlined>&nbsp; 任务管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/station">
-        <router-link to="/station">
-          <user-outlined></user-outlined>&nbsp; 车站管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/train">
-        <router-link to="/train">
-          <user-outlined></user-outlined>&nbsp; 火车管理
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/train-station">
-        <router-link to="/train-station">
-          <user-outlined></user-outlined>&nbsp; 列车车站
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/train-carriage">
-        <router-link to="/train-carriage">
-          <user-outlined></user-outlined>&nbsp; 火车车厢
-        </router-link>
-      </a-menu-item>
-      <a-menu-item key="/train-seat">
-        <router-link to="/train-seat">
-          <user-outlined></user-outlined>&nbsp; 列车座位
-        </router-link>
-      </a-menu-item>
+<!--      <a-sub-menu key="batch">-->
+<!--        <template #title>-->
+<!--          <span>-->
+<!--            <UnorderedListOutlined></UnorderedListOutlined>批次管理-->
+<!--          </span>-->
+<!--        </template>-->
+<!--        <a-menu-item key="/batch/job">-->
+<!--          <router-link to="/batch/job">-->
+<!--            <user-outlined></user-outlined>&nbsp; 任务管理-->
+<!--          </router-link>-->
+<!--        </a-menu-item>-->
+<!--      </a-sub-menu>-->
+<!--      <a-sub-menu key="base">-->
+<!--        <template #title>-->
+<!--          <span>-->
+<!--            <UnorderedListOutlined></UnorderedListOutlined>基础数据-->
+<!--          </span>-->
+<!--        </template>-->
+<!--        <a-menu-item key="/base/station">-->
+<!--          <router-link to="/base/station">-->
+<!--            <user-outlined></user-outlined>&nbsp; 车站管理-->
+<!--          </router-link>-->
+<!--        </a-menu-item>-->
+<!--        <a-menu-item key="/base/train">-->
+<!--          <router-link to="/base/train">-->
+<!--            <user-outlined></user-outlined>&nbsp; 火车管理-->
+<!--          </router-link>-->
+<!--        </a-menu-item>-->
+<!--        <a-menu-item key="/base/train-station">-->
+<!--          <router-link to="/base/train-station">-->
+<!--            <user-outlined></user-outlined>&nbsp; 列车车站-->
+<!--          </router-link>-->
+<!--        </a-menu-item>-->
+<!--        <a-menu-item key="/base/train-carriage">-->
+<!--          <router-link to="/base/train-carriage">-->
+<!--            <user-outlined></user-outlined>&nbsp; 火车车厢-->
+<!--          </router-link>-->
+<!--        </a-menu-item>-->
+<!--        <a-menu-item key="/base/train-seat">-->
+<!--          <router-link to="/base/train-seat">-->
+<!--            <user-outlined></user-outlined>&nbsp; 列车座位-->
+<!--          </router-link>-->
+<!--        </a-menu-item>-->
+<!--      </a-sub-menu>-->
     </a-menu>
   </a-layout-header>
 </template>
