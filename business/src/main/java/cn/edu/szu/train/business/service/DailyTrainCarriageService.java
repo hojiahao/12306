@@ -1,5 +1,6 @@
 package cn.edu.szu.train.business.service;
 
+import cn.edu.szu.train.business.enums.SeatColEnum;
 import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
@@ -23,48 +24,58 @@ import java.util.List;
 
 @Service
 public class DailyTrainCarriageService {
-private static final Logger LOG = LoggerFactory.getLogger(DailyTrainCarriageService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DailyTrainCarriageService.class);
 
-@Resource
-private DailyTrainCarriageMapper dailyTrainCarriageMapper;
+    @Resource
+    private DailyTrainCarriageMapper dailyTrainCarriageMapper;
 
-public void save(DailyTrainCarriageSaveReq req) {
-DateTime now = DateTime.now();
-DailyTrainCarriage dailyTrainCarriage = BeanUtil.copyProperties(req, DailyTrainCarriage.class);
-if (ObjectUtil.isNull(dailyTrainCarriage.getId())) {
-dailyTrainCarriage.setId(SnowUtil.getSnowflakeNextId());
-dailyTrainCarriage.setCreateTime(now);
-dailyTrainCarriage.setUpdateTime(now);
-dailyTrainCarriageMapper.insert(dailyTrainCarriage);
-} else {
-dailyTrainCarriage.setUpdateTime(now);
-dailyTrainCarriageMapper.updateByPrimaryKey(dailyTrainCarriage);
-}
-}
+    public void save(DailyTrainCarriageSaveReq req) {
+        DateTime now = DateTime.now();
+        // 自动计算列数和总座位数
+        List<SeatColEnum> seatColEnums = SeatColEnum.getColsByType(req.getSeatType());
+        req.setColCount(seatColEnums.size());
+        req.setSeatCount(req.getColCount() * req.getRowCount());
+        DailyTrainCarriage dailyTrainCarriage = BeanUtil.copyProperties(req, DailyTrainCarriage.class);
+        if (ObjectUtil.isNull(dailyTrainCarriage.getId())) {
+            dailyTrainCarriage.setId(SnowUtil.getSnowflakeNextId());
+            dailyTrainCarriage.setCreateTime(now);
+            dailyTrainCarriage.setUpdateTime(now);
+            dailyTrainCarriageMapper.insert(dailyTrainCarriage);
+        } else {
+            dailyTrainCarriage.setUpdateTime(now);
+            dailyTrainCarriageMapper.updateByPrimaryKey(dailyTrainCarriage);
+        }
+    }
 
-public PageResp<DailyTrainCarriageQueryResponse> queryList(DailyTrainCarriageQueryReq req) {
-    DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
-    dailyTrainCarriageExample.setOrderByClause("id desc");
-    DailyTrainCarriageExample.Criteria criteria = dailyTrainCarriageExample.createCriteria();
+    public PageResp<DailyTrainCarriageQueryResponse> queryList(DailyTrainCarriageQueryReq req) {
+        DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
+        dailyTrainCarriageExample.setOrderByClause("date desc, train_code asc, `index` asc");
+        DailyTrainCarriageExample.Criteria criteria = dailyTrainCarriageExample.createCriteria();
+        if (ObjectUtil.isNotNull(req.getDate())) {
+            criteria.andDateEqualTo(req.getDate());
+        }
+        if (ObjectUtil.isNotEmpty(req.getTrainCode())) {
+            criteria.andTrainCodeEqualTo(req.getTrainCode());
+        }
 
-    LOG.info("查询页码：{}", req.getPage());
-    LOG.info("每页条数：{}", req.getPageSize());
-    PageHelper.startPage(req.getPage(), req.getPageSize());
-    List<DailyTrainCarriage> dailyTrainCarriageList = dailyTrainCarriageMapper.selectByExample(dailyTrainCarriageExample);
+        LOG.info("查询页码：{}", req.getPage());
+        LOG.info("每页条数：{}", req.getPageSize());
+        PageHelper.startPage(req.getPage(), req.getPageSize());
+        List<DailyTrainCarriage> dailyTrainCarriageList = dailyTrainCarriageMapper.selectByExample(dailyTrainCarriageExample);
 
-    PageInfo<DailyTrainCarriage> pageInfo = new PageInfo<>(dailyTrainCarriageList);
-    LOG.info("总行数：{}", pageInfo.getTotal());
-    LOG.info("总页数：{}", pageInfo.getPages());
+        PageInfo<DailyTrainCarriage> pageInfo = new PageInfo<>(dailyTrainCarriageList);
+        LOG.info("总行数：{}", pageInfo.getTotal());
+        LOG.info("总页数：{}", pageInfo.getPages());
 
-    List<DailyTrainCarriageQueryResponse> list = BeanUtil.copyToList(dailyTrainCarriageList, DailyTrainCarriageQueryResponse.class);
+        List<DailyTrainCarriageQueryResponse> list = BeanUtil.copyToList(dailyTrainCarriageList, DailyTrainCarriageQueryResponse.class);
 
         PageResp<DailyTrainCarriageQueryResponse> pageResp = new PageResp<>();
-            pageResp.setTotal(pageInfo.getTotal());
-            pageResp.setRows(list);
-            return pageResp;
-            }
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setRows(list);
+        return pageResp;
+    }
 
-            public void delete(Long id) {
-            dailyTrainCarriageMapper.deleteByPrimaryKey(id);
-            }
+    public void delete(Long id) {
+        dailyTrainCarriageMapper.deleteByPrimaryKey(id);
+    }
 }
