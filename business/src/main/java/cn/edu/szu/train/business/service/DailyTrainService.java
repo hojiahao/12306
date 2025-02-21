@@ -23,48 +23,54 @@ import java.util.List;
 
 @Service
 public class DailyTrainService {
-private static final Logger LOG = LoggerFactory.getLogger(DailyTrainService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DailyTrainService.class);
 
-@Resource
-private DailyTrainMapper dailyTrainMapper;
+    @Resource
+    private DailyTrainMapper dailyTrainMapper;
 
-public void save(DailyTrainSaveReq req) {
-DateTime now = DateTime.now();
-DailyTrain dailyTrain = BeanUtil.copyProperties(req, DailyTrain.class);
-if (ObjectUtil.isNull(dailyTrain.getId())) {
-dailyTrain.setId(SnowUtil.getSnowflakeNextId());
-dailyTrain.setCreateTime(now);
-dailyTrain.setUpdateTime(now);
-dailyTrainMapper.insert(dailyTrain);
-} else {
-dailyTrain.setUpdateTime(now);
-dailyTrainMapper.updateByPrimaryKey(dailyTrain);
-}
-}
+    public void save(DailyTrainSaveReq req) {
+        DateTime now = DateTime.now();
+        DailyTrain dailyTrain = BeanUtil.copyProperties(req, DailyTrain.class);
+        if (ObjectUtil.isNull(dailyTrain.getId())) {
+            dailyTrain.setId(SnowUtil.getSnowflakeNextId());
+            dailyTrain.setCreateTime(now);
+            dailyTrain.setUpdateTime(now);
+            dailyTrainMapper.insert(dailyTrain);
+        } else {
+            dailyTrain.setUpdateTime(now);
+            dailyTrainMapper.updateByPrimaryKey(dailyTrain);
+        }
+    }
 
-public PageResp<DailyTrainQueryResponse> queryList(DailyTrainQueryReq req) {
-    DailyTrainExample dailyTrainExample = new DailyTrainExample();
-    dailyTrainExample.setOrderByClause("id desc");
-    DailyTrainExample.Criteria criteria = dailyTrainExample.createCriteria();
+    public PageResp<DailyTrainQueryResponse> queryList(DailyTrainQueryReq req) {
+        DailyTrainExample dailyTrainExample = new DailyTrainExample();
+        dailyTrainExample.setOrderByClause("date desc, code asc");
+        DailyTrainExample.Criteria criteria = dailyTrainExample.createCriteria();
+        if (ObjectUtil.isNotNull(req.getDate())) {
+            criteria.andDateEqualTo(req.getDate());
+        }
+        if (ObjectUtil.isNotEmpty(req.getCode())) {
+            criteria.andCodeEqualTo(req.getCode());
+        }
 
-    LOG.info("查询页码：{}", req.getPage());
-    LOG.info("每页条数：{}", req.getPageSize());
-    PageHelper.startPage(req.getPage(), req.getPageSize());
-    List<DailyTrain> dailyTrainList = dailyTrainMapper.selectByExample(dailyTrainExample);
+        LOG.info("查询页码：{}", req.getPage());
+        LOG.info("每页条数：{}", req.getPageSize());
+        PageHelper.startPage(req.getPage(), req.getPageSize());
+        List<DailyTrain> dailyTrainList = dailyTrainMapper.selectByExample(dailyTrainExample);
 
-    PageInfo<DailyTrain> pageInfo = new PageInfo<>(dailyTrainList);
-    LOG.info("总行数：{}", pageInfo.getTotal());
-    LOG.info("总页数：{}", pageInfo.getPages());
+        PageInfo<DailyTrain> pageInfo = new PageInfo<>(dailyTrainList);
+        LOG.info("总行数：{}", pageInfo.getTotal());
+        LOG.info("总页数：{}", pageInfo.getPages());
 
-    List<DailyTrainQueryResponse> list = BeanUtil.copyToList(dailyTrainList, DailyTrainQueryResponse.class);
+        List<DailyTrainQueryResponse> list = BeanUtil.copyToList(dailyTrainList, DailyTrainQueryResponse.class);
 
         PageResp<DailyTrainQueryResponse> pageResp = new PageResp<>();
-            pageResp.setTotal(pageInfo.getTotal());
-            pageResp.setRows(list);
-            return pageResp;
-            }
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setRows(list);
+        return pageResp;
+    }
 
-            public void delete(Long id) {
-            dailyTrainMapper.deleteByPrimaryKey(id);
-            }
+    public void delete(Long id) {
+        dailyTrainMapper.deleteByPrimaryKey(id);
+    }
 }
