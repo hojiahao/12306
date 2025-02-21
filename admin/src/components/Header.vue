@@ -8,7 +8,6 @@
     </div>
     <a-menu
         v-model:selectedKeys="selectedKeys"
-        :open-keys="['batch', 'base']"
         theme="dark"
         mode="horizontal"
         :style="{ lineHeight: '64px' }"

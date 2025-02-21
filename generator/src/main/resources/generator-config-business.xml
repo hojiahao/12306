@@ -39,10 +39,11 @@
                              targetPackage="cn.edu.szu.train.business.mapper"
                              type="XMLMAPPER"/>
 
-        <!-- table tableName="station" domainObjectName="Station"/ -->
-        <!-- table tableName="train" domainObjectName="Train"/ -->
-        <!-- table tableName="train_station" domainObjectName="TrainStation"/ -->
-        <!-- table tableName="train_carriage" domainObjectName="TrainCarriage"/ -->
-        <table tableName="train_seat" domainObjectName="TrainSeat"/>
+        <!-- <table tableName="station" domainObjectName="Station"/> -->
+        <!-- <table tableName="train" domainObjectName="Train"/. -->
+        <!-- <table tableName="train_station" domainObjectName="TrainStation"/> -->
+        <!-- <table tableName="train_carriage" domainObjectName="TrainCarriage"/> -->
+        <!-- <table tableName="train_seat" domainObjectName="TrainSeat"/> -->
+        <table tableName="daily_train" domainObjectName="DailyTrain"/>
     </context>
 </generatorConfiguration>
