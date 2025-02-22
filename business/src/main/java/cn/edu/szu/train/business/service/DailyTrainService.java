@@ -12,12 +12,14 @@ import cn.edu.szu.train.business.response.DailyTrainQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -34,7 +36,9 @@ public class DailyTrainService {
     private TrainService trainService;
 
     @Resource
-    private DailyTrainCarriageService dailyTrainCarriageService;
+    private TrainStationService trainStationService;
+    @Autowired
+    private DailyTrainStationService dailyTrainStationService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -85,7 +89,7 @@ public class DailyTrainService {
     public void generate(Date date) {
         List<Train> trains = trainService.selectAll();
         if (CollUtil.isEmpty(trains)) {
-            LOG.info("找不到车次基础数据，任务结束");
+            LOG.info("未找到车次基础数据，生成任务结束。");
             return;
         }
         for (Train train : trains) {
@@ -94,6 +98,7 @@ public class DailyTrainService {
     }
 
     public void generateDailyTrain(Date date, Train train) {
+        LOG.info("开始生成日期【{}】车次【{}】的信息...", DateUtil.formatDate(date), train.getCode());
         // 删除该车次已有数据
         DailyTrainExample dailyTrainExample = new DailyTrainExample();
         dailyTrainExample.createCriteria().andDateEqualTo(date).andCodeEqualTo(train.getCode());
@@ -107,5 +112,8 @@ public class DailyTrainService {
         dailyTrain.setUpdateTime(now);
         dailyTrain.setDate(date);
         dailyTrainMapper.insert(dailyTrain);
+        // 生成该车次的车站数据
+        dailyTrainStationService.generateDailyTrainStation(date, train.getCode());
+        LOG.info("日期【{}】车次【{}】的信息已生成完成。", DateUtil.formatDate(date), train.getCode());
     }
 }
