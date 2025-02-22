@@ -1,5 +1,6 @@
 package cn.edu.szu.train.business.service;
 
+import cn.edu.szu.train.business.domain.DailyTrainCarriage;
 import cn.edu.szu.train.business.domain.Train;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
@@ -36,9 +37,10 @@ public class DailyTrainService {
     private TrainService trainService;
 
     @Resource
-    private TrainStationService trainStationService;
-    @Autowired
     private DailyTrainStationService dailyTrainStationService;
+
+    @Resource
+    private DailyTrainCarriageService dailyTrainCarriageService;
 
     public void save(DailyTrainSaveReq req) {
         DateTime now = DateTime.now();
@@ -114,6 +116,8 @@ public class DailyTrainService {
         dailyTrainMapper.insert(dailyTrain);
         // 生成该车次的车站数据
         dailyTrainStationService.generateDailyTrainStation(date, train.getCode());
+        // 生成该车次的车厢数据
+        dailyTrainCarriageService.generateDailyTrainCarriage(date, train.getCode());
         LOG.info("日期【{}】车次【{}】的信息已生成完成。", DateUtil.formatDate(date), train.getCode());
     }
 }
