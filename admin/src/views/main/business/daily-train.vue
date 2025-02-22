@@ -5,6 +5,7 @@
       <train-select-view v-model:value="params.code" width="200px"></train-select-view>
       <a-button type="primary" @click="handleQuery()">查询</a-button>
       <a-button type="primary" @click="onAdd">新增</a-button>
+      <a-button type="primary" danger @click="onClickGenerateDailyTrain">手动生成车次信息</a-button>
     </a-space>
   </p>
   <a-table :dataSource="dailyTrains"
@@ -69,6 +70,14 @@
       </a-form-item>
     </a-form>
   </a-modal>
+  <a-modal v-model:visible="generateDailyVisible" title="生成车次" @ok="handleGenerateDailyOK"
+           :confirm-loading="generateDailyLoading" ok-text="确认" cancel-text="取消">
+    <a-form :model="generateDaily" :label-col="{span: 4}" :wrapper-col="{ span: 20 }">
+      <a-form-item label="日期">
+        <a-date-picker v-model:value="generateDaily.date" placeholder="请选择日期"/>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script>
@@ -76,6 +85,7 @@ import {defineComponent, ref, onMounted} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
 import TrainSelectView from "@/components/train-select.vue";
+import dayjs from 'dayjs';
 
 export default defineComponent({
   name: "daily-train-view",
@@ -108,7 +118,12 @@ export default defineComponent({
     let params = ref({
       date: null,
       code: null
-    })
+    });
+    const generateDaily = ref({
+      date: null,
+    });
+    const generateDailyVisible = ref(false);
+    const generateDailyLoading = ref(false);
     const columns = [
       {
         title: '日期',
@@ -246,7 +261,31 @@ export default defineComponent({
       delete temp.id;
       // 用assign可以合并
       dailyTrain.value = Object.assign(dailyTrain.value, temp);
-    }
+    };
+
+    const onClickGenerateDailyTrain = () => {
+      generateDailyVisible.value = true;
+    };
+
+    const handleGenerateDailyOK = () => {
+      let date = dayjs(generateDaily.value.date).format("YYYY-MM-DD");
+      generateDailyLoading.value = true;
+      axios.get("/business/admin/daily-train/generate-daily-train/" + date).then((response) => {
+        generateDailyLoading.value = false;
+        let data = response.data;
+        if (data.success) {
+          notification.success({description: "生成成功！"});
+          generateDailyVisible.value = false;
+          handleQuery({
+            page: pagination.value.current,
+            pageSize: pagination.value.pageSize
+          });
+        }
+        else {
+          notification.error({description: data.message});
+        }
+      });
+    };
 
     onMounted(() => {
       handleQuery({
@@ -263,6 +302,9 @@ export default defineComponent({
       pagination,
       loading,
       params,
+      generateDaily,
+      generateDailyVisible,
+      generateDailyLoading,
       columns,
       handleTableChange,
       handleQuery,
@@ -270,7 +312,9 @@ export default defineComponent({
       handleOk,
       onEdit,
       onDelete,
-      onChangeCode
+      onChangeCode,
+      onClickGenerateDailyTrain,
+      handleGenerateDailyOK
     };
   },
 });
