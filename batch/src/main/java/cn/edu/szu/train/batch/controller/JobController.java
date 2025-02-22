@@ -3,6 +3,7 @@ package cn.edu.szu.train.batch.controller;
 import cn.edu.szu.train.batch.req.CronJobReq;
 import cn.edu.szu.train.batch.resp.CronJobResp;
 import cn.edu.szu.train.common.response.CommonResp;
+import jakarta.annotation.Resource;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
 import org.quartz.impl.triggers.CronTriggerImpl;
