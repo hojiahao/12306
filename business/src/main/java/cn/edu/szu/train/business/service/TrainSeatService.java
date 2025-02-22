@@ -1,11 +1,9 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.business.domain.TrainCarriage;
+import cn.edu.szu.train.business.domain.*;
 import cn.edu.szu.train.business.enums.SeatColEnum;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
-import cn.edu.szu.train.business.domain.TrainSeat;
-import cn.edu.szu.train.business.domain.TrainSeatExample;
 import cn.edu.szu.train.business.mapper.TrainSeatMapper;
 import cn.edu.szu.train.business.req.TrainSeatQueryReq;
 import cn.edu.szu.train.business.req.TrainSeatSaveReq;
@@ -116,5 +114,12 @@ public class TrainSeatService {
                 }
             }
         }
+    }
+
+    public List<TrainSeat> selectByTrainCode(String trainCode) {
+        TrainSeatExample trainSeatExample = new TrainSeatExample();
+        trainSeatExample.setOrderByClause("`id` asc");
+        trainSeatExample.createCriteria().andTrainCodeEqualTo(trainCode);
+        return trainSeatMapper.selectByExample(trainSeatExample);
     }
 }
