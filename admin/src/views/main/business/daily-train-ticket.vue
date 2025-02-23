@@ -5,7 +5,7 @@
       <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期"></a-date-picker>
       <station-select-view v-model="params.start" width="200px"></station-select-view>
       <station-select-view v-model="params.end" width="200px"></station-select-view>
-      <a-button type="primary" @click="handleQuery()">刷新</a-button>
+      <a-button type="primary" @click="handleQuery()">查询</a-button>
     </a-space>
   </p>
   <a-table :dataSource="dailyTrainTickets"
@@ -36,7 +36,7 @@
       <template v-else-if="column.dataIndex === 'firstClass'">
         <div v-if="record.ydz >= 0">
           {{record.firstClass}}<br/>
-          ￥{{record.firstClassPrice}}
+          {{record.firstClassPrice}}RMB
         </div>
         <div v-else>
           --
@@ -45,7 +45,7 @@
       <template v-else-if="column.dataIndex === 'secondClass'">
         <div v-if="record.edz >= 0">
           {{record.secondClass}}<br/>
-          ￥{{record.secondClassPrice}}
+          {{record.secondClassPrice}}RMB
         </div>
         <div v-else>
           --
@@ -54,7 +54,7 @@
       <template v-else-if="column.dataIndex === 'softSleeper'">
         <div v-if="record.soft_sleeper >= 0">
           {{record.soft_sleeper}}<br/>
-          ￥{{record.soft_sleeperPrice}}
+          {{record.soft_sleeperPrice}}RMB
         </div>
         <div v-else>
           --
@@ -63,7 +63,7 @@
       <template v-else-if="column.dataIndex === 'hardSleeper'">
         <div v-if="record.yw >= 0">
           {{record.hardSleeper}}<br/>
-          ￥{{record.hardSleeperPrice}}
+          {{record.hardSleeperPrice}}RMB
         </div>
         <div v-else>
           --
