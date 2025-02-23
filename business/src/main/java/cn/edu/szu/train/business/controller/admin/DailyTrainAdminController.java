@@ -26,7 +26,7 @@ public class DailyTrainAdminController {
         return new CommonResp<>();
     }
 
-    @GetMapping("query-list")
+    @GetMapping("/query-list")
     public CommonResp<PageResp<DailyTrainQueryResponse>> queryList(@Valid DailyTrainQueryReq req) {
         PageResp<DailyTrainQueryResponse> queryList = dailyTrainService.queryList(req);
         return new CommonResp<>(queryList);

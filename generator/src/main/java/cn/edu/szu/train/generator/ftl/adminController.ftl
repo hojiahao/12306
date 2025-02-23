@@ -23,7 +23,7 @@ public class ${Domain}AdminController {
         return new CommonResp<>();
     }
 
-    @GetMapping("query-list")
+    @GetMapping("/query-list")
     public CommonResp<PageResp<${Domain}QueryResponse>> queryList(@Valid ${Domain}QueryReq req) {
         PageResp<${Domain}QueryResponse> queryList = ${domain}Service.queryList(req);
         return new CommonResp<>(queryList);

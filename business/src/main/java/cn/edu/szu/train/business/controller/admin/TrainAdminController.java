@@ -29,7 +29,7 @@ public class TrainAdminController {
         return new CommonResp<>();
     }
 
-    @GetMapping("query-list")
+    @GetMapping("/query-list")
     public CommonResp<PageResp<TrainQueryResponse>> queryList(@Valid TrainQueryReq req) {
         PageResp<TrainQueryResponse> queryList = trainService.queryList(req);
         return new CommonResp<>(queryList);
@@ -41,7 +41,7 @@ public class TrainAdminController {
         return new CommonResp<>();
     }
 
-    @GetMapping("query-all")
+    @GetMapping("/query-all")
     public CommonResp<List<TrainQueryResponse>> queryList() {
         List<TrainQueryResponse> list = trainService.queryAll();
         return new CommonResp<>(list);

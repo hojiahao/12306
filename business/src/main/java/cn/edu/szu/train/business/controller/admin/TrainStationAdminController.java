@@ -23,7 +23,7 @@ public class TrainStationAdminController {
         return new CommonResp<>();
     }
 
-    @GetMapping("query-list")
+    @GetMapping("/query-list")
     public CommonResp<PageResp<TrainStationQueryResponse>> queryList(@Valid TrainStationQueryReq req) {
         PageResp<TrainStationQueryResponse> queryList = trainStationService.queryList(req);
         return new CommonResp<>(queryList);

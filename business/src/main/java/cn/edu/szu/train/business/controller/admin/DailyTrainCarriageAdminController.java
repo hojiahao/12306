@@ -23,7 +23,7 @@ public class DailyTrainCarriageAdminController {
         return new CommonResp<>();
     }
 
-    @GetMapping("query-list")
+    @GetMapping("/query-list")
     public CommonResp<PageResp<DailyTrainCarriageQueryResponse>> queryList(@Valid DailyTrainCarriageQueryReq req) {
         PageResp<DailyTrainCarriageQueryResponse> queryList = dailyTrainCarriageService.queryList(req);
         return new CommonResp<>(queryList);
