@@ -19,7 +19,6 @@
   <a-divider></a-divider>
   <b>勾选要购票的乘客：</b>&nbsp;
   <a-checkbox-group v-model:value="passengerChecks" :options="passengerOptions" />
-
   <div class="order-tickets">
     <a-row class="order-tickets-header" v-if="tickets.length > 0">
       <a-col :span="2">乘客</a-col>
@@ -135,7 +134,7 @@
         </template>
       </a-input>
     </p>
-    <a-button type="danger" block @click="validFirstImageCode">提交验证码</a-button>
+    <a-button type="primary" danger block @click="validFirstImageCode">提交验证码</a-button>
   </a-modal>
 
   <a-modal v-model:visible="lineModalVisible" title="排队购票" :footer="null" :maskClosable="false" :closable="false"
@@ -149,7 +148,7 @@
       </div>
     </div>
     <br/>
-    <a-button type="danger" @click="onCancelOrder">取消购票</a-button>
+    <a-button type="primary" danger @click="onCancelOrder">取消购票</a-button>
   </a-modal>
 </template>
 
