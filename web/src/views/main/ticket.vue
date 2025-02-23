@@ -1,7 +1,6 @@
 <template>
   <p>
     <a-space>
-      <train-select-view v-model:value="params.trainCode" width="200px"></train-select-view>
       <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" :disabled-date="disabledDate" placeholder="请选择日期"></a-date-picker>
       <station-select-view v-model:value="params.departure" width="200px"></station-select-view>
       <station-select-view v-model:value="params.destination" width="200px"></station-select-view>
@@ -120,11 +119,10 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import StationSelectView from "@/components/station-select.vue";
 import dayjs from "dayjs";
-import TrainSelectView from "@/components/train-select.vue";
 
 export default defineComponent({
   name: "ticket-view",
-  components: {TrainSelectView, StationSelectView},
+  components: {StationSelectView},
   setup() {
     const visible = ref(false);
     let dailyTrainTicket = ref({
@@ -159,7 +157,6 @@ export default defineComponent({
     });
     let loading = ref(false);
     const params = ref({
-      trainCode: null,
       date: null,
       departure: null,
       destination: null
@@ -233,7 +230,6 @@ export default defineComponent({
         params: {
           page: param.page,
           pageSize: param.pageSize,
-          trainCode: params.value.trainCode,
           date: params.value.date,
           departure: params.value.departure,
           destination: params.value.destination
