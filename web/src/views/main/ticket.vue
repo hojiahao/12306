@@ -300,14 +300,14 @@ export default defineComponent({
     // 判断是否过期
     const isExpire = (record) => {
       // 标准时间：2000/01/01 00:00:00
-      let startDateTimeString = record.date.replace(/-/g, "/") + " " + record.startTime;
-      let startDateTime = new Date(startDateTimeString);
+      let departureDateTimeString = record.date.replace(/-/g, "/") + " " + record.departureTime;
+      let departureDateTime = new Date(departureDateTimeString);
 
       //当前时间
       let now = new Date();
 
-      console.log(startDateTime)
-      return now.valueOf() >= startDateTime.valueOf();
+      console.log(departureDateTime)
+      return now.valueOf() >= departureDateTime.valueOf();
     };
 
     onMounted(() => {

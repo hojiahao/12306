@@ -2,11 +2,11 @@
   <div class="order-train">
     <span class="order-train-main">{{dailyTrainTicket.date}}</span>&nbsp;
     <span class="order-train-main">{{dailyTrainTicket.trainCode}}</span>次&nbsp;
-    <span class="order-train-main">{{dailyTrainTicket.start}}</span>站
-    <span class="order-train-main">({{dailyTrainTicket.startTime}})</span>&nbsp;
+    <span class="order-train-main">{{dailyTrainTicket.departure}}</span>站
+    <span class="order-train-main">({{dailyTrainTicket.departureTime}})</span>&nbsp;
     <span class="order-train-main">——</span>&nbsp;
-    <span class="order-train-main">{{dailyTrainTicket.end}}</span>站
-    <span class="order-train-main">({{dailyTrainTicket.endTime}})</span>&nbsp;
+    <span class="order-train-main">{{dailyTrainTicket.destination}}</span>站
+    <span class="order-train-main">({{dailyTrainTicket.arrivalTime}})</span>&nbsp;
 
     <div class="order-train-ticket">
       <span v-for="item in seatTypes" :key="item.type">
@@ -172,7 +172,7 @@ export default defineComponent({
     console.log(SEAT_TYPE)
     // 本车次提供的座位类型seatTypes，含票价，余票等信息，例：
     // {
-    //   type: "YDZ",
+    //   type: "FIRSTCLASS",
     //   code: "1",
     //   desc: "一等座",
     //   count: "100",
