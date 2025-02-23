@@ -152,18 +152,18 @@ public class DailyTrainTicketService {
                 dailyTrainTicket.setDestinationPinyin(destination.getNamePinyin());
                 dailyTrainTicket.setArrivalTime(destination.getEntryTime());
                 dailyTrainTicket.setArrivalIndex(destination.getIndex());
-                int firstClass = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.FIRSTCLASS.getCode());
-                int secondClass = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.SECONDCLASS.getCode());
-                int softSleeper = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.SOFTSLEEPER.getCode());
-                int hardSleeper = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.HARDSLEEPER.getCode());
+                int firstClass = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.FIRST_CLASS.getCode());
+                int secondClass = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.SECOND_CLASS.getCode());
+                int softSleeper = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.SOFT_SLEEPER.getCode());
+                int hardSleeper = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.HARD_SLEEPER.getCode());
                 // 票价 = 里程之和 * 座位单价 * 车次类型系数
                 String trainType = dailyTrain.getType();
                 // 计算票价系数：TrainTypeEnum.priceRate
                 BigDecimal priceRate = EnumUtil.getFieldBy(TrainTypeEnum::getPriceRate, TrainTypeEnum::getCode, trainType);
-                BigDecimal firstClassPrice = sumKM.multiply(SeatTypeEnum.FIRSTCLASS.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
-                BigDecimal secondClassPrice = sumKM.multiply(SeatTypeEnum.SECONDCLASS.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
-                BigDecimal softSleeperPrice = sumKM.multiply(SeatTypeEnum.SOFTSLEEPER.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
-                BigDecimal hardSleeperPrice = sumKM.multiply(SeatTypeEnum.HARDSLEEPER.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal firstClassPrice = sumKM.multiply(SeatTypeEnum.FIRST_CLASS.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal secondClassPrice = sumKM.multiply(SeatTypeEnum.SECOND_CLASS.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal softSleeperPrice = sumKM.multiply(SeatTypeEnum.SOFT_SLEEPER.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal hardSleeperPrice = sumKM.multiply(SeatTypeEnum.HARD_SLEEPER.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
                 dailyTrainTicket.setFirstClass(firstClass);
                 dailyTrainTicket.setFirstClassPrice(firstClassPrice);
                 dailyTrainTicket.setSecondClass(secondClass);
