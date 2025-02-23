@@ -5,15 +5,15 @@ import java.util.EnumSet;
 import java.util.List;
 
 public enum SeatColEnum {
-    FIRSTCLASS_A("A", "A", "1"),
-    FIRSTCLASS_C("C", "C", "1"),
-    FIRSTCLASS_D("D", "D", "1"),
-    FIRSTCLASS_F("F", "F", "1"),
-    SECONDCLASS_A("A", "A", "2"),
-    SECONDCLASS_B("B", "B", "2"),
-    SECONDCLASS_C("C", "C", "2"),
-    SECONDCLASS_D("D", "D", "2"),
-    SECONDCLASS_F("F", "F", "2");
+    FIRST_CLASS_A("A", "A", "1"),
+    FIRST_CLASS_C("C", "C", "1"),
+    FIRST_CLASS_D("D", "D", "1"),
+    FIRST_CLASS_F("F", "F", "1"),
+    SECOND_CLASS_A("A", "A", "2"),
+    SECOND_CLASS_B("B", "B", "2"),
+    SECOND_CLASS_C("C", "C", "2"),
+    SECOND_CLASS_D("D", "D", "2"),
+    SECOND_CLASS_F("F", "F", "2");
 
     private String code;
 

@@ -8,10 +8,10 @@ import java.util.List;
 
 public enum SeatTypeEnum {
 
-    FIRSTCLASS("1", "一等座", new BigDecimal("0.4")),
-    SECONDCLASS("2", "二等座", new BigDecimal("0.3")),
-    SOFTSLEEPER("3", "软卧", new BigDecimal("0.6")),
-    HARDSLEEPER("4", "硬卧", new BigDecimal("0.5"));
+    FIRST_CLASS("1", "一等座", new BigDecimal("0.4")),
+    SECOND_CLASS("2", "二等座", new BigDecimal("0.3")),
+    SOFT_SLEEPER("3", "软卧", new BigDecimal("0.6")),
+    HARD_SLEEPER("4", "硬卧", new BigDecimal("0.5"));
 
     private final String code;
 

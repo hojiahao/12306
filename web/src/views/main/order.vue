@@ -180,7 +180,8 @@ export default defineComponent({
     // 关于SEAT_TYPE[KEY]：当知道某个具体的属性xxx时，可以用obj.xxx，当属性名是个变量时，可以使用obj[xxx]
     const seatTypes = [];
     for (let KEY in SEAT_TYPE) {
-      let key = KEY.toLowerCase();
+      let key = KEY.toLowerCase().replace(/_(.)/g, (_, c) => c.toUpperCase());
+      console.log("处理的 key:", key, "dailyTrainTicket[key]:", dailyTrainTicket[key]);
       if (dailyTrainTicket[key] >= 0) {
         seatTypes.push({
           type: KEY,
@@ -303,12 +304,12 @@ export default defineComponent({
         chooseSeatType.value = 0;
       } else {
         // ticketSeatTypeCodesSet.length === 1，即只选择了一种座位（不是一个座位，是一种座位）
-        if (ticketSeatTypeCodesSet[0] === SEAT_TYPE.YDZ.code) {
+        if (ticketSeatTypeCodesSet[0] === SEAT_TYPE.FIRST_CLASS.code) {
           console.log("一等座选座");
-          chooseSeatType.value = SEAT_TYPE.YDZ.code;
-        } else if (ticketSeatTypeCodesSet[0] === SEAT_TYPE.EDZ.code) {
+          chooseSeatType.value = SEAT_TYPE.FIRST_CLASS.code;
+        } else if (ticketSeatTypeCodesSet[0] === SEAT_TYPE.SECOND_CLASS.code) {
           console.log("二等座选座");
-          chooseSeatType.value = SEAT_TYPE.EDZ.code;
+          chooseSeatType.value = SEAT_TYPE.SECOND_CLASS.code;
         } else {
           console.log("不是一等座或二等座，不支持选座");
           chooseSeatType.value = 0;
@@ -372,8 +373,8 @@ export default defineComponent({
         dailyTrainTicketId: dailyTrainTicket.id,
         date: dailyTrainTicket.date,
         trainCode: dailyTrainTicket.trainCode,
-        start: dailyTrainTicket.start,
-        end: dailyTrainTicket.end,
+        departure: dailyTrainTicket.departure,
+        destination: dailyTrainTicket.destination,
         tickets: tickets.value,
         imageCodeToken: imageCodeToken.value,
         imageCode: imageCode.value,
