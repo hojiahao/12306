@@ -119,6 +119,7 @@ import {notification} from "ant-design-vue";
 import axios from "axios";
 import StationSelectView from "@/components/station-select.vue";
 import dayjs from "dayjs";
+import router from "@/router";
 
 export default defineComponent({
   name: "ticket-view",
@@ -202,6 +203,10 @@ export default defineComponent({
         dataIndex: 'hardSleeper',
         key: 'hardSleeper',
       },
+      {
+        title: '操作',
+        dataIndex: 'action'
+      }
     ];
 
     const handleQuery = (param) => {
