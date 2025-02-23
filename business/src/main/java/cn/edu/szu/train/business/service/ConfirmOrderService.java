@@ -1,13 +1,12 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.ConfirmOrder;
 import cn.edu.szu.train.business.domain.ConfirmOrderExample;
 import cn.edu.szu.train.business.mapper.ConfirmOrderMapper;
 import cn.edu.szu.train.business.req.ConfirmOrderQueryReq;
-import cn.edu.szu.train.business.req.ConfirmOrderSaveReq;
+import cn.edu.szu.train.business.req.ConfirmOrderDoReq;
 import cn.edu.szu.train.business.response.ConfirmOrderQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
@@ -28,7 +27,7 @@ public class ConfirmOrderService {
     @Resource
     private ConfirmOrderMapper confirmOrderMapper;
 
-    public void save(ConfirmOrderSaveReq req) {
+    public void save(ConfirmOrderDoReq req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);
         if (ObjectUtil.isNull(confirmOrder.getId())) {
@@ -66,5 +65,32 @@ public class ConfirmOrderService {
 
     public void delete(Long id) {
         confirmOrderMapper.deleteByPrimaryKey(id);
+    }
+
+    public void doConfirm(ConfirmOrderDoReq req) {
+        // 如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已经买过
+
+        // 保存确认订单表，状态初始
+
+        // 查出余票记录，需要得到真实的库存
+
+        // 扣减余票数量，并判断余票是否足够
+
+        // 选座
+
+            // 一个车厢一个车厢的获取座位数据
+
+            // 挑选符合条件的座位，如果这个车厢不满足，则进入下个车厢（多个选座应该在同一个车厢）
+
+        // 选中座位后事务处理
+
+            // 修改座位表售卖情况（sell字段）
+
+            // 修改余票信息
+
+            // 为会员增加购票记录
+
+            // 更新确认订单表为成功
+
     }
 }
