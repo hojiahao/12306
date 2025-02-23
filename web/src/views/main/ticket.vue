@@ -2,7 +2,7 @@
   <p>
     <a-space>
       <train-select-view v-model:value="params.trainCode" width="200px"></train-select-view>
-      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" placeholder="请选择日期"></a-date-picker>
+      <a-date-picker v-model:value="params.date" valueFormat="YYYY-MM-DD" :disabled-date="disabledDate" placeholder="请选择日期"></a-date-picker>
       <station-select-view v-model:value="params.departure" width="200px"></station-select-view>
       <station-select-view v-model:value="params.destination" width="200px"></station-select-view>
       <a-button type="primary" @click="handleQuery()">查询</a-button>
@@ -15,17 +15,36 @@
            :loading="loading">
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'action'">
+        <a-space>
+          <a-button type="primary" @click="toOrder(record)" :disabled="isExpire(record)">
+            {{ isExpire(record) ? "过期" : "预订" }}
+          </a-button>
+          <router-link :to="{
+            path: 'seat',
+            query: {
+              date: record.date,
+              trainCode: record.trainCode,
+              departure: record.departure,
+              departureIndex: record.departureIndex,
+              destination: record.destination,
+              arrivalIndex: record.arrivalIndex
+            }
+          }">
+            <a-button type="primary">座位销售图</a-button>
+          </router-link>
+          <a-button type="primary" @click="showStation(record)">途径车站</a-button>
+        </a-space>
       </template>
       <template v-else-if="column.dataIndex === 'station'">
-        {{record.departure}}<br/>
-        {{record.destination}}<br/>
+        {{ record.departure }}<br/>
+        {{ record.destination }}<br/>
       </template>
       <template v-else-if="column.dataIndex === 'time'">
-        {{record.departureTime}}<br/>
-        {{record.arrivalTime}}
+        {{ record.departureTime }}<br/>
+        {{ record.arrivalTime }}
       </template>
       <template v-else-if="column.dataIndex === 'duration'">
-        {{calDuration(record.departureTime, record.arrivalTime)}}<br/>
+        {{ calDuration(record.departureTime, record.arrivalTime) }}<br/>
         <div v-if="record.departureTime.replaceAll(':', '') >= record.arrivalTime.replaceAll(':', '')">
           次日到达
         </div>
@@ -35,8 +54,8 @@
       </template>
       <template v-else-if="column.dataIndex === 'firstClass'">
         <div v-if="record.firstClass >= 0">
-          {{record.firstClass}}<br/>
-          {{record.firstClassPrice}}RMB
+          {{ record.firstClass }}<br/>
+          {{ record.firstClassPrice }}RMB
         </div>
         <div v-else>
           --
@@ -44,8 +63,8 @@
       </template>
       <template v-else-if="column.dataIndex === 'secondClass'">
         <div v-if="record.secondClass >= 0">
-          {{record.secondClass}}<br/>
-          {{record.secondClassPrice}}RMB
+          {{ record.secondClass }}<br/>
+          {{ record.secondClassPrice }}RMB
         </div>
         <div v-else>
           --
@@ -53,8 +72,8 @@
       </template>
       <template v-else-if="column.dataIndex === 'softSleeper'">
         <div v-if="record.softSleeper >= 0">
-          {{record.softSleeper}}<br/>
-          {{record.softSleeperPrice}}RMB
+          {{ record.softSleeper }}<br/>
+          {{ record.softSleeperPrice }}RMB
         </div>
         <div v-else>
           --
@@ -62,8 +81,8 @@
       </template>
       <template v-else-if="column.dataIndex === 'hardSleeper'">
         <div v-if="record.hardSleeper >= 0">
-          {{record.hardSleeper}}<br/>
-          {{record.hardSleeperPrice}}RMB
+          {{ record.hardSleeper }}<br/>
+          {{ record.hardSleeperPrice }}RMB
         </div>
         <div v-else>
           --
@@ -71,19 +90,41 @@
       </template>
     </template>
   </a-table>
+  <!-- 途经车站 -->
+  <a-modal style="top: 30px" v-model:visible="visible" :title="null" :footer="null" :closable="false">
+    <a-table :data-source="stations" :pagination="false">
+      <a-table-column key="index" title="站序" data-index="index"/>
+      <a-table-column key="name" title="站名" data-index="name"/>
+      <a-table-column key="entryTime" title="进站时间" data-index="entryTime">
+        <template #default="{ record }">
+          {{ record.index === 0 ? '-' : record.exitTime }}
+        </template>
+      </a-table-column>
+      <a-table-column key="exitTime" title="出站时间" data-index="exitTime">
+        <template #default="{ record }">
+          {{ record.index === (stations.length - 1) ? '-' : record.exitTime }}
+        </template>
+      </a-table-column>
+      <a-table-column key="stopTime" title="停站时长" data-index="stopTime">
+        <template #default="{ record }">
+          {{ record.index === 0 || record.index === (stations.length - 1) ? '-' : record.stopTime }}
+        </template>
+      </a-table-column>
+    </a-table>
+  </a-modal>
 </template>
 
 <script>
 import {defineComponent, ref, onMounted} from 'vue';
 import {notification} from "ant-design-vue";
 import axios from "axios";
-import TrainSelectView from "@/components/train-select.vue";
 import StationSelectView from "@/components/station-select.vue";
 import dayjs from "dayjs";
+import TrainSelectView from "@/components/train-select.vue";
 
 export default defineComponent({
-  name: "daily-train-ticket-view",
-  components: {StationSelectView, TrainSelectView},
+  name: "ticket-view",
+  components: {TrainSelectView, StationSelectView},
   setup() {
     const visible = ref(false);
     let dailyTrainTicket = ref({
@@ -125,106 +166,70 @@ export default defineComponent({
     });
     const columns = [
       {
-        title: '日期',
-        dataIndex: 'date',
-        key: 'date',
-      },
-      {
         title: '车次编号',
         dataIndex: 'trainCode',
         key: 'trainCode',
       },
       {
-        title: '出发站',
-        dataIndex: 'departure',
-        key: 'departure',
+        title: '车站',
+        dataIndex: 'station',
+        key: 'station',
       },
       {
-        title: '出发站拼音',
-        dataIndex: 'departurePinyin',
-        key: 'departurePinyin',
+        title: '时间',
+        dataIndex: 'time',
+        key: 'time',
       },
       {
-        title: '出发时间',
-        dataIndex: 'departureTime',
-        key: 'departureTime',
+        title: '历时',
+        dataIndex: 'duration',
+        key: 'duration'
       },
       {
-        title: '出发站序',
-        dataIndex: 'departureIndex',
-        key: 'departureIndex',
-      },
-      {
-        title: '到达站',
-        dataIndex: 'destination',
-        key: 'destination',
-      },
-      {
-        title: '到达站拼音',
-        dataIndex: 'destinationPinyin',
-        key: 'destinationPinyin',
-      },
-      {
-        title: '到站时间',
-        dataIndex: 'arrivalTime',
-        key: 'arrivalTime',
-      },
-      {
-        title: '到站站序',
-        dataIndex: 'arrivalIndex',
-        key: 'arrivalIndex',
-      },
-      {
-        title: '一等座余票',
+        title: '一等座',
         dataIndex: 'firstClass',
         key: 'firstClass',
       },
       {
-        title: '一等座票价',
-        dataIndex: 'firstClassPrice',
-        key: 'firstClassPrice',
-      },
-      {
-        title: '二等座余票',
+        title: '二等座',
         dataIndex: 'secondClass',
         key: 'secondClass',
       },
       {
-        title: '二等座票价',
-        dataIndex: 'secondClassPrice',
-        key: 'secondClassPrice',
-      },
-      {
-        title: '软卧余票',
+        title: '软卧',
         dataIndex: 'softSleeper',
         key: 'softSleeper',
       },
       {
-        title: '软卧票价',
-        dataIndex: 'softSleeperPrice',
-        key: 'softSleeperPrice',
-      },
-      {
-        title: '硬卧余票',
+        title: '硬卧',
         dataIndex: 'hardSleeper',
         key: 'hardSleeper',
-      },
-      {
-        title: '硬卧票价',
-        dataIndex: 'hardSleeperPrice',
-        key: 'hardSleeperPrice',
       },
     ];
 
     const handleQuery = (param) => {
+      if (Tool.isEmpty(params.value.date)) {
+        notification.error({description: "请输入日期"});
+        return;
+      }
+      if (Tool.isEmpty(params.value.departure)) {
+        notification.error({description: "请输入出发地"});
+        return;
+      }
+      if (Tool.isEmpty(params.value.destination)) {
+        notification.error({description: "请输入目的地"});
+        return;
+      }
       if (!param) {
         param = {
           page: 1,
           pageSize: pagination.value.pageSize
         };
       }
+      // 保存查询参数
+      SessionStorage.set(SESSION_TICKET_PARAMS, params.value);
       loading.value = true;
-      axios.get("/business/admin/daily-train-ticket/query-list", {
+      axios.get("/business/daily-train-ticket/query-list", {
         params: {
           page: param.page,
           pageSize: param.pageSize,
@@ -261,11 +266,57 @@ export default defineComponent({
       return dayjs('00:00:00', 'HH:mm:ss').second(diff).format('HH:mm:ss');
     };
 
-    onMounted(() => {
-      handleQuery({
-        page: 1,
-        pageSize: pagination.value.pageSize
+    const toOrder = (record) => {
+      dailyTrainTicket.value = Tool.copy(record);
+      SessionStorage.set(SESSION_ORDER, dailyTrainTicket.value);
+      router.push("/order")
+    };
+
+    // ---------------------- 途经车站 ----------------------
+    const stations = ref([]);
+    const showStation = record => {
+      visible.value = true;
+      axios.get("/business/daily-train-station/query-by-train-code", {
+        params: {
+          date: record.date,
+          trainCode: record.trainCode
+        }
+      }).then((response) => {
+        let data = response.data;
+        if (data.success) {
+          stations.value = data.content;
+        } else {
+          notification.error({description: data.message});
+        }
       });
+    };
+
+    // 不能选择今天以前及两周以后的日期
+    const disabledDate = current => {
+      return current && (current <= dayjs().add(-1, 'day') || current > dayjs().add(14, 'day'));
+    };
+
+    // 判断是否过期
+    const isExpire = (record) => {
+      // 标准时间：2000/01/01 00:00:00
+      let startDateTimeString = record.date.replace(/-/g, "/") + " " + record.startTime;
+      let startDateTime = new Date(startDateTimeString);
+
+      //当前时间
+      let now = new Date();
+
+      console.log(startDateTime)
+      return now.valueOf() >= startDateTime.valueOf();
+    };
+
+    onMounted(() => {
+      params.value = SessionStorage.get(SESSION_TICKET_PARAMS) || {};
+      if (Tool.isNotEmpty(params.value)) {
+        handleQuery({
+          page: 1,
+          pageSize: pagination.value.pageSize
+        });
+      }
     });
 
     return {
@@ -278,7 +329,12 @@ export default defineComponent({
       columns,
       handleTableChange,
       handleQuery,
-      calDuration
+      calDuration,
+      toOrder,
+      showStation,
+      stations,
+      disabledDate,
+      isExpire
     };
   },
 });

@@ -23,6 +23,11 @@
           <user-outlined></user-outlined>&nbsp; 乘车人管理
         </router-link>
       </a-menu-item>
+      <a-menu-item key="/ticket">
+        <router-link to="/ticket">
+          <user-outlined></user-outlined>&nbsp; 余票查询
+        </router-link>
+      </a-menu-item>
 <!--      <a-menu-item key="3">nav 3</a-menu-item>-->
     </a-menu>
   </a-layout-header>
