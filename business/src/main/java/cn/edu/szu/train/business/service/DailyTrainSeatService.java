@@ -20,6 +20,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
@@ -79,6 +80,7 @@ public class DailyTrainSeatService {
         dailyTrainSeatMapper.deleteByPrimaryKey(id);
     }
 
+    @Transactional
     public void generateDailyTrainSeat(Date date, String trainCode) {
         LOG.info("开始生成日期【{}】车次【{}】的座位信息...", DateUtil.formatDate(date), trainCode);
         // 删除某日某车次的座位信息
@@ -104,5 +106,23 @@ public class DailyTrainSeatService {
             dailyTrainSeatMapper.insert(dailyTrainSeat);
         }
         LOG.info("日期【{}】车次【{}】的座位信息已生成完成。", DateUtil.formatDate(date), trainCode);
+    }
+
+    public int countSeat(Date date, String trainCode) {
+        return countSeat(date, trainCode, null);
+    }
+
+    public int countSeat(Date date, String trainCode, String seatType) {
+        DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
+        DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
+        criteria.andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        if (StrUtil.isNotBlank(seatType)) {
+            criteria.andSeatTypeEqualTo(seatType);
+        }
+        long l = dailyTrainSeatMapper.countByExample(dailyTrainSeatExample);
+        if (l == 0L) {
+            return -1;
+        }
+        return (int) l;
     }
 }

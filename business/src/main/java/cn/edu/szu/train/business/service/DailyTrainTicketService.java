@@ -1,5 +1,9 @@
 package cn.edu.szu.train.business.service;
 
+import cn.edu.szu.train.business.domain.DailyTrain;
+import cn.edu.szu.train.business.domain.TrainStation;
+import cn.edu.szu.train.business.enums.SeatTypeEnum;
+import cn.edu.szu.train.business.enums.TrainTypeEnum;
 import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
@@ -10,61 +14,145 @@ import cn.edu.szu.train.business.req.DailyTrainTicketQueryReq;
 import cn.edu.szu.train.business.req.DailyTrainTicketSaveReq;
 import cn.edu.szu.train.business.response.DailyTrainTicketQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 @Service
 public class DailyTrainTicketService {
-private static final Logger LOG = LoggerFactory.getLogger(DailyTrainTicketService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DailyTrainTicketService.class);
 
-@Resource
-private DailyTrainTicketMapper dailyTrainTicketMapper;
+    @Resource
+    private DailyTrainTicketMapper dailyTrainTicketMapper;
 
-public void save(DailyTrainTicketSaveReq req) {
-DateTime now = DateTime.now();
-DailyTrainTicket dailyTrainTicket = BeanUtil.copyProperties(req, DailyTrainTicket.class);
-if (ObjectUtil.isNull(dailyTrainTicket.getId())) {
-dailyTrainTicket.setId(SnowUtil.getSnowflakeNextId());
-dailyTrainTicket.setCreateTime(now);
-dailyTrainTicket.setUpdateTime(now);
-dailyTrainTicketMapper.insert(dailyTrainTicket);
-} else {
-dailyTrainTicket.setUpdateTime(now);
-dailyTrainTicketMapper.updateByPrimaryKey(dailyTrainTicket);
-}
-}
+    @Resource
+    private TrainStationService trainStationService;
 
-public PageResp<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryReq req) {
-    DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
-    dailyTrainTicketExample.setOrderByClause("id desc");
-    DailyTrainTicketExample.Criteria criteria = dailyTrainTicketExample.createCriteria();
+    @Resource
+    private DailyTrainSeatService dailyTrainSeatService;
 
-    LOG.info("查询页码：{}", req.getPage());
-    LOG.info("每页条数：{}", req.getPageSize());
-    PageHelper.startPage(req.getPage(), req.getPageSize());
-    List<DailyTrainTicket> dailyTrainTicketList = dailyTrainTicketMapper.selectByExample(dailyTrainTicketExample);
+    public void save(DailyTrainTicketSaveReq req) {
+        DateTime now = DateTime.now();
+        DailyTrainTicket dailyTrainTicket = BeanUtil.copyProperties(req, DailyTrainTicket.class);
+        if (ObjectUtil.isNull(dailyTrainTicket.getId())) {
+            dailyTrainTicket.setId(SnowUtil.getSnowflakeNextId());
+            dailyTrainTicket.setCreateTime(now);
+            dailyTrainTicket.setUpdateTime(now);
+            dailyTrainTicketMapper.insert(dailyTrainTicket);
+        } else {
+            dailyTrainTicket.setUpdateTime(now);
+            dailyTrainTicketMapper.updateByPrimaryKey(dailyTrainTicket);
+        }
+    }
 
-    PageInfo<DailyTrainTicket> pageInfo = new PageInfo<>(dailyTrainTicketList);
-    LOG.info("总行数：{}", pageInfo.getTotal());
-    LOG.info("总页数：{}", pageInfo.getPages());
+    @Cacheable(value = "DailyTrainTicketService.queryList3")
+    public PageResp<DailyTrainTicketQueryResponse> queryList3(DailyTrainTicketQueryReq req) {
+        LOG.info("测试缓存击穿");
+        return null;
+    }
 
-    List<DailyTrainTicketQueryResponse> list = BeanUtil.copyToList(dailyTrainTicketList, DailyTrainTicketQueryResponse.class);
+
+    public PageResp<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryReq req) {
+        DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
+        dailyTrainTicketExample.setOrderByClause("id desc");
+        DailyTrainTicketExample.Criteria criteria = dailyTrainTicketExample.createCriteria();
+
+        LOG.info("查询页码：{}", req.getPage());
+        LOG.info("每页条数：{}", req.getPageSize());
+        PageHelper.startPage(req.getPage(), req.getPageSize());
+        List<DailyTrainTicket> dailyTrainTicketList = dailyTrainTicketMapper.selectByExample(dailyTrainTicketExample);
+
+        PageInfo<DailyTrainTicket> pageInfo = new PageInfo<>(dailyTrainTicketList);
+        LOG.info("总行数：{}", pageInfo.getTotal());
+        LOG.info("总页数：{}", pageInfo.getPages());
+
+        List<DailyTrainTicketQueryResponse> list = BeanUtil.copyToList(dailyTrainTicketList, DailyTrainTicketQueryResponse.class);
 
         PageResp<DailyTrainTicketQueryResponse> pageResp = new PageResp<>();
-            pageResp.setTotal(pageInfo.getTotal());
-            pageResp.setRows(list);
-            return pageResp;
-            }
+        pageResp.setTotal(pageInfo.getTotal());
+        pageResp.setRows(list);
+        return pageResp;
+    }
 
-            public void delete(Long id) {
-            dailyTrainTicketMapper.deleteByPrimaryKey(id);
+    public void delete(Long id) {
+        dailyTrainTicketMapper.deleteByPrimaryKey(id);
+    }
+
+    @Transactional
+    public void generateDailyTrainTicket(DailyTrain dailyTrain, Date date, String trainCode) {
+        LOG.info("生成日期【{}】车次【{}】的余票信息开始", DateUtil.formatDate(date), trainCode);
+        // 删除某日某车次的余票信息
+        DailyTrainTicketExample dailyTrainTicketExample = new DailyTrainTicketExample();
+        dailyTrainTicketExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        dailyTrainTicketMapper.deleteByExample(dailyTrainTicketExample);
+
+        // 查出某车次的所有的车站信息
+        List<TrainStation> trainStations = trainStationService.selectByTrainCode(trainCode);
+        if (CollUtil.isEmpty(trainStations)) {
+            LOG.info("该车次没有车站基础数据，生成该车次的余票信息结束");
+            return;
+        }
+
+        DateTime now = DateTime.now();
+        for (int i = 0; i < trainStations.size(); i++) {
+            // 得到出发站
+            TrainStation departure = trainStations.get(i);
+            BigDecimal sumKM = BigDecimal.ZERO;
+            for (int j = (i + 1); j < trainStations.size(); j++) {
+                TrainStation destination = trainStations.get(j);
+                sumKM = sumKM.add(destination.getKilometers());
+                DailyTrainTicket dailyTrainTicket = new DailyTrainTicket();
+                dailyTrainTicket.setId(SnowUtil.getSnowflakeNextId());
+                dailyTrainTicket.setDate(date);
+                dailyTrainTicket.setTrainCode(trainCode);
+                dailyTrainTicket.setDeparture(departure.getName());
+                dailyTrainTicket.setDeparturePinyin(departure.getNamePinyin());
+                dailyTrainTicket.setDepartureTime(departure.getExitTime());
+                dailyTrainTicket.setDepartureIndex(departure.getIndex());
+                dailyTrainTicket.setDestination(destination.getName());
+                dailyTrainTicket.setDestinationPinyin(destination.getNamePinyin());
+                dailyTrainTicket.setArrivalTime(destination.getEntryTime());
+                dailyTrainTicket.setArrivalIndex(destination.getIndex());
+                int firstClass = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.FIRSTCLASS.getCode());
+                int secondClass = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.SECONDCLASS.getCode());
+                int softSleeper = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.SOFTSLEEPER.getCode());
+                int hardSleeper = dailyTrainSeatService.countSeat(date, trainCode, SeatTypeEnum.HARDSLEEPER.getCode());
+                // 票价 = 里程之和 * 座位单价 * 车次类型系数
+                String trainType = dailyTrain.getType();
+                // 计算票价系数：TrainTypeEnum.priceRate
+                BigDecimal priceRate = EnumUtil.getFieldBy(TrainTypeEnum::getPriceRate, TrainTypeEnum::getCode, trainType);
+                BigDecimal firstClassPrice = sumKM.multiply(SeatTypeEnum.FIRSTCLASS.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal secondClassPrice = sumKM.multiply(SeatTypeEnum.SECONDCLASS.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal softSleeperPrice = sumKM.multiply(SeatTypeEnum.SOFTSLEEPER.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                BigDecimal hardSleeperPrice = sumKM.multiply(SeatTypeEnum.HARDSLEEPER.getPrice()).multiply(priceRate).setScale(2, RoundingMode.HALF_UP);
+                dailyTrainTicket.setFirstClass(firstClass);
+                dailyTrainTicket.setFirstClassPrice(firstClassPrice);
+                dailyTrainTicket.setSecondClass(secondClass);
+                dailyTrainTicket.setSecondClassPrice(secondClassPrice);
+                dailyTrainTicket.setSoftSleeper(softSleeper);
+                dailyTrainTicket.setSoftSleeperPrice(softSleeperPrice);
+                dailyTrainTicket.setHardSleeper(hardSleeper);
+                dailyTrainTicket.setHardSleeperPrice(hardSleeperPrice);
+                dailyTrainTicket.setCreateTime(now);
+                dailyTrainTicket.setUpdateTime(now);
+                dailyTrainTicketMapper.insert(dailyTrainTicket);
             }
+        }
+        LOG.info("生成日期【{}】车次【{}】的余票信息结束", DateUtil.formatDate(date), trainCode);
+    }
 }
