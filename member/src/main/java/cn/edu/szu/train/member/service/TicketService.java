@@ -1,6 +1,7 @@
 package cn.edu.szu.train.member.service;
 
 import cn.edu.szu.train.common.aspect.LogAspect;
+import cn.edu.szu.train.common.request.MemberTicketRequest;
 import cn.edu.szu.train.common.response.PageResp;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.member.domain.Ticket;
@@ -28,18 +29,22 @@ public class TicketService {
     @Resource
     private TicketMapper ticketMapper;
 
-    public void save(TicketSaveReq req) {
+    /**
+     * 会员购买车票后新增保存
+     * @param req
+     */
+    public void save(MemberTicketRequest req) {
+        // LOG.info("seata全局事务ID save: {}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
-        if (ObjectUtil.isNull(ticket.getId())) {
-            ticket.setId(SnowUtil.getSnowflakeNextId());
-            ticket.setCreateTime(now);
-            ticket.setUpdateTime(now);
-            ticketMapper.insert(ticket);
-        } else {
-            ticket.setUpdateTime(now);
-            ticketMapper.updateByPrimaryKey(ticket);
-        }
+        ticket.setId(SnowUtil.getSnowflakeNextId());
+        ticket.setCreateTime(now);
+        ticket.setUpdateTime(now);
+        ticketMapper.insert(ticket);
+        // 模拟被调用方出现异常
+        // if (1 == 1) {
+        //     throw new Exception("测试异常11");
+        // }
     }
 
     public PageResp<TicketQueryResponse> queryList(TicketQueryReq req) {
