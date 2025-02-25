@@ -31,7 +31,15 @@ public class MemberTicketRequest {
      */
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     @NotNull(message = "【日期】不能为空")
-    private Date trainDate;
+    private Date Date;
+
+    public java.util.Date getDate() {
+        return Date;
+    }
+
+    public void setDate(java.util.Date date) {
+        Date = date;
+    }
 
     /**
      * 车次编号
@@ -49,39 +57,39 @@ public class MemberTicketRequest {
      * 排号|01, 02
      */
     @NotBlank(message = "【排号】不能为空")
-    private String seatRow;
+    private String row;
 
     /**
      * 列号|枚举[SeatColumnEnum]
      */
     @NotBlank(message = "【列号】不能为空")
-    private String seatCol;
+    private String col;
 
     /**
      * 出发站
      */
     @NotBlank(message = "【出发站】不能为空")
-    private String startStation;
+    private String departure;
 
     /**
      * 出发时间
      */
     @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     @NotNull(message = "【出发时间】不能为空")
-    private Date startTime;
+    private Date departureTime;
 
     /**
      * 到达站
      */
     @NotBlank(message = "【到达站】不能为空")
-    private String endStation;
+    private String destination;
 
     /**
      * 到站时间
      */
     @JsonFormat(pattern = "HH:mm:ss", timezone = "GMT+8")
     @NotNull(message = "【到站时间】不能为空")
-    private Date endTime;
+    private Date arrivalTime;
 
     /**
      * 座位类型|枚举[SeatTypeEnum]
@@ -113,14 +121,6 @@ public class MemberTicketRequest {
         this.passengerName = passengerName;
     }
 
-    public Date getTrainDate() {
-        return trainDate;
-    }
-
-    public void setTrainDate(Date trainDate) {
-        this.trainDate = trainDate;
-    }
-
     public String getTrainCode() {
         return trainCode;
     }
@@ -137,52 +137,52 @@ public class MemberTicketRequest {
         this.carriageIndex = carriageIndex;
     }
 
-    public String getSeatRow() {
-        return seatRow;
+    public String getRow() {
+        return row;
     }
 
-    public void setSeatRow(String seatRow) {
-        this.seatRow = seatRow;
+    public void setRow(String row) {
+        this.row = row;
     }
 
-    public String getSeatCol() {
-        return seatCol;
+    public String getCol() {
+        return col;
     }
 
-    public void setSeatCol(String seatCol) {
-        this.seatCol = seatCol;
+    public void setCol(String col) {
+        this.col = col;
     }
 
-    public String getStartStation() {
-        return startStation;
+    public String getDeparture() {
+        return departure;
     }
 
-    public void setStartStation(String startStation) {
-        this.startStation = startStation;
+    public void setDeparture(String departure) {
+        this.departure = departure;
     }
 
-    public String getEndStation() {
-        return endStation;
+    public java.util.Date getDepartureTime() {
+        return departureTime;
     }
 
-    public void setEndStation(String endStation) {
-        this.endStation = endStation;
+    public void setDepartureTime(java.util.Date departureTime) {
+        this.departureTime = departureTime;
     }
 
-    public Date getStartTime() {
-        return startTime;
+    public String getDestination() {
+        return destination;
     }
 
-    public void setStartTime(Date startTime) {
-        this.startTime = startTime;
+    public void setDestination(String destination) {
+        this.destination = destination;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public java.util.Date getArrivalTime() {
+        return arrivalTime;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setArrivalTime(java.util.Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
     public String getSeatType() {
@@ -195,19 +195,19 @@ public class MemberTicketRequest {
 
     @Override
     public String toString() {
-        return "MemberTicketReq{" +
+        return "MemberTicketRequest{" +
                 "memberId=" + memberId +
                 ", passengerId=" + passengerId +
-                ", passengerName=" + passengerName +
-                ", date=" + trainDate +
+                ", passengerName='" + passengerName + '\'' +
+                ", Date=" + Date +
                 ", trainCode='" + trainCode + '\'' +
                 ", carriageIndex=" + carriageIndex +
-                ", row='" + seatRow + '\'' +
-                ", col='" + seatCol + '\'' +
-                ", start='" + startStation + '\'' +
-                ", startTime=" + startTime +
-                ", end='" + endStation + '\'' +
-                ", endTime=" + endTime +
+                ", row='" + row + '\'' +
+                ", col='" + col + '\'' +
+                ", departure='" + departure + '\'' +
+                ", departureTime=" + departureTime +
+                ", destination='" + destination + '\'' +
+                ", arrivalTime=" + arrivalTime +
                 ", seatType='" + seatType + '\'' +
                 '}';
     }

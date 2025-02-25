@@ -1,9 +1,15 @@
 package cn.edu.szu.train.business.service;
 
+import cn.edu.szu.train.business.domain.ConfirmOrder;
 import cn.edu.szu.train.business.domain.DailyTrainSeat;
 import cn.edu.szu.train.business.domain.DailyTrainTicket;
+import cn.edu.szu.train.business.feign.MemberFeign;
 import cn.edu.szu.train.business.mapper.DailyTrainSeatMapper;
 import cn.edu.szu.train.business.mapper.custom.CustomizedDailyTrainTicketMapper;
+import cn.edu.szu.train.business.req.ConfirmOrderTicketReq;
+import cn.edu.szu.train.common.context.LoginMemberContext;
+import cn.edu.szu.train.common.request.MemberTicketRequest;
+import cn.edu.szu.train.common.response.CommonResp;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +29,9 @@ public class AfterConfirmOrderService {
     @Resource
     private CustomizedDailyTrainTicketMapper customizedDailyTrainTicketMapper;
 
+    @Resource
+    private MemberFeign memberFeign;
+
     /**
      * 选中座位后事务处理：
      * 座位表修改售卖情况sell；
@@ -32,11 +41,12 @@ public class AfterConfirmOrderService {
      */
     @Transactional
     // @GlobalTransactional
-    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> dailyTrainSeats) {
-        for (DailyTrainSeat seat : dailyTrainSeats) {
+    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketReq> tickets) {
+        for (int i = 0; i < seats.size(); i++) {
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
-            seatForUpdate.setId(seat.getId());
-            seatForUpdate.setSell(seat.getSell());
+            DailyTrainSeat dailyTrainSeat = seats.get(i);
+            seatForUpdate.setId(dailyTrainSeat.getId());
+            seatForUpdate.setSell(dailyTrainSeat.getSell());
             seatForUpdate.setUpdateTime(new Date());
             dailyTrainSeatMapper.updateByPrimaryKeySelective(seatForUpdate);
             // 计算当前站的座位卖出去之后，影响哪些站的余票库存
@@ -51,32 +61,49 @@ public class AfterConfirmOrderService {
             int maxStart = end - 1;
             int minEnd = start + 1;
             Integer minStart = 1;
-            for (int i = start - 1; i >= 0; i--) {
-                char aChar = chars[i - 1];
+            for (int j = start - 1; j >= 0; j--) {
+                char aChar = chars[j - 1];
                 if (aChar == '1') {
-                    minStart = i + 2;
+                    minStart = j + 2;
                     break;
                 }
             }
             LOG.info("影响的出发站区间为：{}-{}", minStart, maxStart);
             Integer maxEnd = seatForUpdate.getSell().length() + 1;
-            for (int i = end - 1; i < seatForUpdate.getSell().length(); i++) {
-                char aChar = chars[i];
+            for (int j = end - 1; j < seatForUpdate.getSell().length(); j++) {
+                char aChar = chars[j];
                 if (aChar == '1') {
-                    maxEnd = i + 1;
+                    maxEnd = j + 1;
                     break;
                 }
             }
             LOG.info("影响的到达站区间为：{}-{}", minEnd, maxEnd);
             customizedDailyTrainTicketMapper.updateCountBySell(
-                    seat.getDate(),
-                    seat.getTrainCode(),
-                    seat.getSeatType(),
+                    seats.get(i).getDate(),
+                    seats.get(i).getTrainCode(),
+                    seats.get(i).getSeatType(),
                     minStart,
                     maxStart,
                     minEnd,
                     maxEnd
             );
+            // 调用会员服务接口，为会员增加一张车票
+            MemberTicketRequest memberTicketRequest = new MemberTicketRequest();
+            memberTicketRequest.setMemberId(LoginMemberContext.getId());
+            memberTicketRequest.setPassengerId(tickets.get(i).getPassengerId());
+            memberTicketRequest.setPassengerName(tickets.get(i).getPassengerName());
+            memberTicketRequest.setDate(dailyTrainTicket.getDate());
+            memberTicketRequest.setTrainCode(dailyTrainTicket.getTrainCode());
+            memberTicketRequest.setCarriageIndex(dailyTrainSeat.getCarriageIndex());
+            memberTicketRequest.setSeatType(seats.get(i).getSeatType());
+            memberTicketRequest.setRow(dailyTrainSeat.getRow());
+            memberTicketRequest.setCol(dailyTrainSeat.getCol());
+            memberTicketRequest.setDeparture(dailyTrainTicket.getDeparture());
+            memberTicketRequest.setDepartureTime(dailyTrainTicket.getDepartureTime());
+            memberTicketRequest.setDestination(dailyTrainTicket.getDestination());
+            memberTicketRequest.setArrivalTime(dailyTrainTicket.getArrivalTime());
+            CommonResp<Object> commonResp = memberFeign.save(memberTicketRequest);
+            LOG.info("调用member接口，返回{}", commonResp);
         }
     }
 }
