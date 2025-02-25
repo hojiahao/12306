@@ -29,6 +29,12 @@ public class DailyTrainTicketAdminController {
         return new CommonResponse<>(queryList);
     }
 
+    @GetMapping("/query-list2")
+    public CommonResponse<PageResponse<DailyTrainTicketQueryResponse>> queryList2(@Valid DailyTrainTicketQueryRequest req) {
+        PageResponse<DailyTrainTicketQueryResponse> queryList = dailyTrainTicketService.queryList2(req);
+        return new CommonResponse<>(queryList);
+    }
+
     @DeleteMapping("/delete/{id}")
     public CommonResponse<Object> delete(@PathVariable Long id) {
         dailyTrainTicketService.delete(id);

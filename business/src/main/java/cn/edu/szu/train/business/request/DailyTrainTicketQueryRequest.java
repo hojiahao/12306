@@ -4,6 +4,7 @@ import cn.edu.szu.train.common.request.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.Objects;
 
 
 public class DailyTrainTicketQueryRequest extends PageRequest {
@@ -61,8 +62,25 @@ public class DailyTrainTicketQueryRequest extends PageRequest {
     }
 
     @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        DailyTrainTicketQueryRequest that = (DailyTrainTicketQueryRequest) object;
+        return Objects.equals(date, that.date) && Objects.equals(trainCode, that.trainCode) && Objects.equals(departure, that.departure) && Objects.equals(destination, that.destination) && Objects.equals(((DailyTrainTicketQueryRequest) object).getPage(), that.getPage()) && Objects.equals(((DailyTrainTicketQueryRequest) object).getPageSize(), that.getPageSize());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, trainCode, departure, destination, getPage(), getPageSize());
+    }
+
+    @Override
     public String toString() {
-        return "DailyTrainTicketQueryReq{" +
+        return "DailyTrainTicketQueryRequest{" +
                 "date=" + date +
                 ", trainCode='" + trainCode + '\'' +
                 ", departure='" + departure + '\'' +
