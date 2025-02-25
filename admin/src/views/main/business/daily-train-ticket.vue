@@ -135,85 +135,97 @@ export default defineComponent({
         key: 'trainCode',
       },
       {
-        title: '出发站',
-        dataIndex: 'departure',
-        key: 'departure',
+        title: '车站',
+        dataIndex: 'station',
       },
       {
-        title: '出发站拼音',
-        dataIndex: 'departurePinyin',
-        key: 'departurePinyin',
+        title: '时间',
+        dataIndex: 'time',
       },
       {
-        title: '出发时间',
-        dataIndex: 'departureTime',
-        key: 'departureTime',
+        title: '历时',
+        dataIndex: 'duration',
       },
-      {
-        title: '出发站序',
-        dataIndex: 'departureIndex',
-        key: 'departureIndex',
-      },
-      {
-        title: '到达站',
-        dataIndex: 'destination',
-        key: 'destination',
-      },
-      {
-        title: '到达站拼音',
-        dataIndex: 'destinationPinyin',
-        key: 'destinationPinyin',
-      },
-      {
-        title: '到站时间',
-        dataIndex: 'arrivalTime',
-        key: 'arrivalTime',
-      },
-      {
-        title: '到站站序',
-        dataIndex: 'arrivalIndex',
-        key: 'arrivalIndex',
-      },
+      // {
+      //   title: '出发站',
+      //   dataIndex: 'departure',
+      //   key: 'departure',
+      // },
+      // {
+      //   title: '出发站拼音',
+      //   dataIndex: 'departurePinyin',
+      //   key: 'departurePinyin',
+      // },
+      // {
+      //   title: '出发时间',
+      //   dataIndex: 'departureTime',
+      //   key: 'departureTime',
+      // },
+      // {
+      //   title: '出发站序',
+      //   dataIndex: 'departureIndex',
+      //   key: 'departureIndex',
+      // },
+      // {
+      //   title: '到达站',
+      //   dataIndex: 'destination',
+      //   key: 'destination',
+      // },
+      // {
+      //   title: '到达站拼音',
+      //   dataIndex: 'destinationPinyin',
+      //   key: 'destinationPinyin',
+      // },
+      // {
+      //   title: '到站时间',
+      //   dataIndex: 'arrivalTime',
+      //   key: 'arrivalTime',
+      // },
+      // {
+      //   title: '到站站序',
+      //   dataIndex: 'arrivalIndex',
+      //   key: 'arrivalIndex',
+      // },
       {
         title: '一等座余票',
         dataIndex: 'firstClass',
         key: 'firstClass',
       },
-      {
-        title: '一等座票价',
-        dataIndex: 'firstClassPrice',
-        key: 'firstClassPrice',
-      },
+      // {
+      //   title: '一等座票价',
+      //   dataIndex: 'firstClassPrice',
+      //   key: 'firstClassPrice',
+      // },
       {
         title: '二等座余票',
         dataIndex: 'secondClass',
         key: 'secondClass',
       },
-      {
-        title: '二等座票价',
-        dataIndex: 'secondClassPrice',
-        key: 'secondClassPrice',
-      },
+      // {
+      //   title: '二等座票价',
+      //   dataIndex: 'secondClassPrice',
+      //   key: 'secondClassPrice',
+      // },
       {
         title: '软卧余票',
         dataIndex: 'softSleeper',
         key: 'softSleeper',
       },
-      {
-        title: '软卧票价',
-        dataIndex: 'softSleeperPrice',
-        key: 'softSleeperPrice',
-      },
+      // {
+      //   title: '软卧票价',
+      //   dataIndex: 'softSleeperPrice',
+      //   key: 'softSleeperPrice',
+      // },
       {
         title: '硬卧余票',
         dataIndex: 'hardSleeper',
         key: 'hardSleeper',
       },
-      {
-        title: '硬卧票价',
-        dataIndex: 'hardSleeperPrice',
-        key: 'hardSleeperPrice',
-      },
+      // {
+      //   title: '硬卧票价',
+      //   dataIndex: 'hardSleeperPrice',
+      //   key: 'hardSleeperPrice',
+      // },
     ];
 
     const handleQuery = (param) => {
