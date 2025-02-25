@@ -4,14 +4,13 @@ import cn.edu.szu.train.business.domain.DailyTrain;
 import cn.edu.szu.train.business.domain.TrainStation;
 import cn.edu.szu.train.business.enums.SeatTypeEnum;
 import cn.edu.szu.train.business.enums.TrainTypeEnum;
-import cn.edu.szu.train.common.aspect.LogAspect;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.DailyTrainTicket;
 import cn.edu.szu.train.business.domain.DailyTrainTicketExample;
 import cn.edu.szu.train.business.mapper.DailyTrainTicketMapper;
-import cn.edu.szu.train.business.req.DailyTrainTicketQueryReq;
-import cn.edu.szu.train.business.req.DailyTrainTicketSaveReq;
+import cn.edu.szu.train.business.request.DailyTrainTicketQueryRequest;
+import cn.edu.szu.train.business.request.DailyTrainTicketSaveRequest;
 import cn.edu.szu.train.business.response.DailyTrainTicketQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -46,7 +45,7 @@ public class DailyTrainTicketService {
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
 
-    public void save(DailyTrainTicketSaveReq req) {
+    public void save(DailyTrainTicketSaveRequest req) {
         DateTime now = DateTime.now();
         DailyTrainTicket dailyTrainTicket = BeanUtil.copyProperties(req, DailyTrainTicket.class);
         if (ObjectUtil.isNull(dailyTrainTicket.getId())) {
@@ -61,13 +60,13 @@ public class DailyTrainTicketService {
     }
 
     @Cacheable(value = "DailyTrainTicketService.queryList3")
-    public PageResp<DailyTrainTicketQueryResponse> queryList3(DailyTrainTicketQueryReq req) {
+    public PageResponse<DailyTrainTicketQueryResponse> queryList3(DailyTrainTicketQueryRequest req) {
         LOG.info("测试缓存击穿");
         return null;
     }
 
 
-    public PageResp<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryReq req) {
+    public PageResponse<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryRequest req) {
         // 常见的缓存过期策略
         // TTL 超时时间
         // LRU 最近最少使用
@@ -107,10 +106,10 @@ public class DailyTrainTicketService {
 
         List<DailyTrainTicketQueryResponse> list = BeanUtil.copyToList(dailyTrainTicketList, DailyTrainTicketQueryResponse.class);
 
-        PageResp<DailyTrainTicketQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<DailyTrainTicketQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

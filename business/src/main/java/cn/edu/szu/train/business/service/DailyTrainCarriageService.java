@@ -2,12 +2,11 @@ package cn.edu.szu.train.business.service;
 
 import cn.edu.szu.train.business.domain.*;
 import cn.edu.szu.train.business.enums.SeatColEnum;
-import cn.edu.szu.train.common.aspect.LogAspect;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.mapper.DailyTrainCarriageMapper;
-import cn.edu.szu.train.business.req.DailyTrainCarriageQueryReq;
-import cn.edu.szu.train.business.req.DailyTrainCarriageSaveReq;
+import cn.edu.szu.train.business.request.DailyTrainCarriageQueryRequest;
+import cn.edu.szu.train.business.request.DailyTrainCarriageSaveRequest;
 import cn.edu.szu.train.business.response.DailyTrainCarriageQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -19,7 +18,6 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +34,7 @@ public class DailyTrainCarriageService {
     @Resource
     private TrainCarriageService trainCarriageService;
 
-    public void save(DailyTrainCarriageSaveReq req) {
+    public void save(DailyTrainCarriageSaveRequest req) {
         DateTime now = DateTime.now();
         // 自动计算列数和总座位数
         List<SeatColEnum> seatColEnums = SeatColEnum.getColsByType(req.getSeatType());
@@ -54,7 +52,7 @@ public class DailyTrainCarriageService {
         }
     }
 
-    public PageResp<DailyTrainCarriageQueryResponse> queryList(DailyTrainCarriageQueryReq req) {
+    public PageResponse<DailyTrainCarriageQueryResponse> queryList(DailyTrainCarriageQueryRequest req) {
         DailyTrainCarriageExample dailyTrainCarriageExample = new DailyTrainCarriageExample();
         dailyTrainCarriageExample.setOrderByClause("date desc, train_code asc, `index` asc");
         DailyTrainCarriageExample.Criteria criteria = dailyTrainCarriageExample.createCriteria();
@@ -76,10 +74,10 @@ public class DailyTrainCarriageService {
 
         List<DailyTrainCarriageQueryResponse> list = BeanUtil.copyToList(dailyTrainCarriageList, DailyTrainCarriageQueryResponse.class);
 
-        PageResp<DailyTrainCarriageQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<DailyTrainCarriageQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

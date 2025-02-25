@@ -1,13 +1,13 @@
 package cn.edu.szu.train.${module}.service;
 
 import cn.edu.szu.train.common.aspect.LogAspect;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.${module}.domain.${Domain};
 import cn.edu.szu.train.${module}.domain.${Domain}Example;
 import cn.edu.szu.train.${module}.mapper.${Domain}Mapper;
-import cn.edu.szu.train.${module}.req.${Domain}QueryReq;
-import cn.edu.szu.train.${module}.req.${Domain}SaveReq;
+import cn.edu.szu.train.${module}.request.${Domain}QueryRequest;
+import cn.edu.szu.train.${module}.request.${Domain}SaveRequest;
 import cn.edu.szu.train.${module}.response.${Domain}QueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
@@ -28,7 +28,7 @@ private static final Logger LOG = LoggerFactory.getLogger(${Domain}Service.class
 @Resource
 private ${Domain}Mapper ${domain}Mapper;
 
-public void save(${Domain}SaveReq req) {
+public void save(${Domain}SaveRequest req) {
 DateTime now = DateTime.now();
 ${Domain} ${domain} = BeanUtil.copyProperties(req, ${Domain}.class);
 if (ObjectUtil.isNull(${domain}.getId())) {
@@ -42,7 +42,7 @@ ${domain}Mapper.updateByPrimaryKey(${domain});
 }
 }
 
-public PageResp<${Domain}QueryResponse> queryList(${Domain}QueryReq req) {
+public PageResp<${Domain}QueryResponse> queryList(${Domain}QueryRequest req) {
     ${Domain}Example ${domain}Example = new ${Domain}Example();
     ${domain}Example.setOrderByClause("id desc");
     ${Domain}Example.Criteria criteria = ${domain}Example.createCriteria();
@@ -58,10 +58,10 @@ public PageResp<${Domain}QueryResponse> queryList(${Domain}QueryReq req) {
 
     List<${Domain}QueryResponse> list = BeanUtil.copyToList(${domain}List, ${Domain}QueryResponse.class);
 
-        PageResp<${Domain}QueryResponse> pageResp = new PageResp<>();
-            pageResp.setTotal(pageInfo.getTotal());
-            pageResp.setRows(list);
-            return pageResp;
+        PageResp<${Domain}QueryResponse> pageResponse = new PageResp<>();
+            pageResponse.setTotal(pageInfo.getTotal());
+            pageResponse.setRows(list);
+            return pageResponse;
             }
 
             public void delete(Long id) {

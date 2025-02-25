@@ -2,13 +2,13 @@ package cn.edu.szu.train.business.service;
 
 import cn.edu.szu.train.business.domain.TrainStation;
 import cn.edu.szu.train.business.mapper.TrainStationMapper;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.DailyTrainStation;
 import cn.edu.szu.train.business.domain.DailyTrainStationExample;
 import cn.edu.szu.train.business.mapper.DailyTrainStationMapper;
-import cn.edu.szu.train.business.req.DailyTrainStationQueryReq;
-import cn.edu.szu.train.business.req.DailyTrainStationSaveReq;
+import cn.edu.szu.train.business.request.DailyTrainStationQueryRequest;
+import cn.edu.szu.train.business.request.DailyTrainStationSaveRequest;
 import cn.edu.szu.train.business.response.DailyTrainStationQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -39,7 +39,7 @@ public class DailyTrainStationService {
     @Autowired
     private TrainStationService trainStationService;
 
-    public void save(DailyTrainStationSaveReq req) {
+    public void save(DailyTrainStationSaveRequest req) {
         DateTime now = DateTime.now();
         DailyTrainStation dailyTrainStation = BeanUtil.copyProperties(req, DailyTrainStation.class);
         if (ObjectUtil.isNull(dailyTrainStation.getId())) {
@@ -53,7 +53,7 @@ public class DailyTrainStationService {
         }
     }
 
-    public PageResp<DailyTrainStationQueryResponse> queryList(DailyTrainStationQueryReq req) {
+    public PageResponse<DailyTrainStationQueryResponse> queryList(DailyTrainStationQueryRequest req) {
         DailyTrainStationExample dailyTrainStationExample = new DailyTrainStationExample();
         dailyTrainStationExample.setOrderByClause("date desc, train_code asc, `index` asc");
         DailyTrainStationExample.Criteria criteria = dailyTrainStationExample.createCriteria();
@@ -75,10 +75,10 @@ public class DailyTrainStationService {
 
         List<DailyTrainStationQueryResponse> list = BeanUtil.copyToList(dailyTrainStationList, DailyTrainStationQueryResponse.class);
 
-        PageResp<DailyTrainStationQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<DailyTrainStationQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

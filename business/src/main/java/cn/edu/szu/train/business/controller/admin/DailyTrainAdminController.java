@@ -1,9 +1,9 @@
 package cn.edu.szu.train.business.controller.admin;
 
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.business.req.DailyTrainQueryReq;
-import cn.edu.szu.train.business.req.DailyTrainSaveReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.common.response.PageResponse;
+import cn.edu.szu.train.business.request.DailyTrainQueryRequest;
+import cn.edu.szu.train.business.request.DailyTrainSaveRequest;
 import cn.edu.szu.train.business.response.DailyTrainQueryResponse;
 import cn.edu.szu.train.business.service.DailyTrainService;
 import jakarta.annotation.Resource;
@@ -21,21 +21,21 @@ public class DailyTrainAdminController {
     private DailyTrainService dailyTrainService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody DailyTrainSaveReq req) {
+    public CommonResponse<Object> save(@Valid @RequestBody DailyTrainSaveRequest req) {
         dailyTrainService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<DailyTrainQueryResponse>> queryList(@Valid DailyTrainQueryReq req) {
-        PageResp<DailyTrainQueryResponse> queryList = dailyTrainService.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<DailyTrainQueryResponse>> queryList(@Valid DailyTrainQueryRequest req) {
+        PageResponse<DailyTrainQueryResponse> queryList = dailyTrainService.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResponse<Object> delete(@PathVariable Long id) {
         dailyTrainService.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     /**
@@ -44,8 +44,8 @@ public class DailyTrainAdminController {
      * @return
      */
     @GetMapping("/generate-daily-train/{date}")
-    public CommonResp<Object> generateDailyTrain(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+    public CommonResponse<Object> generateDailyTrain(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
         dailyTrainService.generate(date);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }

@@ -1,14 +1,13 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.business.domain.DailyTrainCarriage;
 import cn.edu.szu.train.business.domain.Train;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.DailyTrain;
 import cn.edu.szu.train.business.domain.DailyTrainExample;
 import cn.edu.szu.train.business.mapper.DailyTrainMapper;
-import cn.edu.szu.train.business.req.DailyTrainQueryReq;
-import cn.edu.szu.train.business.req.DailyTrainSaveReq;
+import cn.edu.szu.train.business.request.DailyTrainQueryRequest;
+import cn.edu.szu.train.business.request.DailyTrainSaveRequest;
 import cn.edu.szu.train.business.response.DailyTrainQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -50,7 +49,7 @@ public class DailyTrainService {
     @Autowired
     private TrainCarriageService trainCarriageService;
 
-    public void save(DailyTrainSaveReq req) {
+    public void save(DailyTrainSaveRequest req) {
         DateTime now = DateTime.now();
         DailyTrain dailyTrain = BeanUtil.copyProperties(req, DailyTrain.class);
         if (ObjectUtil.isNull(dailyTrain.getId())) {
@@ -64,7 +63,7 @@ public class DailyTrainService {
         }
     }
 
-    public PageResp<DailyTrainQueryResponse> queryList(DailyTrainQueryReq req) {
+    public PageResponse<DailyTrainQueryResponse> queryList(DailyTrainQueryRequest req) {
         DailyTrainExample dailyTrainExample = new DailyTrainExample();
         dailyTrainExample.setOrderByClause("date desc, code asc");
         DailyTrainExample.Criteria criteria = dailyTrainExample.createCriteria();
@@ -86,10 +85,10 @@ public class DailyTrainService {
 
         List<DailyTrainQueryResponse> list = BeanUtil.copyToList(dailyTrainList, DailyTrainQueryResponse.class);
 
-        PageResp<DailyTrainQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<DailyTrainQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

@@ -1,7 +1,7 @@
 package cn.edu.szu.train.common.controller;
 
 import cn.edu.szu.train.common.exception.BusinessException;
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
@@ -24,12 +24,12 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public CommonResp<Object> exceptionHandler(Exception e) {
-        CommonResp<Object> commonResp = new CommonResp<>();
+    public CommonResponse<Object> exceptionHandler(Exception e) {
+        CommonResponse<Object> commonResponse = new CommonResponse<>();
         LOG.error("System Exception：", e);
-        commonResp.setSuccess(false);
-        commonResp.setMessage("The system is abnormal, please contact the administrator.");
-        return commonResp;
+        commonResponse.setSuccess(false);
+        commonResponse.setMessage("The system is abnormal, please contact the administrator.");
+        return commonResponse;
     }
 
     /**
@@ -39,12 +39,12 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(value = BusinessException.class)
     @ResponseBody
-    public CommonResp<Object> exceptionHandler(BusinessException e) {
-        CommonResp<Object> commonResp = new CommonResp<>();
+    public CommonResponse<Object> exceptionHandler(BusinessException e) {
+        CommonResponse<Object> commonResponse = new CommonResponse<>();
         LOG.error("Business Exception：{}", e.getE().getDesc());
-        commonResp.setSuccess(false);
-        commonResp.setMessage(e.getE().getDesc());
-        return commonResp;
+        commonResponse.setSuccess(false);
+        commonResponse.setMessage(e.getE().getDesc());
+        return commonResponse;
     }
 
     /**
@@ -54,12 +54,12 @@ public class ControllerExceptionHandler {
      */
     @ExceptionHandler(value = BindException.class)
     @ResponseBody
-    public CommonResp<Object> exceptionHandler(BindException e) {
-        CommonResp<Object> commonResp = new CommonResp<>();
+    public CommonResponse<Object> exceptionHandler(BindException e) {
+        CommonResponse<Object> commonResponse = new CommonResponse<>();
         LOG.error("Validation Exception：{}", e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-        commonResp.setSuccess(false);
-        commonResp.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
-        return commonResp;
+        commonResponse.setSuccess(false);
+        commonResponse.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return commonResponse;
     }
 
 }

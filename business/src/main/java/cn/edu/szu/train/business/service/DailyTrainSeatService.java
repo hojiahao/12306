@@ -1,12 +1,11 @@
 package cn.edu.szu.train.business.service;
 
 import cn.edu.szu.train.business.domain.*;
-import cn.edu.szu.train.common.aspect.LogAspect;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.mapper.DailyTrainSeatMapper;
-import cn.edu.szu.train.business.req.DailyTrainSeatQueryReq;
-import cn.edu.szu.train.business.req.DailyTrainSeatSaveReq;
+import cn.edu.szu.train.business.request.DailyTrainSeatQueryRequest;
+import cn.edu.szu.train.business.request.DailyTrainSeatSaveRequest;
 import cn.edu.szu.train.business.response.DailyTrainSeatQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -38,7 +37,7 @@ public class DailyTrainSeatService {
     @Resource
     private TrainStationService trainStationService;
 
-    public void save(DailyTrainSeatSaveReq req) {
+    public void save(DailyTrainSeatSaveRequest req) {
         DateTime now = DateTime.now();
         DailyTrainSeat dailyTrainSeat = BeanUtil.copyProperties(req, DailyTrainSeat.class);
         if (ObjectUtil.isNull(dailyTrainSeat.getId())) {
@@ -52,7 +51,7 @@ public class DailyTrainSeatService {
         }
     }
 
-    public PageResp<DailyTrainSeatQueryResponse> queryList(DailyTrainSeatQueryReq req) {
+    public PageResponse<DailyTrainSeatQueryResponse> queryList(DailyTrainSeatQueryRequest req) {
         DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
         dailyTrainSeatExample.setOrderByClause("date desc, train_code asc, carriage_index asc, carriage_seat_index asc");
         DailyTrainSeatExample.Criteria criteria = dailyTrainSeatExample.createCriteria();
@@ -70,10 +69,10 @@ public class DailyTrainSeatService {
 
         List<DailyTrainSeatQueryResponse> list = BeanUtil.copyToList(dailyTrainSeatList, DailyTrainSeatQueryResponse.class);
 
-        PageResp<DailyTrainSeatQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<DailyTrainSeatQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

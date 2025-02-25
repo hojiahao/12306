@@ -1,6 +1,6 @@
 package cn.edu.szu.train.batch.feign;
 
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,5 +14,5 @@ public interface BusinessFeign {
     String hello();
 
     @GetMapping("/admin/daily-train/generate-daily-train/{date}")
-    CommonResp<Object> generateDailyTrain(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
+    CommonResponse<Object> generateDailyTrain(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") Date date);
 }

@@ -1,7 +1,7 @@
 package cn.edu.szu.train.business.feign;
 
 import cn.edu.szu.train.common.request.MemberTicketRequest;
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +11,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface MemberFeign {
 
     @GetMapping("/member/feign/ticket/save")
-    CommonResp<Object> save(@RequestBody MemberTicketRequest req);
+    CommonResponse<Object> save(@RequestBody MemberTicketRequest req);
 
 }

@@ -9,23 +9,19 @@ import cn.edu.szu.train.common.util.ValidateCodeUtil;
 import cn.edu.szu.train.member.domain.Member;
 import cn.edu.szu.train.member.domain.MemberExample;
 import cn.edu.szu.train.member.mapper.MemberMapper;
-import cn.edu.szu.train.member.req.MemberLoginReq;
-import cn.edu.szu.train.member.req.MemberRegisterReq;
-import cn.edu.szu.train.member.req.MemberSendCodeReq;
+import cn.edu.szu.train.member.request.MemberLoginRequest;
+import cn.edu.szu.train.member.request.MemberRegisterRequest;
+import cn.edu.szu.train.member.request.MemberSendCodeRequest;
 import cn.edu.szu.train.member.response.MemberLoginResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.RandomUtil;
-import cn.hutool.jwt.JWTUtil;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class MemberService {
@@ -39,7 +35,7 @@ public class MemberService {
         return Math.toIntExact(memberMapper.countByExample(null));
     }
 
-    public long register(MemberRegisterReq req) {
+    public long register(MemberRegisterRequest req) {
         String mobile = req.getMobile();
         Member memberDB = selectByMobile(mobile);
 
@@ -54,7 +50,7 @@ public class MemberService {
         return member.getId();
     }
 
-    public void sendCode(MemberSendCodeReq req) throws Exception {
+    public void sendCode(MemberSendCodeRequest req) throws Exception {
         String mobile = req.getMobile();
         Member memberDB = selectByMobile(mobile);
 
@@ -80,7 +76,7 @@ public class MemberService {
         // 对接短信通道，发送短信
     }
 
-    public MemberLoginResponse login(MemberLoginReq req) {
+    public MemberLoginResponse login(MemberLoginRequest req) {
         String mobile = req.getMobile();
         String code = req.getCode();
         Member memberDB = selectByMobile(mobile);

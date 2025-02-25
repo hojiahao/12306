@@ -1,15 +1,14 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.business.domain.ConfirmOrder;
 import cn.edu.szu.train.business.domain.DailyTrainSeat;
 import cn.edu.szu.train.business.domain.DailyTrainTicket;
 import cn.edu.szu.train.business.feign.MemberFeign;
 import cn.edu.szu.train.business.mapper.DailyTrainSeatMapper;
 import cn.edu.szu.train.business.mapper.custom.CustomizedDailyTrainTicketMapper;
-import cn.edu.szu.train.business.req.ConfirmOrderTicketReq;
+import cn.edu.szu.train.business.request.ConfirmOrderTicketRequest;
 import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.request.MemberTicketRequest;
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +40,7 @@ public class AfterConfirmOrderService {
      */
     @Transactional
     // @GlobalTransactional
-    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketReq> tickets) {
+    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets) {
         for (int i = 0; i < seats.size(); i++) {
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
             DailyTrainSeat dailyTrainSeat = seats.get(i);
@@ -102,8 +101,8 @@ public class AfterConfirmOrderService {
             memberTicketRequest.setDepartureTime(dailyTrainTicket.getDepartureTime());
             memberTicketRequest.setDestination(dailyTrainTicket.getDestination());
             memberTicketRequest.setArrivalTime(dailyTrainTicket.getArrivalTime());
-            CommonResp<Object> commonResp = memberFeign.save(memberTicketRequest);
-            LOG.info("调用member接口，返回{}", commonResp);
+            CommonResponse<Object> commonResponse = memberFeign.save(memberTicketRequest);
+            LOG.info("调用member接口，返回{}", commonResponse);
         }
     }
 }

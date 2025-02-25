@@ -1,9 +1,9 @@
 package cn.edu.szu.train.business.controller.admin;
 
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.business.req.StationQueryReq;
-import cn.edu.szu.train.business.req.StationSaveReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.common.response.PageResponse;
+import cn.edu.szu.train.business.request.StationQueryRequest;
+import cn.edu.szu.train.business.request.StationSaveRequest;
 import cn.edu.szu.train.business.response.StationQueryResponse;
 import cn.edu.szu.train.business.service.StationService;
 import jakarta.annotation.Resource;
@@ -20,26 +20,26 @@ public class StationAdminController {
     private StationService stationService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody StationSaveReq req) {
+    public CommonResponse<Object> save(@Valid @RequestBody StationSaveRequest req) {
         stationService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<StationQueryResponse>> queryList(@Valid StationQueryReq req) {
-        PageResp<StationQueryResponse> queryList = stationService.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<StationQueryResponse>> queryList(@Valid StationQueryRequest req) {
+        PageResponse<StationQueryResponse> queryList = stationService.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResponse<Object> delete(@PathVariable Long id) {
         stationService.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-all")
-    public CommonResp<List<StationQueryResponse>> queryAll() {
+    public CommonResponse<List<StationQueryResponse>> queryAll() {
         List<StationQueryResponse> list = stationService.queryAll();
-        return new CommonResp<>(list);
+        return new CommonResponse<>(list);
     }
 }

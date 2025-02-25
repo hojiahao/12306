@@ -1,7 +1,7 @@
 package cn.edu.szu.train.batch.job;
 
 import cn.edu.szu.train.batch.feign.BusinessFeign;
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
@@ -30,7 +30,7 @@ public class DailyTrainJob implements Job {
         Date date = new Date();
         DateTime dateTime = DateUtil.offsetDay(date, 14);
         Date offsetDate = dateTime.toJdkDate();
-        CommonResp<Object> commonResp = businessFeign.generateDailyTrain(offsetDate);
-        LOG.info("15天后的车次数据生成完成，结果：:{}", commonResp);
+        CommonResponse<Object> commonResponse = businessFeign.generateDailyTrain(offsetDate);
+        LOG.info("15天后的车次数据生成完成，结果：:{}", commonResponse);
     }
 }

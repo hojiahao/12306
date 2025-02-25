@@ -1,9 +1,9 @@
 package cn.edu.szu.train.business.controller.admin;
 
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.business.req.TrainStationQueryReq;
-import cn.edu.szu.train.business.req.TrainStationSaveReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.common.response.PageResponse;
+import cn.edu.szu.train.business.request.TrainStationQueryRequest;
+import cn.edu.szu.train.business.request.TrainStationSaveRequest;
 import cn.edu.szu.train.business.response.TrainStationQueryResponse;
 import cn.edu.szu.train.business.service.TrainStationService;
 import jakarta.annotation.Resource;
@@ -18,20 +18,20 @@ public class TrainStationAdminController {
     private TrainStationService trainStationService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody TrainStationSaveReq req) {
+    public CommonResponse<Object> save(@Valid @RequestBody TrainStationSaveRequest req) {
         trainStationService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<TrainStationQueryResponse>> queryList(@Valid TrainStationQueryReq req) {
-        PageResp<TrainStationQueryResponse> queryList = trainStationService.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<TrainStationQueryResponse>> queryList(@Valid TrainStationQueryRequest req) {
+        PageResponse<TrainStationQueryResponse> queryList = trainStationService.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResponse<Object> delete(@PathVariable Long id) {
         trainStationService.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }

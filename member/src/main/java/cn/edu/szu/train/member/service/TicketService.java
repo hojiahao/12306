@@ -1,18 +1,15 @@
 package cn.edu.szu.train.member.service;
 
-import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.request.MemberTicketRequest;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.member.domain.Ticket;
 import cn.edu.szu.train.member.domain.TicketExample;
 import cn.edu.szu.train.member.mapper.TicketMapper;
-import cn.edu.szu.train.member.req.TicketQueryReq;
-import cn.edu.szu.train.member.req.TicketSaveReq;
+import cn.edu.szu.train.member.request.TicketQueryRequest;
 import cn.edu.szu.train.member.response.TicketQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.date.DateTime;
-import cn.hutool.core.util.ObjectUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
@@ -47,7 +44,7 @@ public class TicketService {
         // }
     }
 
-    public PageResp<TicketQueryResponse> queryList(TicketQueryReq req) {
+    public PageResponse<TicketQueryResponse> queryList(TicketQueryRequest req) {
         TicketExample ticketExample = new TicketExample();
         ticketExample.setOrderByClause("id desc");
         TicketExample.Criteria criteria = ticketExample.createCriteria();
@@ -63,10 +60,10 @@ public class TicketService {
 
         List<TicketQueryResponse> list = BeanUtil.copyToList(ticketList, TicketQueryResponse.class);
 
-        PageResp<TicketQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<TicketQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

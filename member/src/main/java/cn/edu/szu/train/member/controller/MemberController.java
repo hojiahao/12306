@@ -1,9 +1,9 @@
 package cn.edu.szu.train.member.controller;
 
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.member.req.MemberLoginReq;
-import cn.edu.szu.train.member.req.MemberRegisterReq;
-import cn.edu.szu.train.member.req.MemberSendCodeReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.member.request.MemberLoginRequest;
+import cn.edu.szu.train.member.request.MemberRegisterRequest;
+import cn.edu.szu.train.member.request.MemberSendCodeRequest;
 import cn.edu.szu.train.member.response.MemberLoginResponse;
 import cn.edu.szu.train.member.service.MemberService;
 import jakarta.annotation.Resource;
@@ -17,30 +17,30 @@ public class MemberController {
     private MemberService memberService;
 
     @GetMapping("/count")
-    public CommonResp<Integer> count() {
+    public CommonResponse<Integer> count() {
         int count = memberService.count();
-        CommonResp<Integer> commonResp = new CommonResp<>();
-        commonResp.setContent(count);
-        return commonResp;
+        CommonResponse<Integer> commonResponse = new CommonResponse<>();
+        commonResponse.setContent(count);
+        return commonResponse;
     }
 
     @PostMapping("/register")
-    public CommonResp<Long> register(@Valid MemberRegisterReq req) {
+    public CommonResponse<Long> register(@Valid MemberRegisterRequest req) {
         long register = memberService.register(req);
 //        CommonResp<Long> commonResp = new CommonResp<>();
 //        commonResp.setContent(register);
-        return new CommonResp<>(register);
+        return new CommonResponse<>(register);
     }
 
     @PostMapping("/send-code")
-    public CommonResp<Long> sendCode(@Valid @RequestBody MemberSendCodeReq req) throws Exception {
+    public CommonResponse<Long> sendCode(@Valid @RequestBody MemberSendCodeRequest req) throws Exception {
         memberService.sendCode(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @PostMapping("/login")
-    public CommonResp<MemberLoginResponse> sendCode(@Valid @RequestBody MemberLoginReq req) {
+    public CommonResponse<MemberLoginResponse> sendCode(@Valid @RequestBody MemberLoginRequest req) {
         MemberLoginResponse loginResponse = memberService.login(req);
-        return new CommonResp<>(loginResponse);
+        return new CommonResponse<>(loginResponse);
     }
 }

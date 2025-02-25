@@ -1,9 +1,9 @@
 package cn.edu.szu.train.member.controller;
 
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.member.req.PassengerQueryReq;
-import cn.edu.szu.train.member.req.PassengerSaveReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.common.response.PageResponse;
+import cn.edu.szu.train.member.request.PassengerQueryRequest;
+import cn.edu.szu.train.member.request.PassengerSaveRequest;
 import cn.edu.szu.train.member.response.PassengerQueryResponse;
 import cn.edu.szu.train.member.service.PassengerService;
 import jakarta.annotation.Resource;
@@ -20,32 +20,32 @@ public class PassengerController {
     private PassengerService passengerService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody PassengerSaveReq req) {
+    public CommonResponse<Object> save(@Valid @RequestBody PassengerSaveRequest req) {
         passengerService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("query-list")
-    public CommonResp<PageResp<PassengerQueryResponse>> queryList(@Valid PassengerQueryReq req) {
-        PageResp<PassengerQueryResponse> queryList = passengerService.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<PassengerQueryResponse>> queryList(@Valid PassengerQueryRequest req) {
+        PageResponse<PassengerQueryResponse> queryList = passengerService.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-public CommonResp<Object> delete(@PathVariable Long id) {
+public CommonResponse<Object> delete(@PathVariable Long id) {
         passengerService.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-mine")
-    public CommonResp<List<PassengerQueryResponse>> queryMine() {
+    public CommonResponse<List<PassengerQueryResponse>> queryMine() {
         List<PassengerQueryResponse> list = passengerService.queryMine();
-        return new CommonResp<>(list);
+        return new CommonResponse<>(list);
     }
 
     @GetMapping("/init")
-    public CommonResp<Object> init() {
+    public CommonResponse<Object> init() {
         passengerService.init();
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }

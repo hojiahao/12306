@@ -1,7 +1,7 @@
 package cn.edu.szu.train.member.feign;
 
 import cn.edu.szu.train.common.request.MemberTicketRequest;
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import cn.edu.szu.train.member.service.TicketService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +17,8 @@ public class FeignTicketController {
     private TicketService ticketService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody MemberTicketRequest req) {
+    public CommonResponse<Object> save(@Valid @RequestBody MemberTicketRequest req) {
         ticketService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }

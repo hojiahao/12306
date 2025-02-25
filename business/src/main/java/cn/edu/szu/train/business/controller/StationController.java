@@ -2,7 +2,7 @@ package cn.edu.szu.train.business.controller;
 
 import cn.edu.szu.train.business.response.StationQueryResponse;
 import cn.edu.szu.train.business.service.StationService;
-import cn.edu.szu.train.common.response.CommonResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +16,8 @@ public class StationController {
     private StationService stationService;
 
     @GetMapping("/query-all")
-    public CommonResp<List<StationQueryResponse>> queryAll() {
+    public CommonResponse<List<StationQueryResponse>> queryAll() {
         List<StationQueryResponse> list = stationService.queryAll();
-        return new CommonResp<>(list);
+        return new CommonResponse<>(list);
     }
 }

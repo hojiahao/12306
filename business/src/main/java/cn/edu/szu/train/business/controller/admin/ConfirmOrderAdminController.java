@@ -1,9 +1,9 @@
 package cn.edu.szu.train.business.controller.admin;
 
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.business.req.ConfirmOrderQueryReq;
-import cn.edu.szu.train.business.req.ConfirmOrderDoReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.common.response.PageResponse;
+import cn.edu.szu.train.business.request.ConfirmOrderQueryRequest;
+import cn.edu.szu.train.business.request.ConfirmOrderDoRequest;
 import cn.edu.szu.train.business.response.ConfirmOrderQueryResponse;
 import cn.edu.szu.train.business.service.ConfirmOrderService;
 import jakarta.annotation.Resource;
@@ -18,20 +18,20 @@ public class ConfirmOrderAdminController {
     private ConfirmOrderService confirmOrderService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody ConfirmOrderDoReq req) {
+    public CommonResponse<Object> save(@Valid @RequestBody ConfirmOrderDoRequest req) {
         confirmOrderService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<ConfirmOrderQueryResponse>> queryList(@Valid ConfirmOrderQueryReq req) {
-        PageResp<ConfirmOrderQueryResponse> queryList = confirmOrderService.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<ConfirmOrderQueryResponse>> queryList(@Valid ConfirmOrderQueryRequest req) {
+        PageResponse<ConfirmOrderQueryResponse> queryList = confirmOrderService.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResponse<Object> delete(@PathVariable Long id) {
         confirmOrderService.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }

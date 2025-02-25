@@ -1,11 +1,8 @@
 package cn.edu.szu.train.business.controller;
 
-import cn.edu.szu.train.business.req.ConfirmOrderDoReq;
-import cn.edu.szu.train.business.req.ConfirmOrderQueryReq;
-import cn.edu.szu.train.business.response.ConfirmOrderQueryResponse;
+import cn.edu.szu.train.business.request.ConfirmOrderDoRequest;
 import cn.edu.szu.train.business.service.ConfirmOrderService;
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.CommonResponse;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +15,8 @@ public class ConfirmOrderController {
     private ConfirmOrderService confirmOrderService;
 
     @PostMapping("/do")
-    public CommonResp<Object> doConfirm(@Valid @RequestBody ConfirmOrderDoReq req) {
+    public CommonResponse<Object> doConfirm(@Valid @RequestBody ConfirmOrderDoRequest req) {
         confirmOrderService.doConfirm(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }

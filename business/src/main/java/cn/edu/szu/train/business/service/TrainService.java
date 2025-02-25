@@ -1,17 +1,14 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.business.domain.Station;
-import cn.edu.szu.train.business.domain.StationExample;
-import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.exception.BusinessException;
 import cn.edu.szu.train.common.exception.BusinessExceptionEnum;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.Train;
 import cn.edu.szu.train.business.domain.TrainExample;
 import cn.edu.szu.train.business.mapper.TrainMapper;
-import cn.edu.szu.train.business.req.TrainQueryReq;
-import cn.edu.szu.train.business.req.TrainSaveReq;
+import cn.edu.szu.train.business.request.TrainQueryRequest;
+import cn.edu.szu.train.business.request.TrainSaveRequest;
 import cn.edu.szu.train.business.response.TrainQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -33,7 +30,7 @@ public class TrainService {
     @Resource
     private TrainMapper trainMapper;
 
-    public void save(TrainSaveReq req) {
+    public void save(TrainSaveRequest req) {
         DateTime now = DateTime.now();
         Train train = BeanUtil.copyProperties(req, Train.class);
         if (ObjectUtil.isNull(train.getId())) {
@@ -63,7 +60,7 @@ public class TrainService {
         }
     }
 
-    public PageResp<TrainQueryResponse> queryList(TrainQueryReq req) {
+    public PageResponse<TrainQueryResponse> queryList(TrainQueryRequest req) {
         TrainExample trainExample = new TrainExample();
         trainExample.setOrderByClause("code asc");
         TrainExample.Criteria criteria = trainExample.createCriteria();
@@ -79,10 +76,10 @@ public class TrainService {
 
         List<TrainQueryResponse> list = BeanUtil.copyToList(trainList, TrainQueryResponse.class);
 
-        PageResp<TrainQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<TrainQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

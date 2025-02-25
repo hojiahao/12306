@@ -1,18 +1,15 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.business.domain.Station;
-import cn.edu.szu.train.business.domain.StationExample;
 import cn.edu.szu.train.business.enums.SeatColEnum;
-import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.exception.BusinessException;
 import cn.edu.szu.train.common.exception.BusinessExceptionEnum;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.TrainCarriage;
 import cn.edu.szu.train.business.domain.TrainCarriageExample;
 import cn.edu.szu.train.business.mapper.TrainCarriageMapper;
-import cn.edu.szu.train.business.req.TrainCarriageQueryReq;
-import cn.edu.szu.train.business.req.TrainCarriageSaveReq;
+import cn.edu.szu.train.business.request.TrainCarriageQueryRequest;
+import cn.edu.szu.train.business.request.TrainCarriageSaveRequest;
 import cn.edu.szu.train.business.response.TrainCarriageQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -34,7 +31,7 @@ public class TrainCarriageService {
     @Resource
     private TrainCarriageMapper trainCarriageMapper;
 
-    public void save(TrainCarriageSaveReq req) {
+    public void save(TrainCarriageSaveRequest req) {
         DateTime now = DateTime.now();
         // 自动计算列数和总座位数
         List<SeatColEnum> seatColEnums = SeatColEnum.getColsByType(req.getSeatType());
@@ -68,7 +65,7 @@ public class TrainCarriageService {
         }
     }
 
-    public PageResp<TrainCarriageQueryResponse> queryList(TrainCarriageQueryReq req) {
+    public PageResponse<TrainCarriageQueryResponse> queryList(TrainCarriageQueryRequest req) {
         TrainCarriageExample trainCarriageExample = new TrainCarriageExample();
         trainCarriageExample.setOrderByClause("train_code asc, `index` asc");
         TrainCarriageExample.Criteria criteria = trainCarriageExample.createCriteria();
@@ -87,10 +84,10 @@ public class TrainCarriageService {
 
         List<TrainCarriageQueryResponse> list = BeanUtil.copyToList(trainCarriageList, TrainCarriageQueryResponse.class);
 
-        PageResp<TrainCarriageQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<TrainCarriageQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

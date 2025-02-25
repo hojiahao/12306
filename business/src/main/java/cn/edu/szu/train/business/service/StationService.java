@@ -1,15 +1,14 @@
 package cn.edu.szu.train.business.service;
 
-import cn.edu.szu.train.common.aspect.LogAspect;
 import cn.edu.szu.train.common.exception.BusinessException;
 import cn.edu.szu.train.common.exception.BusinessExceptionEnum;
-import cn.edu.szu.train.common.response.PageResp;
+import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.domain.Station;
 import cn.edu.szu.train.business.domain.StationExample;
 import cn.edu.szu.train.business.mapper.StationMapper;
-import cn.edu.szu.train.business.req.StationQueryReq;
-import cn.edu.szu.train.business.req.StationSaveReq;
+import cn.edu.szu.train.business.request.StationQueryRequest;
+import cn.edu.szu.train.business.request.StationSaveRequest;
 import cn.edu.szu.train.business.response.StationQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
@@ -31,7 +30,7 @@ public class StationService {
     @Resource
     private StationMapper stationMapper;
 
-    public void save(StationSaveReq req) {
+    public void save(StationSaveRequest req) {
         DateTime now = DateTime.now();
         Station station = BeanUtil.copyProperties(req, Station.class);
         if (ObjectUtil.isNull(station.getId())) {
@@ -62,7 +61,7 @@ public class StationService {
         }
     }
 
-    public PageResp<StationQueryResponse> queryList(StationQueryReq req) {
+    public PageResponse<StationQueryResponse> queryList(StationQueryRequest req) {
         StationExample stationExample = new StationExample();
         stationExample.setOrderByClause("name_pinyin asc");
         StationExample.Criteria criteria = stationExample.createCriteria();
@@ -78,10 +77,10 @@ public class StationService {
 
         List<StationQueryResponse> list = BeanUtil.copyToList(stationList, StationQueryResponse.class);
 
-        PageResp<StationQueryResponse> pageResp = new PageResp<>();
-        pageResp.setTotal(pageInfo.getTotal());
-        pageResp.setRows(list);
-        return pageResp;
+        PageResponse<StationQueryResponse> pageResponse = new PageResponse<>();
+        pageResponse.setTotal(pageInfo.getTotal());
+        pageResponse.setRows(list);
+        return pageResponse;
     }
 
     public void delete(Long id) {

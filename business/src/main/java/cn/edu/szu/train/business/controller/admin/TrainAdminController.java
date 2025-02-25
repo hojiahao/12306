@@ -1,10 +1,10 @@
 package cn.edu.szu.train.business.controller.admin;
 
 import cn.edu.szu.train.business.service.TrainSeatService;
-import cn.edu.szu.train.common.response.CommonResp;
-import cn.edu.szu.train.common.response.PageResp;
-import cn.edu.szu.train.business.req.TrainQueryReq;
-import cn.edu.szu.train.business.req.TrainSaveReq;
+import cn.edu.szu.train.common.response.CommonResponse;
+import cn.edu.szu.train.common.response.PageResponse;
+import cn.edu.szu.train.business.request.TrainQueryRequest;
+import cn.edu.szu.train.business.request.TrainSaveRequest;
 import cn.edu.szu.train.business.response.TrainQueryResponse;
 import cn.edu.szu.train.business.service.TrainService;
 import jakarta.annotation.Resource;
@@ -24,32 +24,32 @@ public class TrainAdminController {
     private TrainSeatService trainSeatService;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody TrainSaveReq req) {
+    public CommonResponse<Object> save(@Valid @RequestBody TrainSaveRequest req) {
         trainService.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<TrainQueryResponse>> queryList(@Valid TrainQueryReq req) {
-        PageResp<TrainQueryResponse> queryList = trainService.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<TrainQueryResponse>> queryList(@Valid TrainQueryRequest req) {
+        PageResponse<TrainQueryResponse> queryList = trainService.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResponse<Object> delete(@PathVariable Long id) {
         trainService.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-all")
-    public CommonResp<List<TrainQueryResponse>> queryList() {
+    public CommonResponse<List<TrainQueryResponse>> queryList() {
         List<TrainQueryResponse> list = trainService.queryAll();
-        return new CommonResp<>(list);
+        return new CommonResponse<>(list);
     }
 
     @GetMapping("/generate-seat/{trainCode}")
-    public CommonResp<Object> generateSeat(@PathVariable String trainCode) {
+    public CommonResponse<Object> generateSeat(@PathVariable String trainCode) {
         trainSeatService.generateTrainSeat(trainCode);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }
