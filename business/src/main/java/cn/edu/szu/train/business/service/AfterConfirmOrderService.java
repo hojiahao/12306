@@ -1,8 +1,11 @@
 package cn.edu.szu.train.business.service;
 
+import cn.edu.szu.train.business.domain.ConfirmOrder;
 import cn.edu.szu.train.business.domain.DailyTrainSeat;
 import cn.edu.szu.train.business.domain.DailyTrainTicket;
+import cn.edu.szu.train.business.enums.ConfirmOrderStatusEnum;
 import cn.edu.szu.train.business.feign.MemberFeign;
+import cn.edu.szu.train.business.mapper.ConfirmOrderMapper;
 import cn.edu.szu.train.business.mapper.DailyTrainSeatMapper;
 import cn.edu.szu.train.business.mapper.custom.CustomizedDailyTrainTicketMapper;
 import cn.edu.szu.train.business.request.ConfirmOrderTicketRequest;
@@ -31,6 +34,9 @@ public class AfterConfirmOrderService {
     @Resource
     private MemberFeign memberFeign;
 
+    @Resource
+    private ConfirmOrderMapper confirmOrderMapper;
+
     /**
      * 选中座位后事务处理：
      * 座位表修改售卖情况sell；
@@ -40,7 +46,7 @@ public class AfterConfirmOrderService {
      */
     @Transactional
     // @GlobalTransactional
-    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets) {
+    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets, ConfirmOrder confirmOrder) {
         for (int i = 0; i < seats.size(); i++) {
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
             DailyTrainSeat dailyTrainSeat = seats.get(i);
@@ -103,6 +109,12 @@ public class AfterConfirmOrderService {
             memberTicketRequest.setArrivalTime(dailyTrainTicket.getArrivalTime());
             CommonResponse<Object> commonResponse = memberFeign.save(memberTicketRequest);
             LOG.info("调用member接口，返回{}", commonResponse);
+            //更新订单状态为成功
+            ConfirmOrder confirmOrderForUpdate = new ConfirmOrder();
+            confirmOrderForUpdate.setId(confirmOrder.getId());
+            confirmOrderForUpdate.setUpdateTime(new Date());
+            confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
+            confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
         }
     }
 }
