@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.szu.train.business.mapper.custom.CustomizedDailyTrainTicketMapper">
+    <update id="updateCountBySell">
+        update daily_train_ticket set
+        <if test="seatTypeCode == '1'.toString()">
+            first_class = first_class - 1
+        </if>
+        <if test="seatTypeCode == '2'.toString()">
+            second_class = second_class - 1
+        </if>
+        <if test="seatTypeCode == '3'.toString()">
+            soft_sleeper = soft_sleeper - 1
+        </if>
+        <if test="seatTypeCode == '4'.toString()">
+            hard_sleeper = hard_sleeper - 1
+        </if>
+        where `date` = #{date}
+        and train_code = #{trainCode}
+        and departure_index &gt;= #{minStart}
+        and departure_index &lt;= #{maxStart}
+        and arrival_index &gt;= #{minEnd}
+        and arrival_index &lt;= #{maxEnd}
+    </update>
+</mapper>
