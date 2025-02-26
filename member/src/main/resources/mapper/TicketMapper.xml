@@ -6,14 +6,14 @@
     <result column="member_id" jdbcType="BIGINT" property="memberId" />
     <result column="passenger_id" jdbcType="BIGINT" property="passengerId" />
     <result column="passenger_name" jdbcType="VARCHAR" property="passengerName" />
-    <result column="date" jdbcType="DATE" property="date" />
+    <result column="train_date" jdbcType="DATE" property="trainDate" />
     <result column="train_code" jdbcType="VARCHAR" property="trainCode" />
     <result column="carriage_index" jdbcType="INTEGER" property="carriageIndex" />
-    <result column="row" jdbcType="CHAR" property="row" />
-    <result column="col" jdbcType="CHAR" property="col" />
-    <result column="departure" jdbcType="VARCHAR" property="departure" />
+    <result column="seat_row" jdbcType="CHAR" property="seatRow" />
+    <result column="seat_col" jdbcType="CHAR" property="seatCol" />
+    <result column="departure_station" jdbcType="VARCHAR" property="departureStation" />
     <result column="departure_time" jdbcType="TIME" property="departureTime" />
-    <result column="destination" jdbcType="VARCHAR" property="destination" />
+    <result column="destination_station" jdbcType="VARCHAR" property="destinationStation" />
     <result column="arrival_time" jdbcType="TIME" property="arrivalTime" />
     <result column="seat_type" jdbcType="CHAR" property="seatType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -78,9 +78,9 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, member_id, passenger_id, passenger_name, `date`, train_code, carriage_index, 
-    `row`, col, departure, departure_time, destination, arrival_time, seat_type, create_time, 
-    update_time
+    id, member_id, passenger_id, passenger_name, train_date, train_code, carriage_index, 
+    seat_row, seat_col, departure_station, departure_time, destination_station, arrival_time, 
+    seat_type, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="cn.edu.szu.train.member.domain.TicketExample" resultMap="BaseResultMap">
     select
@@ -114,15 +114,15 @@
   </delete>
   <insert id="insert" parameterType="cn.edu.szu.train.member.domain.Ticket">
     insert into ticket (id, member_id, passenger_id, 
-      passenger_name, `date`, train_code, 
-      carriage_index, `row`, col, 
-      departure, departure_time, destination, 
+      passenger_name, train_date, train_code, 
+      carriage_index, seat_row, seat_col, 
+      departure_station, departure_time, destination_station, 
       arrival_time, seat_type, create_time, 
       update_time)
     values (#{id,jdbcType=BIGINT}, #{memberId,jdbcType=BIGINT}, #{passengerId,jdbcType=BIGINT}, 
-      #{passengerName,jdbcType=VARCHAR}, #{date,jdbcType=DATE}, #{trainCode,jdbcType=VARCHAR}, 
-      #{carriageIndex,jdbcType=INTEGER}, #{row,jdbcType=CHAR}, #{col,jdbcType=CHAR}, 
-      #{departure,jdbcType=VARCHAR}, #{departureTime,jdbcType=TIME}, #{destination,jdbcType=VARCHAR}, 
+      #{passengerName,jdbcType=VARCHAR}, #{trainDate,jdbcType=DATE}, #{trainCode,jdbcType=VARCHAR}, 
+      #{carriageIndex,jdbcType=INTEGER}, #{seatRow,jdbcType=CHAR}, #{seatCol,jdbcType=CHAR}, 
+      #{departureStation,jdbcType=VARCHAR}, #{departureTime,jdbcType=TIME}, #{destinationStation,jdbcType=VARCHAR}, 
       #{arrivalTime,jdbcType=TIME}, #{seatType,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -141,8 +141,8 @@
       <if test="passengerName != null">
         passenger_name,
       </if>
-      <if test="date != null">
-        `date`,
+      <if test="trainDate != null">
+        train_date,
       </if>
       <if test="trainCode != null">
         train_code,
@@ -150,20 +150,20 @@
       <if test="carriageIndex != null">
         carriage_index,
       </if>
-      <if test="row != null">
-        `row`,
+      <if test="seatRow != null">
+        seat_row,
       </if>
-      <if test="col != null">
-        col,
+      <if test="seatCol != null">
+        seat_col,
       </if>
-      <if test="departure != null">
-        departure,
+      <if test="departureStation != null">
+        departure_station,
       </if>
       <if test="departureTime != null">
         departure_time,
       </if>
-      <if test="destination != null">
-        destination,
+      <if test="destinationStation != null">
+        destination_station,
       </if>
       <if test="arrivalTime != null">
         arrival_time,
@@ -191,8 +191,8 @@
       <if test="passengerName != null">
         #{passengerName,jdbcType=VARCHAR},
       </if>
-      <if test="date != null">
-        #{date,jdbcType=DATE},
+      <if test="trainDate != null">
+        #{trainDate,jdbcType=DATE},
       </if>
       <if test="trainCode != null">
         #{trainCode,jdbcType=VARCHAR},
@@ -200,20 +200,20 @@
       <if test="carriageIndex != null">
         #{carriageIndex,jdbcType=INTEGER},
       </if>
-      <if test="row != null">
-        #{row,jdbcType=CHAR},
+      <if test="seatRow != null">
+        #{seatRow,jdbcType=CHAR},
       </if>
-      <if test="col != null">
-        #{col,jdbcType=CHAR},
+      <if test="seatCol != null">
+        #{seatCol,jdbcType=CHAR},
       </if>
-      <if test="departure != null">
-        #{departure,jdbcType=VARCHAR},
+      <if test="departureStation != null">
+        #{departureStation,jdbcType=VARCHAR},
       </if>
       <if test="departureTime != null">
         #{departureTime,jdbcType=TIME},
       </if>
-      <if test="destination != null">
-        #{destination,jdbcType=VARCHAR},
+      <if test="destinationStation != null">
+        #{destinationStation,jdbcType=VARCHAR},
       </if>
       <if test="arrivalTime != null">
         #{arrivalTime,jdbcType=TIME},
@@ -250,8 +250,8 @@
       <if test="record.passengerName != null">
         passenger_name = #{record.passengerName,jdbcType=VARCHAR},
       </if>
-      <if test="record.date != null">
-        `date` = #{record.date,jdbcType=DATE},
+      <if test="record.trainDate != null">
+        train_date = #{record.trainDate,jdbcType=DATE},
       </if>
       <if test="record.trainCode != null">
         train_code = #{record.trainCode,jdbcType=VARCHAR},
@@ -259,20 +259,20 @@
       <if test="record.carriageIndex != null">
         carriage_index = #{record.carriageIndex,jdbcType=INTEGER},
       </if>
-      <if test="record.row != null">
-        `row` = #{record.row,jdbcType=CHAR},
+      <if test="record.seatRow != null">
+        seat_row = #{record.seatRow,jdbcType=CHAR},
       </if>
-      <if test="record.col != null">
-        col = #{record.col,jdbcType=CHAR},
+      <if test="record.seatCol != null">
+        seat_col = #{record.seatCol,jdbcType=CHAR},
       </if>
-      <if test="record.departure != null">
-        departure = #{record.departure,jdbcType=VARCHAR},
+      <if test="record.departureStation != null">
+        departure_station = #{record.departureStation,jdbcType=VARCHAR},
       </if>
       <if test="record.departureTime != null">
         departure_time = #{record.departureTime,jdbcType=TIME},
       </if>
-      <if test="record.destination != null">
-        destination = #{record.destination,jdbcType=VARCHAR},
+      <if test="record.destinationStation != null">
+        destination_station = #{record.destinationStation,jdbcType=VARCHAR},
       </if>
       <if test="record.arrivalTime != null">
         arrival_time = #{record.arrivalTime,jdbcType=TIME},
@@ -297,14 +297,14 @@
       member_id = #{record.memberId,jdbcType=BIGINT},
       passenger_id = #{record.passengerId,jdbcType=BIGINT},
       passenger_name = #{record.passengerName,jdbcType=VARCHAR},
-      `date` = #{record.date,jdbcType=DATE},
+      train_date = #{record.trainDate,jdbcType=DATE},
       train_code = #{record.trainCode,jdbcType=VARCHAR},
       carriage_index = #{record.carriageIndex,jdbcType=INTEGER},
-      `row` = #{record.row,jdbcType=CHAR},
-      col = #{record.col,jdbcType=CHAR},
-      departure = #{record.departure,jdbcType=VARCHAR},
+      seat_row = #{record.seatRow,jdbcType=CHAR},
+      seat_col = #{record.seatCol,jdbcType=CHAR},
+      departure_station = #{record.departureStation,jdbcType=VARCHAR},
       departure_time = #{record.departureTime,jdbcType=TIME},
-      destination = #{record.destination,jdbcType=VARCHAR},
+      destination_station = #{record.destinationStation,jdbcType=VARCHAR},
       arrival_time = #{record.arrivalTime,jdbcType=TIME},
       seat_type = #{record.seatType,jdbcType=CHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -325,8 +325,8 @@
       <if test="passengerName != null">
         passenger_name = #{passengerName,jdbcType=VARCHAR},
       </if>
-      <if test="date != null">
-        `date` = #{date,jdbcType=DATE},
+      <if test="trainDate != null">
+        train_date = #{trainDate,jdbcType=DATE},
       </if>
       <if test="trainCode != null">
         train_code = #{trainCode,jdbcType=VARCHAR},
@@ -334,20 +334,20 @@
       <if test="carriageIndex != null">
         carriage_index = #{carriageIndex,jdbcType=INTEGER},
       </if>
-      <if test="row != null">
-        `row` = #{row,jdbcType=CHAR},
+      <if test="seatRow != null">
+        seat_row = #{seatRow,jdbcType=CHAR},
       </if>
-      <if test="col != null">
-        col = #{col,jdbcType=CHAR},
+      <if test="seatCol != null">
+        seat_col = #{seatCol,jdbcType=CHAR},
       </if>
-      <if test="departure != null">
-        departure = #{departure,jdbcType=VARCHAR},
+      <if test="departureStation != null">
+        departure_station = #{departureStation,jdbcType=VARCHAR},
       </if>
       <if test="departureTime != null">
         departure_time = #{departureTime,jdbcType=TIME},
       </if>
-      <if test="destination != null">
-        destination = #{destination,jdbcType=VARCHAR},
+      <if test="destinationStation != null">
+        destination_station = #{destinationStation,jdbcType=VARCHAR},
       </if>
       <if test="arrivalTime != null">
         arrival_time = #{arrivalTime,jdbcType=TIME},
@@ -369,14 +369,14 @@
     set member_id = #{memberId,jdbcType=BIGINT},
       passenger_id = #{passengerId,jdbcType=BIGINT},
       passenger_name = #{passengerName,jdbcType=VARCHAR},
-      `date` = #{date,jdbcType=DATE},
+      train_date = #{trainDate,jdbcType=DATE},
       train_code = #{trainCode,jdbcType=VARCHAR},
       carriage_index = #{carriageIndex,jdbcType=INTEGER},
-      `row` = #{row,jdbcType=CHAR},
-      col = #{col,jdbcType=CHAR},
-      departure = #{departure,jdbcType=VARCHAR},
+      seat_row = #{seatRow,jdbcType=CHAR},
+      seat_col = #{seatCol,jdbcType=CHAR},
+      departure_station = #{departureStation,jdbcType=VARCHAR},
       departure_time = #{departureTime,jdbcType=TIME},
-      destination = #{destination,jdbcType=VARCHAR},
+      destination_station = #{destinationStation,jdbcType=VARCHAR},
       arrival_time = #{arrivalTime,jdbcType=TIME},
       seat_type = #{seatType,jdbcType=CHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
