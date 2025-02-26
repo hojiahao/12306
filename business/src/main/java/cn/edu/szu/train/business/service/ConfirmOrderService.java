@@ -172,15 +172,17 @@ public class ConfirmOrderService {
         }
         LOG.info("最终的选座为：{}", finalSeats);
         // 选中座位后事务处理
-
             // 修改座位表售卖情况（sell字段）
-
             // 修改余票信息
-
             // 为会员增加购票记录
-
             // 更新确认订单表为成功
-        afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeats, tickets, confirmOrder);
+        try {
+            afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeats, tickets, confirmOrder);
+        } catch (Exception e) {
+            LOG.error("保存购票信息失败。", e);
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
+        }
+
 
     }
 

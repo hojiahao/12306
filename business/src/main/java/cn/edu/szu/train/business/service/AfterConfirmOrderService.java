@@ -12,6 +12,8 @@ import cn.edu.szu.train.business.request.ConfirmOrderTicketRequest;
 import cn.edu.szu.train.common.context.LoginMemberContext;
 import cn.edu.szu.train.common.request.MemberTicketRequest;
 import cn.edu.szu.train.common.response.CommonResponse;
+import io.seata.core.context.RootContext;
+import io.seata.spring.annotation.GlobalTransactional;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +46,11 @@ public class AfterConfirmOrderService {
      * 为会员增加购票记录
      * 更新确认订单为成功
      */
-    @Transactional
-    // @GlobalTransactional
+//    @Transactional
+     @GlobalTransactional
     public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets, ConfirmOrder confirmOrder) {
-        for (int i = 0; i < seats.size(); i++) {
+        LOG.info("seata全局事务ID:{}", RootContext.getXID());
+         for (int i = 0; i < seats.size(); i++) {
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
             DailyTrainSeat dailyTrainSeat = seats.get(i);
             seatForUpdate.setId(dailyTrainSeat.getId());
@@ -97,15 +100,15 @@ public class AfterConfirmOrderService {
             memberTicketRequest.setMemberId(LoginMemberContext.getId());
             memberTicketRequest.setPassengerId(tickets.get(i).getPassengerId());
             memberTicketRequest.setPassengerName(tickets.get(i).getPassengerName());
-            memberTicketRequest.setDate(dailyTrainTicket.getDate());
+            memberTicketRequest.setTrainDate(dailyTrainTicket.getDate());
             memberTicketRequest.setTrainCode(dailyTrainTicket.getTrainCode());
             memberTicketRequest.setCarriageIndex(dailyTrainSeat.getCarriageIndex());
             memberTicketRequest.setSeatType(seats.get(i).getSeatType());
-            memberTicketRequest.setRow(dailyTrainSeat.getRow());
-            memberTicketRequest.setCol(dailyTrainSeat.getCol());
-            memberTicketRequest.setDeparture(dailyTrainTicket.getDeparture());
+            memberTicketRequest.setSeatRow(dailyTrainSeat.getRow());
+            memberTicketRequest.setSeatCol(dailyTrainSeat.getCol());
+            memberTicketRequest.setDepartureStation(dailyTrainTicket.getDeparture());
             memberTicketRequest.setDepartureTime(dailyTrainTicket.getDepartureTime());
-            memberTicketRequest.setDestination(dailyTrainTicket.getDestination());
+            memberTicketRequest.setDestinationStation(dailyTrainTicket.getDestination());
             memberTicketRequest.setArrivalTime(dailyTrainTicket.getArrivalTime());
             CommonResponse<Object> commonResponse = memberFeign.save(memberTicketRequest);
             LOG.info("调用member接口，返回{}", commonResponse);

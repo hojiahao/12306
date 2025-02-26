@@ -209,6 +209,7 @@ create table `confirm_order`
 ) engine = innodb
   default charset = utf8mb4 comment ='确认订单';
 
+drop table if exists `undo_log`;
 CREATE TABLE `undo_log`
 (
     `id`            bigint(20)   NOT NULL AUTO_INCREMENT,
@@ -224,7 +225,7 @@ CREATE TABLE `undo_log`
     UNIQUE KEY `ux_undo_log` (`xid`, `branch_id`)
 ) ENGINE = InnoDB
   AUTO_INCREMENT = 1
-  DEFAULT CHARSET = utf8;
+  DEFAULT CHARSET = utf8mb4;
 
 drop table if exists `sk_token`;
 create table `sk_token`

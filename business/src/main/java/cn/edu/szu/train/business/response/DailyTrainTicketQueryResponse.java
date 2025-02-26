@@ -2,11 +2,13 @@ package cn.edu.szu.train.business.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+
+import java.io.Serializable;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.math.BigDecimal;
 
-public class DailyTrainTicketQueryResponse {
+public class DailyTrainTicketQueryResponse implements Serializable {
 
     /**
      * id
