@@ -60,13 +60,33 @@ public class DailyTrainTicketService {
         }
     }
 
+    @CachePut(value = "DailyTrainTicketService.queryList3")
+    public PageResponse<DailyTrainTicketQueryResponse> queryList3(DailyTrainTicketQueryRequest req) {
+        LOG.info("测试缓存击穿");
+        return null;
+    }
+
     @CachePut(value = "DailyTrainTicketService.queryList")
     public PageResponse<DailyTrainTicketQueryResponse> queryList2(DailyTrainTicketQueryRequest req) {
-//        LOG.info("测试缓存击穿");
-//        return null;
         return queryList(req);
     }
 
+    /**
+     * 缓存穿透是指查询不存在于缓存和数据库中的数据。恶意用户可能会利用这一点，不断发起不存在的数据请求，导致所有请求都直接访问数据库，从而给数据库带来巨大压力。
+     * 为了防止缓存穿透，可以采取以下措施：
+     * 1.对请求进行校验，比如用户鉴权和基础参数校验，拦截不合法的请求。
+     * 2.对于查询不到的数据，即使在数据库中也不存在，也可以在缓存中设置一个空值，缓存有效时间设置短一些，如30秒，以防止恶意攻击。
+     * 缓存击穿是指缓存中没有但数据库中有的数据。通常发生在一个热点 key 失效的瞬间，此时可能会有大量的并发请求查询这个 key，因为缓存中没有数据，所有请求都会落到数据库上，造成数据库瞬间压力过大。
+     * 解决缓存击穿的方法包括：
+     * 1.将热点数据设置为永不过期。
+     * 2.接口限流与熔断，降级。重要的接口一定要做好限流策略，防止用户恶意刷接口，同时要降级准备，当接口中的某些服务不可用时候，进行熔断，失败快速返回机制。
+     * 3.布隆过滤器。bloomfilter就类似于一个hash set，用于快速判某个元素是否存在于集合中，其典型的应用场景就是快速判断一个key是否存在于某容器，不存在就直接返回。
+     * 4.使用互斥锁来确保同时只有一个请求去数据库查询数据并更新缓存。
+     * 缓存雪崩是指在缓存中大量数据同时过期，或者 Redis 宕机，导致大量请求无法在缓存中处理，全部落到数据库上。解决缓存雪崩的方法包括：
+     * 1.将缓存数据的过期时间设置为随机，避免大量数据同时过期。
+     * 2.如果缓存数据库是分布式部署，将热点数据均匀分布在不同的缓存数据库中。
+     * 3.设置热点数据永不过期。
+     */
     @Cacheable(value = "DailyTrainTicketService.queryList")
     public PageResponse<DailyTrainTicketQueryResponse> queryList(DailyTrainTicketQueryRequest req) {
         // 常见的缓存过期策略

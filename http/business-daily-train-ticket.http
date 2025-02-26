@@ -7,3 +7,8 @@ GET http://localhost:8000/business/admin/daily-train-ticket/query-list2?page=2&p
 Accept: application/json
 
 ###
+
+GET http://localhost:8000/business/admin/daily-train-ticket/query-list3?page=2&pageSize=5&trainCode=G6080&departure=香港西九龙&destination=衡阳东
+Accept: application/json
+
+###
