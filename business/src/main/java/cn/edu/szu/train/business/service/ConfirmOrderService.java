@@ -17,6 +17,7 @@ import cn.edu.szu.train.business.response.ConfirmOrderQueryResponse;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -59,6 +60,7 @@ public class ConfirmOrderService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
+
     @Qualifier("redisTemplate")
 
     public void save(ConfirmOrderDoRequest req) {
@@ -102,7 +104,16 @@ public class ConfirmOrderService {
     }
 
     // synchronized只能解决单机锁，不能解决多机锁的问题，并且会导致性能下降
-    public synchronized void doConfirm(ConfirmOrderDoRequest req) {
+    public void doConfirm(ConfirmOrderDoRequest req) {
+        String key = DateUtil.formatDate(req.getDate()) + "-" + req.getTrainCode();
+        Boolean setIfAbsent = stringRedisTemplate.opsForValue().setIfAbsent(key, key, 5, TimeUnit.SECONDS);
+        if (setIfAbsent) {
+            LOG.info("恭喜，抢到锁了！");
+        } else {
+            // 只是没抢到锁，并不知道抢完没，所以提示稍后再试
+            LOG.info("很遗憾，没抢到锁！");
+            throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_LOCK_FAIL);
+        }
         // 如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已经买过
         Date date = req.getDate();
         String trainCode = req.getTrainCode();
@@ -111,7 +122,7 @@ public class ConfirmOrderService {
         List<ConfirmOrderTicketRequest> tickets = req.getTickets();
         // 保存确认订单表，状态初始
         DateTime now = DateTime.now();
-        ConfirmOrder confirmOrder = new  ConfirmOrder();
+        ConfirmOrder confirmOrder = new ConfirmOrder();
         confirmOrder.setId(SnowUtil.getSnowflakeNextId());
         confirmOrder.setMemberId(LoginMemberContext.getId());
         confirmOrder.setDate(date);
@@ -142,7 +153,7 @@ public class ConfirmOrderService {
             // 组成和前端两排选座一样的列表，用于做参照的座位列表，例如：referSeatColEnums = {A1, C1, D1, F1, A2, C2, D2, F2}
             List<String> referSeatList = new ArrayList<>();
             for (int i = 1; i <= 2; i++) {
-                for (SeatColEnum seatColEnum: seatColEnums) {
+                for (SeatColEnum seatColEnum : seatColEnums) {
                     referSeatList.add(seatColEnum.getCode() + i);
                 }
             }
@@ -150,12 +161,12 @@ public class ConfirmOrderService {
             // 绝对便宜之，即：在参照座位列表中的位置
             List<Integer> absoluteOffsetList = new ArrayList<>();
             List<Integer> relativeOffsetList = new ArrayList<>();
-            for (ConfirmOrderTicketRequest ticketReq: tickets) {
+            for (ConfirmOrderTicketRequest ticketReq : tickets) {
                 int index = referSeatList.indexOf(ticketReq.getSeat());
                 absoluteOffsetList.add(index);
             }
             LOG.info("计算得到所有座位的绝对偏移值：{}", absoluteOffsetList);
-            for (Integer index: absoluteOffsetList) {
+            for (Integer index : absoluteOffsetList) {
                 int offset = index - absoluteOffsetList.get(0);
                 relativeOffsetList.add(offset);
             }
@@ -167,10 +178,9 @@ public class ConfirmOrderService {
                     relativeOffsetList,
                     dailyTrainTicket.getDepartureIndex(),
                     dailyTrainTicket.getArrivalIndex());  // 从A1变成['A', '1']，然后得到'A'
-        }
-        else {
+        } else {
             LOG.info("本次购票没有选座。");
-            for (ConfirmOrderTicketRequest ticketReq: tickets) {
+            for (ConfirmOrderTicketRequest ticketReq : tickets) {
                 getSeat(finalSeats,
                         date, trainCode,
                         ticketReq0.getSeatTypeCode(),
@@ -182,22 +192,24 @@ public class ConfirmOrderService {
         }
         LOG.info("最终的选座为：{}", finalSeats);
         // 选中座位后事务处理
-            // 修改座位表售卖情况（sell字段）
-            // 修改余票信息
-            // 为会员增加购票记录
-            // 更新确认订单表为成功
+        // 修改座位表售卖情况（sell字段）
+        // 修改余票信息
+        // 为会员增加购票记录
+        // 更新确认订单表为成功
         try {
             afterConfirmOrderService.afterDoConfirm(dailyTrainTicket, finalSeats, tickets, confirmOrder);
         } catch (Exception e) {
             LOG.error("保存购票信息失败。", e);
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
         }
-
+        LOG.info("购票流程结数，释放锁！");
+        stringRedisTemplate.delete(key);
 
     }
 
     /**
      * 选座，如果有选座，则一次性选完，如果无选座，则一个一个挑
+     *
      * @param date
      * @param trainCode
      * @param seatType
@@ -214,7 +226,7 @@ public class ConfirmOrderService {
             LOG.info("从车厢{}开始选座", carriage.getIndex());
             List<DailyTrainSeat> dailyTrainSeats = dailyTrainSeatService.selectByCarriage(date, trainCode, carriage.getIndex());
             LOG.info("车厢{}的座位数：{}", carriage.getIndex(), dailyTrainSeats.size());
-            for (DailyTrainSeat dailyTrainSeat: dailyTrainSeats) {
+            for (DailyTrainSeat dailyTrainSeat : dailyTrainSeats) {
                 String col = dailyTrainSeat.getCol();
                 Integer seatIndex = dailyTrainSeat.getCarriageSeatIndex();
                 // 判断当前座位有没有被选中过
@@ -232,8 +244,7 @@ public class ConfirmOrderService {
                 // 判断column，有值的话要比对列号
                 if (StrUtil.isBlank(column)) {
                     LOG.info("无选座。");
-                }
-                else {
+                } else {
                     if (col.equals(column)) {
                         LOG.info("座位{}列值不对，继续判断下一个座位，当前列的值为{}，目标列的值为{}", seatIndex, col, column);
                         continue;
@@ -243,8 +254,7 @@ public class ConfirmOrderService {
                 if (isChoose) {
                     LOG.info("选中座位。");
                     getSeats.add(dailyTrainSeat);
-                }
-                else {
+                } else {
                     LOG.info("未选中座位。");
                     continue;
                 }
@@ -266,8 +276,7 @@ public class ConfirmOrderService {
                         if (isChooseNext) {
                             LOG.info("座位{}被选中。", nextDailyTrainSeat.getCarriageSeatIndex());
                             getSeats.add(nextDailyTrainSeat);
-                        }
-                        else {
+                        } else {
                             LOG.info("座位{}不可选。", nextDailyTrainSeat.getCarriageSeatIndex());
                             isGetAllOffsetSeat = false;
                             break;
@@ -295,11 +304,10 @@ public class ConfirmOrderService {
         String sell = dailyTrainSeat.getSell();
         String sellPart = sell.substring(departureIndex, arrivalIndex);
         if (Integer.parseInt(sellPart) > 0) {
-            LOG.info("座位{}在本次车站区间{}~{}已售过票，不可以选择该座位",dailyTrainSeat.getCarriageSeatIndex(), departureIndex, arrivalIndex);
+            LOG.info("座位{}在本次车站区间{}~{}已售过票，不可以选择该座位", dailyTrainSeat.getCarriageSeatIndex(), departureIndex, arrivalIndex);
             return false;
-        }
-        else {
-            LOG.info("座位{}在本次车站区间{}~{}未售过票，可以选择该座位",dailyTrainSeat.getCarriageSeatIndex(), departureIndex, arrivalIndex);
+        } else {
+            LOG.info("座位{}在本次车站区间{}~{}未售过票，可以选择该座位", dailyTrainSeat.getCarriageSeatIndex(), departureIndex, arrivalIndex);
             String currentSell = sellPart.replace('0', '1');
             currentSell = StrUtil.fillBefore(currentSell, '0', arrivalIndex);
             currentSell = StrUtil.fillAfter(currentSell, '0', sell.length());
@@ -308,7 +316,7 @@ public class ConfirmOrderService {
             String newSell = NumberUtil.getBinaryStr(newSellInt);
             newSell = StrUtil.fillBefore(newSell, '0', sell.length());
             LOG.info("座位{}被选中，原售票信息：{}，车站区间：{}~{}，即：{}，最终售票信息:{}"
-                    ,dailyTrainSeat.getCarriageSeatIndex(), sell, departureIndex, arrivalIndex, currentSell, newSell);
+                    , dailyTrainSeat.getCarriageSeatIndex(), sell, departureIndex, arrivalIndex, currentSell, newSell);
             dailyTrainSeat.setSell(newSell);
             return true;
         }
