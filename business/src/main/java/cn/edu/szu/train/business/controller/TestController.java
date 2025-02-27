@@ -1,6 +1,7 @@
 package cn.edu.szu.train.business.controller;
 
 import cn.edu.szu.train.business.service.TestService;
+import cn.hutool.core.util.RandomUtil;
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +15,10 @@ public class TestController {
     @SentinelResource("hello")
     @GetMapping("/hello")
     public String hello() throws InterruptedException {
-        testService.hello2();
+        int i = RandomUtil.randomInt(1, 10);
+        if (i <= 3) {
+            throw new RuntimeException("测试异常。");
+        }
         return "Hello World! Business!";
     }
 

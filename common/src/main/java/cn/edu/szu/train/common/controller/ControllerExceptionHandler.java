@@ -68,4 +68,15 @@ public class ControllerExceptionHandler {
         commonResponse.setMessage(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         return commonResponse;
     }
+
+    /**
+     * 校验异常统一处理
+     * @param e: BindException
+     * @return commonResp
+     */
+    @ExceptionHandler(value = RuntimeException.class)
+    @ResponseBody
+    public CommonResponse<Object> exceptionHandler(RuntimeException e) {
+        throw e;
+    }
 }
