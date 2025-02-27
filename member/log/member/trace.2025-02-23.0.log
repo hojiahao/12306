@@ -1,0 +1,5 @@
+2025-02-23 12:12:26.485 INFO  org.hibernate.validator.internal.util.Version     :21   [32m                  [0;39m HV000001: Hibernate Validator 8.0.2.Final
+2025-02-23 12:12:26.519 INFO  c.e.szu.train.member.config.MemberApplicationTests:53   [32m                  [0;39m Starting MemberApplicationTests using Java 17.0.12 with PID 30940 (started by hojiahao in E:\Idea_Workspace\train-ticketing-system\member)
+2025-02-23 12:12:26.520 INFO  c.e.szu.train.member.config.MemberApplicationTests:652  [32m                  [0;39m No active profile set, falling back to 1 default profile: "default"
+2025-02-23 12:12:27.665 INFO  o.springframework.cloud.context.scope.GenericScope:282  [32m                  [0;39m BeanFactory id=a9c7b473-fc24-3914-a108-d6d2ea01b72b
+2025-02-23 12:12:29.938 INFO  c.e.szu.train.member.config.MemberApplicationTests:59   [32m                  [0;39m Started MemberApplicationTests in 4.112 seconds (process running for 5.406)
