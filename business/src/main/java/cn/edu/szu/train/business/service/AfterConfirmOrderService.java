@@ -48,7 +48,7 @@ public class AfterConfirmOrderService {
      */
 //    @Transactional
      @GlobalTransactional
-    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets, ConfirmOrder confirmOrder) {
+    public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets, ConfirmOrder confirmOrder) throws Exception {
         LOG.info("seata全局事务ID:{}", RootContext.getXID());
          for (int i = 0; i < seats.size(); i++) {
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
@@ -118,6 +118,11 @@ public class AfterConfirmOrderService {
             confirmOrderForUpdate.setUpdateTime(new Date());
             confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
             confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
-        }
+            // 模拟调用方出现异常
+             // Thread.sleep(10000)
+             if (i == 1) {
+                 throw new Exception("测试异常。");
+             }
+         }
     }
 }

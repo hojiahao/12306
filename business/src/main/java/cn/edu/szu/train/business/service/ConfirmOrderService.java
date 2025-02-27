@@ -27,11 +27,16 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ConfirmOrderService {
@@ -51,6 +56,10 @@ public class ConfirmOrderService {
 
     @Resource
     private AfterConfirmOrderService afterConfirmOrderService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+    @Qualifier("redisTemplate")
 
     public void save(ConfirmOrderDoRequest req) {
         DateTime now = DateTime.now();
@@ -92,7 +101,8 @@ public class ConfirmOrderService {
         confirmOrderMapper.deleteByPrimaryKey(id);
     }
 
-    public void doConfirm(ConfirmOrderDoRequest req) {
+    // synchronized只能解决单机锁，不能解决多机锁的问题，并且会导致性能下降
+    public synchronized void doConfirm(ConfirmOrderDoRequest req) {
         // 如：车次是否存在，余票是否存在，车次是否在有效期内，tickets条数>0，同乘客同车次是否已经买过
         Date date = req.getDate();
         String trainCode = req.getTrainCode();
