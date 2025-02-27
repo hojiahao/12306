@@ -33,7 +33,7 @@ public class TicketService {
      * @param req
      */
     public void save(MemberTicketRequest req) {
-        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
+//        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
         DateTime now = DateTime.now();
         Ticket ticket = BeanUtil.copyProperties(req, Ticket.class);
         ticket.setId(SnowUtil.getSnowflakeNextId());

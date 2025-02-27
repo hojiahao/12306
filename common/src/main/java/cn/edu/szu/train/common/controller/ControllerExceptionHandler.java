@@ -3,7 +3,7 @@ package cn.edu.szu.train.common.controller;
 import cn.edu.szu.train.common.exception.BusinessException;
 import cn.edu.szu.train.common.response.CommonResponse;
 import cn.hutool.core.util.StrUtil;
-import io.seata.core.context.RootContext;
+//import io.seata.core.context.RootContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
@@ -27,11 +27,11 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public CommonResponse<Object> exceptionHandler(Exception e) throws Exception {
-        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
+//        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
         // 如果是在一次全局事务里出现异常，就不要包装返回值，直接将异常抛给调用方，让调用方回滚事务。
-        if (StrUtil.isNotBlank(RootContext.getXID())) {
-            throw e;
-        }
+//        if (StrUtil.isNotBlank(RootContext.getXID())) {
+//            throw e;
+//        }
         CommonResponse<Object> commonResponse = new CommonResponse<>();
         LOG.error("System Exception：", e);
         commonResponse.setSuccess(false);
