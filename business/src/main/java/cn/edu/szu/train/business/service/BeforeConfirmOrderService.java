@@ -97,7 +97,7 @@ public class BeforeConfirmOrderService {
             confirmOrder.setUpdateTime(now);
             confirmOrderMapper.insert(confirmOrder);
 
-            // 发送
+            // 发送MQ排队购票
             ConfirmOrderMQDto confirmOrderMQDto = new ConfirmOrderMQDto();
             confirmOrderMQDto.setDate(req.getDate());
             confirmOrderMQDto.setTrainCode(req.getTrainCode());
