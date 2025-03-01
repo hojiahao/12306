@@ -1,32 +1,33 @@
-package cn.edu.szu.train.business.response;
+package cn.edu.szu.train.business.request;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
-public class SKTokenQueryResponse {
-
+public class SkTokenSaveRequest {
     /**
      * id
      */
-    @JsonSerialize(using= ToStringSerializer.class)
     private Long id;
 
     /**
      * 日期
      */
     @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
+    @NotNull(message = "【日期】不能为空")
     private Date date;
 
     /**
      * 车次编号
      */
+    @NotBlank(message = "【车次编号】不能为空")
     private String trainCode;
 
     /**
      * 令牌余量
      */
+    @NotNull(message = "【令牌余量】不能为空")
     private Integer count;
 
     /**
