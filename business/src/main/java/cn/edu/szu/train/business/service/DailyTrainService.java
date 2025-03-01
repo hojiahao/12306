@@ -44,10 +44,12 @@ public class DailyTrainService {
 
     @Resource
     private DailyTrainSeatService dailyTrainSeatService;
-    @Autowired
+
+    @Resource
     private DailyTrainTicketService dailyTrainTicketService;
-    @Autowired
-    private TrainCarriageService trainCarriageService;
+
+    @Resource
+    private SKTokenService skTokenService;
 
     public void save(DailyTrainSaveRequest req) {
         DateTime now = DateTime.now();
@@ -130,6 +132,9 @@ public class DailyTrainService {
         dailyTrainSeatService.generateDailyTrainSeat(date, train.getCode());
         // 生成该车次的余票数据
         dailyTrainTicketService.generateDailyTrainTicket(dailyTrain, date, train.getCode());
+        // 生成令牌余量数
+        skTokenService.generateDailySKToken(date, train.getCode());
+
         LOG.info("日期【{}】车次【{}】的信息已生成完成。", DateUtil.formatDate(date), train.getCode());
     }
 }
