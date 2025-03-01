@@ -42,7 +42,7 @@ ${domain}Mapper.updateByPrimaryKey(${domain});
 }
 }
 
-public PageResp<${Domain}QueryResponse> queryList(${Domain}QueryRequest req) {
+public PageResponse<${Domain}QueryResponse> queryList(${Domain}QueryRequest req) {
     ${Domain}Example ${domain}Example = new ${Domain}Example();
     ${domain}Example.setOrderByClause("id desc");
     ${Domain}Example.Criteria criteria = ${domain}Example.createCriteria();
@@ -58,7 +58,7 @@ public PageResp<${Domain}QueryResponse> queryList(${Domain}QueryRequest req) {
 
     List<${Domain}QueryResponse> list = BeanUtil.copyToList(${domain}List, ${Domain}QueryResponse.class);
 
-        PageResp<${Domain}QueryResponse> pageResponse = new PageResp<>();
+        PageResponse<${Domain}QueryResponse> pageResponse = new PageResponse<>();
             pageResponse.setTotal(pageInfo.getTotal());
             pageResponse.setRows(list);
             return pageResponse;

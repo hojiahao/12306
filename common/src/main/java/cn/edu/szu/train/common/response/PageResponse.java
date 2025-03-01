@@ -27,10 +27,9 @@ public class PageResponse<T> implements Serializable {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("PageResp{");
-        sb.append("total=").append(total);
-        sb.append(", rows=").append(rows);
-        sb.append('}');
-        return sb.toString();
+        return "PageResponse{" +
+                "total=" + total +
+                ", rows=" + rows +
+                '}';
     }
 }

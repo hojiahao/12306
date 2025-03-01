@@ -18,20 +18,20 @@ public class ${Domain}AdminController {
     private ${Domain}Service ${domain}Service;
 
     @PostMapping("/save")
-    public CommonResp<Object> save(@Valid @RequestBody ${Domain}SaveRequest req) {
+    public CommonResponse<Object> save(@Valid @RequestBody ${Domain}SaveRequest req) {
         ${domain}Service.save(req);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 
     @GetMapping("/query-list")
-    public CommonResp<PageResp<${Domain}QueryResponse>> queryList(@Valid ${Domain}QueryRequest req) {
-        PageResp<${Domain}QueryResponse> queryList = ${domain}Service.queryList(req);
-        return new CommonResp<>(queryList);
+    public CommonResponse<PageResponse<${Domain}QueryResponse>> queryList(@Valid ${Domain}QueryRequest req) {
+        PageResponse<${Domain}QueryResponse> queryList = ${domain}Service.queryList(req);
+        return new CommonResponse<>(queryList);
     }
 
     @DeleteMapping("/delete/{id}")
-    public CommonResp<Object> delete(@PathVariable Long id) {
+    public CommonResponse<Object> delete(@PathVariable Long id) {
         ${domain}Service.delete(id);
-        return new CommonResp<>();
+        return new CommonResponse<>();
     }
 }
