@@ -181,7 +181,6 @@ export default defineComponent({
     const seatTypes = [];
     for (let KEY in SEAT_TYPE) {
       let key = KEY.toLowerCase().replace(/_(.)/g, (_, c) => c.toUpperCase());
-      console.log("处理的 key:", key, "dailyTrainTicket[key]:", dailyTrainTicket[key]);
       if (dailyTrainTicket[key] >= 0) {
         seatTypes.push({
           type: KEY,
@@ -368,6 +367,7 @@ export default defineComponent({
       }
 
       console.log("最终购票：", tickets.value);
+      console.log("train_code:", dailyTrainTicket.trainCode);
 
       axios.post("/business/confirm-order/do", {
         dailyTrainTicketId: dailyTrainTicket.id,

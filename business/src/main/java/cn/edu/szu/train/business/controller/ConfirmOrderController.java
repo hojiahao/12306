@@ -1,6 +1,7 @@
 package cn.edu.szu.train.business.controller;
 
 import cn.edu.szu.train.business.request.ConfirmOrderDoRequest;
+import cn.edu.szu.train.business.service.BeforeConfirmOrderService;
 import cn.edu.szu.train.business.service.ConfirmOrderService;
 import cn.edu.szu.train.common.exception.BusinessException;
 import cn.edu.szu.train.common.exception.BusinessExceptionEnum;
@@ -30,6 +31,8 @@ public class ConfirmOrderController {
 
     @Value("dev")
     private String env;
+    @Autowired
+    private BeforeConfirmOrderService beforeConfirmOrderService;
 
     // 接口的资源名称不要和接口路径一致，会导致限流后走不到降级方法中
     @SentinelResource(value = "confirmOrderDo", blockHandler = "doConfirmBlock")
@@ -52,8 +55,8 @@ public class ConfirmOrderController {
                 stringRedisTemplate.delete(imageCodeToken);
             }
         }
-        confirmOrderService.doConfirm(req);
-        return new CommonResponse<>();
+        Long id = beforeConfirmOrderService.beforeDoConfirm(req);
+        return new CommonResponse<>(String.valueOf(id));
     }
 
     /**

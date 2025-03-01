@@ -49,8 +49,8 @@ public class AfterConfirmOrderService {
 //    @Transactional
 //     @GlobalTransactional
     public void afterDoConfirm(DailyTrainTicket dailyTrainTicket, List<DailyTrainSeat> seats, List<ConfirmOrderTicketRequest> tickets, ConfirmOrder confirmOrder) throws Exception {
-        LOG.info("seata全局事务ID:{}", RootContext.getXID());
-         for (int i = 0; i < seats.size(); i++) {
+//        LOG.info("seata全局事务ID:{}", RootContext.getXID());
+        for (int i = 0; i < seats.size(); i++) {
             DailyTrainSeat seatForUpdate = new DailyTrainSeat();
             DailyTrainSeat dailyTrainSeat = seats.get(i);
             seatForUpdate.setId(dailyTrainSeat.getId());
@@ -69,7 +69,7 @@ public class AfterConfirmOrderService {
             int maxStart = end - 1;
             int minEnd = start + 1;
             Integer minStart = 1;
-            for (int j = start - 1; j >= 0; j--) {
+            for (int j = start - 1; j > 0; j--) {
                 char aChar = chars[j - 1];
                 if (aChar == '1') {
                     minStart = j + 2;
@@ -119,10 +119,10 @@ public class AfterConfirmOrderService {
             confirmOrderForUpdate.setStatus(ConfirmOrderStatusEnum.SUCCESS.getCode());
             confirmOrderMapper.updateByPrimaryKeySelective(confirmOrderForUpdate);
             // 模拟调用方出现异常
-             // Thread.sleep(10000)
-             if (i == 1) {
-                 throw new Exception("测试异常。");
-             }
-         }
+            // Thread.sleep(10000)
+//            if (i == 1) {
+//                throw new Exception("测试异常。");
+//            }
+        }
     }
 }
