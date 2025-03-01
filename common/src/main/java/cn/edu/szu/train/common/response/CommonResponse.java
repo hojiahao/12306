@@ -20,6 +20,12 @@ public class CommonResponse<T> {
     public CommonResponse() {
     }
 
+    public CommonResponse(boolean success, String message, T content) {
+        this.success = success;
+        this.message = message;
+        this.content = content;
+    }
+
     public CommonResponse(T content) {
         this.content = content;
     }
