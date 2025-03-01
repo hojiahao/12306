@@ -30,7 +30,6 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
-import org.redisson.api.RedissonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -229,18 +228,6 @@ public class ConfirmOrderService {
     }
 
     /**
-     * 更新状态
-     * @param confirmOrder
-     */
-    public void updateStatus(ConfirmOrder confirmOrder) {
-        ConfirmOrder order = new ConfirmOrder();
-        order.setId(confirmOrder.getId());
-        order.setStatus(confirmOrder.getStatus());
-        order.setUpdateTime(new Date());
-        confirmOrderMapper.updateByPrimaryKeySelective(order);
-    }
-
-    /**
      * 售票
      * @param confirmOrder
      */
@@ -387,6 +374,18 @@ public class ConfirmOrderService {
             LOG.info("保存购票信息失败。", e);
             throw new BusinessException(BusinessExceptionEnum.CONFIRM_ORDER_EXCEPTION);
         }
+    }
+
+    /**
+     * 更新状态
+     * @param confirmOrder
+     */
+    public void updateStatus(ConfirmOrder confirmOrder) {
+        ConfirmOrder order = new ConfirmOrder();
+        order.setId(confirmOrder.getId());
+        order.setStatus(confirmOrder.getStatus());
+        order.setUpdateTime(new Date());
+        confirmOrderMapper.updateByPrimaryKeySelective(order);
     }
 
     /**
@@ -539,6 +538,53 @@ public class ConfirmOrderService {
                 }
             }
         }
+    }
+
+    /**
+     * 查询前面还有几个人在排队
+     * @param id
+     */
+    public Integer queryLineCount(Long id) {
+        ConfirmOrder confirmOrder = confirmOrderMapper.selectByPrimaryKey(id);
+        ConfirmOrderStatusEnum statusEnum = EnumUtil.getBy(ConfirmOrderStatusEnum::getCode, confirmOrder.getStatus());
+        int result = switch (statusEnum) {
+            case PENDING -> 0;  // 排队0
+            case SUCCESS -> -1;  // 成功
+            case FAILURE -> -2; // 失败
+            case EMPTY -> -3;   // 无票
+            case CANCEL -> -4;  // 取消
+            case INIT -> 999;   // 需要查表得到实际排队数量
+        };
+
+        if (result == 999) {
+            // 排在第几位，下面的写法：where a=1 and (b=1 or c=1) 等价于 where (a=1 and b=1) or (a=1 and c=1)
+            ConfirmOrderExample confirmOrderExample = new ConfirmOrderExample();
+            confirmOrderExample.createCriteria().andDateEqualTo(confirmOrder.getDate())
+                    .andTrainCodeEqualTo(confirmOrder.getTrainCode())
+                    .andCreateTimeLessThan(confirmOrder.getCreateTime())
+                    .andStatusEqualTo(ConfirmOrderStatusEnum.INIT.getCode());
+            confirmOrderExample.or().andDateEqualTo(confirmOrder.getDate())
+                    .andTrainCodeEqualTo(confirmOrder.getTrainCode())
+                    .andCreateTimeLessThan(confirmOrder.getCreateTime())
+                    .andStatusEqualTo(ConfirmOrderStatusEnum.PENDING.getCode());
+            return Math.toIntExact(confirmOrderMapper.countByExample(confirmOrderExample));
+        }
+        else {
+            return result;
+        }
+    }
+
+    /**
+     * 取消排队，只有I状态才能取消排队，所以按状态更新
+     * @param id
+     */
+    public Integer cancel(Long id) {
+        ConfirmOrderExample confirmOrderExample = new ConfirmOrderExample();
+        ConfirmOrderExample.Criteria criteria = confirmOrderExample.createCriteria();
+        criteria.andIdEqualTo(id).andStatusEqualTo(ConfirmOrderStatusEnum.INIT.getCode());
+        ConfirmOrder confirmOrder = new ConfirmOrder();
+        confirmOrder.setStatus(ConfirmOrderStatusEnum.CANCEL.getCode());
+        return confirmOrderMapper.updateByExampleSelective(confirmOrder, confirmOrderExample);
     }
 
     /**

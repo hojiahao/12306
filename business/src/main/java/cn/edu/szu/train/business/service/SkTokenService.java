@@ -21,6 +21,7 @@ import jakarta.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,9 @@ public class SkTokenService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    @Value("${spring.profiles.active}")
+    private String env;
 
     public void generateDailySKToken(Date date, String trainCode) {
         LOG.info("删除日期【{}】车次【{}】的令牌记录", DateUtil.formatDate(date), trainCode);

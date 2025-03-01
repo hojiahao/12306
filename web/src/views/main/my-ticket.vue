@@ -101,23 +101,23 @@ export default defineComponent({
     },
     {
       title: '出发站',
-      dataIndex: 'startStation',
-      key: 'startStation',
+      dataIndex: 'departureStation',
+      key: 'departureStation',
     },
     {
       title: '出发时间',
-      dataIndex: 'startTime',
-      key: 'startTime',
+      dataIndex: 'departureTime',
+      key: 'departureTime',
     },
     {
       title: '到达站',
-      dataIndex: 'endStation',
-      key: 'endStation',
+      dataIndex: 'destinationStation',
+      key: 'destinationStation',
     },
     {
       title: '到站时间',
-      dataIndex: 'endTime',
-      key: 'endTime',
+      dataIndex: 'arrivalTime',
+      key: 'arrivalTime',
     },
     {
       title: '座位类型',

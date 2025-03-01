@@ -27,7 +27,7 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
     public CommonResponse<Object> exceptionHandler(Exception e) throws Exception {
-        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
+//        LOG.info("seata全局事务ID save: {}", RootContext.getXID());
         //如果是在一次全局事务里出现异常，就不要包装返回值，直接将异常抛给调用方，让调用方回滚事务。
         if (StrUtil.isNotBlank(RootContext.getXID())) {
             throw e;

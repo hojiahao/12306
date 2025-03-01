@@ -26,11 +26,14 @@ public class ConfirmOrderController {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    @Value("dev")
+    @Value("${spring.profiles.active}")
     private String env;
 
     @Autowired
     private BeforeConfirmOrderService beforeConfirmOrderService;
+
+    @Autowired
+    private ConfirmOrderService confirmOrderService;
 
     // 接口的资源名称不要和接口路径一致，会导致限流后走不到降级方法中
     @SentinelResource(value = "confirmOrderDo", blockHandler = "doConfirmBlock")
@@ -55,6 +58,18 @@ public class ConfirmOrderController {
         }
         Long id = beforeConfirmOrderService.beforeDoConfirm(req);
         return new CommonResponse<>(String.valueOf(id));
+    }
+
+    @GetMapping("/query-line-count/{id}")
+    public CommonResponse<Integer> queryLineCount(@PathVariable Long id) {
+        Integer count = confirmOrderService.queryLineCount(id);
+        return new CommonResponse<>(count);
+    }
+
+    @GetMapping("/cancel/{id}")
+    public CommonResponse<Object> cancel(@PathVariable Long id) {
+        Integer cancel = confirmOrderService.cancel(id);
+        return new CommonResponse<>(cancel);
     }
 
     /**
