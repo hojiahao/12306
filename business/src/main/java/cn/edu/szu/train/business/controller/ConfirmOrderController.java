@@ -23,14 +23,12 @@ import org.springframework.web.bind.annotation.*;
 public class ConfirmOrderController {
     private static final Logger LOG = LoggerFactory.getLogger(ConfirmOrderController.class);
 
-    @Resource
-    private ConfirmOrderService confirmOrderService;
-
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     @Value("dev")
     private String env;
+
     @Autowired
     private BeforeConfirmOrderService beforeConfirmOrderService;
 

@@ -64,9 +64,6 @@ public class ConfirmOrderService {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    @Resource
-    private SkTokenService skTokenService;
-
     public void save(ConfirmOrderDoRequest req) {
         DateTime now = DateTime.now();
         ConfirmOrder confirmOrder = BeanUtil.copyProperties(req, ConfirmOrder.class);

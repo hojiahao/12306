@@ -11,7 +11,7 @@
            @change="handleTableChange"
            :loading="loading">
     <template #bodyCell="{ column, record }">
-      <template v-if="column.dataIndex === 'operation'">
+      <template v-if="column.dataIndex === 'action'">
       </template>
       <template v-else-if="column.dataIndex === 'col'">
         <span v-for="item in SEAT_COL_ARRAY" :key="item.code">
@@ -136,20 +136,20 @@ export default defineComponent({
       if (!param) {
         param = {
           page: 1,
-          size: pagination.value.pageSize
+          pageSize: pagination.value.pageSize
         };
       }
       loading.value = true;
       axios.get("/member/ticket/query-list", {
         params: {
           page: param.page,
-          size: param.size
+          pageSize: param.pageSize
         }
       }).then((response) => {
         loading.value = false;
         let data = response.data;
         if (data.success) {
-          tickets.value = data.content.list;
+          tickets.value = data.content.rows;
           // 设置分页控件的值
           pagination.value.current = param.page;
           pagination.value.total = data.content.total;
@@ -164,14 +164,14 @@ export default defineComponent({
       pagination.value.pageSize = page.pageSize;
       handleQuery({
         page: page.current,
-        size: page.pageSize
+        pageSize: page.pageSize
       });
     };
 
     onMounted(() => {
       handleQuery({
         page: 1,
-        size: pagination.value.pageSize
+        pageSize: pagination.value.pageSize
       });
     });
 

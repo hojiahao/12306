@@ -34,6 +34,7 @@ import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -57,8 +58,8 @@ public class BeforeConfirmOrderService {
     @Resource
     private ConfirmOrderService confirmOrderService;
 
-    @Resource
-    private RocketMQTemplate rocketMQTemplate;
+//    @Autowired
+//    private RocketMQTemplate rocketMQTemplate;
 
     @SentinelResource(value = "beforeDoConfirm", blockHandler = "beforeDoConfirmBlock")
     public Long beforeDoConfirm(ConfirmOrderDoRequest req) {
@@ -101,10 +102,10 @@ public class BeforeConfirmOrderService {
             confirmOrderMQDto.setDate(req.getDate());
             confirmOrderMQDto.setTrainCode(req.getTrainCode());
             confirmOrderMQDto.setLogId(MDC.get("LOG_ID"));
-            String requestJson = JSON.toJSONString(confirmOrderMQDto);
-            LOG.info("排队购票，发送mq开始，消息：{}", requestJson);
-            rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), requestJson);
-            LOG.info("排队购票，发送mq结束");
+//            String requestJson = JSON.toJSONString(confirmOrderMQDto);
+//            LOG.info("排队购票，发送mq开始，消息：{}", requestJson);
+//            rocketMQTemplate.convertAndSend(RocketMQTopicEnum.CONFIRM_ORDER.getCode(), requestJson);
+//            LOG.info("排队购票，发送mq结束");
             confirmOrderService.doConfirm(confirmOrderMQDto);
             id = confirmOrder.getId();
         }
