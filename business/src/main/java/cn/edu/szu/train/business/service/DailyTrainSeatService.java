@@ -1,6 +1,8 @@
 package cn.edu.szu.train.business.service;
 
 import cn.edu.szu.train.business.domain.*;
+import cn.edu.szu.train.business.request.SeatSellRequest;
+import cn.edu.szu.train.business.response.SeatSellResponse;
 import cn.edu.szu.train.common.response.PageResponse;
 import cn.edu.szu.train.common.util.SnowUtil;
 import cn.edu.szu.train.business.mapper.DailyTrainSeatMapper;
@@ -133,5 +135,18 @@ public class DailyTrainSeatService {
                 .andTrainCodeEqualTo(trainCode)
                 .andCarriageIndexEqualTo(carriageIndex);
         return dailyTrainSeatMapper.selectByExample(example);
+    }
+
+    /**
+     * 查询某日某车次的所有座位
+     */
+    public List<SeatSellResponse> querySeatSell(SeatSellRequest request) {
+        Date date = request.getDate();
+        String trainCode = request.getTrainCode();
+        LOG.info("查询日期【{}】车次【{}】的座位销售信息", DateUtil.formatDate(date), trainCode);
+        DailyTrainSeatExample dailyTrainSeatExample = new DailyTrainSeatExample();
+        dailyTrainSeatExample.setOrderByClause("`carriage_index` asc, carriage_seat_index asc");
+        dailyTrainSeatExample.createCriteria().andDateEqualTo(date).andTrainCodeEqualTo(trainCode);
+        return BeanUtil.copyToList(dailyTrainSeatMapper.selectByExample(dailyTrainSeatExample), SeatSellResponse.class);
     }
 }

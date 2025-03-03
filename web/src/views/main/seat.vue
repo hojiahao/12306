@@ -9,7 +9,6 @@
     <p style="font-weight: bold;">
       日期：{{ param.date }}，车次：{{ param.trainCode }}，出发站：{{ param.departure }}，到达站：{{ param.destination }}
     </p>
-
     <table>
       <tr>
         <td style="width: 25px; background: #FF9900;"></td>
