@@ -46,11 +46,13 @@ public class ConfirmOrderController {
             String imageCodeRedis = stringRedisTemplate.opsForValue().get(imageCodeToken);
             LOG.info("从redis中获取到的验证码：{}", imageCodeRedis);
             if (ObjectUtils.isEmpty(imageCodeRedis)) {
-                return new CommonResponse<>(false, "验证码已过期", null);
+//                return new CommonResponse<>(false, "验证码已过期", null);
+                return new CommonResponse<>("验证码已过期");
             }
             // 验证码校验，大小写忽略，提升体验，比如Oo Vv Ww容易混
             if (!imageCodeRedis.equalsIgnoreCase(imageCode)) {
-                return new CommonResponse<>(false, "验证码不正确", null);
+//                return new CommonResponse<>(false, "验证码不正确", null);
+                return new CommonResponse<>("验证码不正确");
             } else {
                 // 验证通过后，移除验证码
                 stringRedisTemplate.delete(imageCodeToken);

@@ -26,6 +26,11 @@ public class CommonResponse<T> {
         this.content = content;
     }
 
+    // 静态工厂方法（错误响应）
+    public static CommonResponse<Object> error(String message) {
+        return new CommonResponse<>(false, message, null);
+    }
+
     public CommonResponse(T content) {
         this.content = content;
     }
@@ -56,11 +61,11 @@ public class CommonResponse<T> {
 
     @Override
     public String toString() {
-        final StringBuffer stringBuffer = new StringBuffer("CommonResp{");
-        stringBuffer.append("success=").append(success);
-        stringBuffer.append(", message='").append(message).append('\'');
-        stringBuffer.append(", content=").append(content);
-        stringBuffer.append('}');
-        return stringBuffer.toString();
+        final StringBuilder sb = new StringBuilder("CommonResponse{");
+        sb.append("success=").append(success);
+        sb.append(", message='").append(message).append('\'');
+        sb.append(", content=").append(content);
+        sb.append('}');
+        return sb.toString();
     }
 }
