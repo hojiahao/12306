@@ -5,7 +5,7 @@
   "scripts": {
     "admin-dev": "vue-cli-service serve --mode development --port 9090",
     "admin-prod": "vue-cli-service serve --mode production --port 9000",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
