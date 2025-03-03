@@ -15,9 +15,7 @@
     <template #bodyCell="{ column, record }">
       <template v-if="column.dataIndex === 'action'">
         <a-space>
-          <a-button type="primary" @click="toOrder(record)" :disabled="isExpire(record)">
-            {{ isExpire(record) ? "过期" : "预订" }}
-          </a-button>
+          <a-button type="primary" @click="toOrder(record)" :disabled="isExpire(record)">{{ isExpire(record) ? "过期" : "预订" }}</a-button>
           <router-link :to="{
             path: 'seat',
             query: {
@@ -96,17 +94,17 @@
       <a-table-column key="name" title="站名" data-index="name"/>
       <a-table-column key="entryTime" title="进站时间" data-index="entryTime">
         <template #default="{ record }">
-          {{ record.index === 0 ? '-' : record.exitTime }}
+          {{ record.index === 1 ? '-' : record.exitTime }}
         </template>
       </a-table-column>
       <a-table-column key="exitTime" title="出站时间" data-index="exitTime">
         <template #default="{ record }">
-          {{ record.index === (stations.length - 1) ? '-' : record.exitTime }}
+          {{ record.index === stations.length ? '-' : record.exitTime }}
         </template>
       </a-table-column>
       <a-table-column key="stopTime" title="停站时长" data-index="stopTime">
         <template #default="{ record }">
-          {{ record.index === 0 || record.index === (stations.length - 1) ? '-' : record.stopTime }}
+          {{ record.index === 1 || record.index === stations.length  ? '-' : record.stopTime }}
         </template>
       </a-table-column>
     </a-table>
