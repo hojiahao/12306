@@ -126,7 +126,7 @@ export default defineComponent({
         // let end = 3;
         // let sell = sellDB.substr(start, end - start)
         // console.log(sell)
-        let sell = sellDB.substr(param.value.startIndex, param.value.endIndex - param.value.startIndex);
+        let sell = sellDB.substr(param.value.departureIndex, param.value.arrivalIndex - param.value.departureIndex);
         // console.log("完整的销卖信息：", sellDB, "区间内的销卖信息", sell);
 
         // 将sell放入火车数据中
