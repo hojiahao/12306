@@ -1,8 +1,8 @@
 <template>
-  <h3>
+  <h3 style="text-align: left">
     <b>控台管理暂不开放（怕被乱改车次数据，影响体验）</b>
   </h3>
-  <div>
+  <div style="text-align: left">
     控台总体分成四大部分：
     <ul>
       <li>基础数据：用于维护所有的火车基础数据，包括车次、车站、车厢、座位等</li>
